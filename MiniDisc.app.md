@@ -57,13 +57,26 @@ Each MiniDisc requires **4 different stickers**:
 - Maximize paper usage while maintaining set integrity
 - **One page at a time printing**: Users print pages individually, not batch
 - Target: Fit maximum number of complete sticker sets on single A4 sheet
+- **Placement priorities**:
+  - Set orientation support (portrait/landscape)
+  - Individual sticker rotation allowed (90°, 180°, 270°)
+  - Minimum spacing between elements (default: 2mm, configurable)
+  - Priority order: complete sets > orientation > spacing optimization
 
 ### 2. Album Management Interface
 - List view with placeholders for each MiniDisc
 - Add/remove MiniDisc entries
 - Edit individual sticker designs and text after auto-population
 - Maximum MiniDiscs per session: As many as can fit on a single A4 page
-- Drag-and-drop reordering (optional enhancement)
+- **Drag-and-drop** positioning on page preview
+- **Undo/Redo** functionality (Ctrl+Z / Ctrl+Y)
+- **Keyboard shortcuts**:
+  - Ctrl+S: Save project
+  - Ctrl+Z: Undo
+  - Ctrl+Y: Redo
+  - Ctrl+P: Print preview
+  - Delete: Remove selected MiniDisc
+- **Auto-save**: User settings and preferences to localStorage
 
 ### 3. Spotify Integration
 - Search albums via Spotify API
@@ -117,15 +130,23 @@ All dimensions and specifications are configurable:
 
 #### Print Settings
 - **Printer Margins**: Top, Bottom, Left, Right (default: 6.35mm each)
-- **Print Resolution**: DPI (default: 300)
+- **Print Resolution**: DPI (default: 300 DPI = 2480 × 3508 pixels for A4)
+- **Color Space**: sRGB (default for web/screen), CMYK (optional for professional printing)
 - **Cut Lines**: Toggle, color, style (solid/dashed/dotted), width
 - **Bleed/Safe Zone**: Optional margins
+- **Browser Support**: Chrome (primary), Edge, Safari (Firefox optional)
 
 #### Design Settings
 - **Color Extraction**: Number of colors (default: 3 + font color)
 - **Default Font**: Selection dropdown (default: Inter/Roboto/Open Sans)
 - **Font Size Range**: Min/max limits
 - **Text Alignment**: Options for each sticker type
+
+#### Layout Settings
+- **Element Spacing**: Minimum gap between stickers (default: 2mm)
+- **Rotation Options**: Allow 90°/180°/270° rotation of individual stickers
+- **Set Orientation**: Prefer portrait or landscape for sticker sets
+- **Optimization Priority**: Balance between density and visual organization
 
 #### Paper Settings
 - **Paper Size**: A4 (210mm × 297mm) - no pre-cuts
@@ -139,6 +160,65 @@ All dimensions and specifications are configurable:
 - Session persistence (recover unsaved work)
 - Project metadata: name, date created, last modified
 - Export/import functionality
+
+### 9. Error Handling
+
+Comprehensive error handling for common failure scenarios:
+
+#### Spotify API Errors
+- **Connection Failed**: 
+  - Display user-friendly error message
+  - Offer retry option with exponential backoff
+  - Allow manual data entry as fallback
+  - Show offline mode indicator
+- **Authentication Errors**:
+  - Clear authentication state
+  - Redirect to re-authentication flow
+  - Preserve unsaved work during re-auth
+- **Rate Limiting**:
+  - Display waiting period to user
+  - Queue requests automatically
+  - Show progress indicator
+
+#### Album Data Errors
+- **Album Cover Not Found**:
+  - Display placeholder image
+  - Allow manual image upload (JPG, PNG, WebP)
+  - Show warning indicator on affected sticker
+  - Suggest alternative search terms
+- **Missing Track Data**:
+  - Allow manual track entry
+  - Show warning for incomplete data
+  - Proceed with available information
+
+#### Layout Errors
+- **Sticker Set Overflow**:
+  - Calculate and display maximum sets for current page
+  - Show warning when adding beyond capacity
+  - Suggest removing sets or adjusting dimensions
+  - Offer multi-page mode (future feature)
+- **Invalid Dimensions**:
+  - Validate input in real-time
+  - Show error message with acceptable ranges
+  - Prevent saving invalid configurations
+  - Revert to last valid values
+
+#### Print/Export Errors
+- **PDF Generation Failed**:
+  - Log detailed error information
+  - Offer PNG export as alternative
+  - Check browser compatibility
+  - Suggest trying different browser
+- **Browser Compatibility Issues**:
+  - Detect unsupported features on load
+  - Display browser requirements clearly
+  - Recommend supported browsers (Chrome/Edge/Safari)
+
+#### General Error Handling
+- **Network Errors**: Graceful degradation to offline mode
+- **Local Storage Full**: Clear old auto-saves, warn user
+- **Invalid JSON Import**: Validate schema, show specific error
+- **Unexpected Errors**: Log to console, show generic user message, offer bug report
 
 ---
 
@@ -363,11 +443,16 @@ Document Version: 2.0Last Updated: 2025-10-18Status: Final - Ready for Developme
 
 
 Notes
-• All sticker dimensions based on standard Sony MiniDisc cases (~72mm × 68mm × 5mm)
-• User will provide own Spotify API credentials (paid subscription)
-• Font extraction from album covers is optional/experimental
-• Primary focus: quality output for physical sticker printing
-• Design philosophy: Functional, clean, efficient
+
+• All sticker dimensions based on standard Sony MiniDisc cases (~72mm × 68mm × 5mm)
+
+• User will provide own Spotify API credentials (paid subscription)
+
+• Font extraction from album covers is optional/experimental
+
+• Primary focus: quality output for physical sticker printing
+
+• Design philosophy: Functional, clean, efficient
 
 ---
 
