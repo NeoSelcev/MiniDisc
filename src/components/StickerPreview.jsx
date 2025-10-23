@@ -1,4 +1,4 @@
-function StickerPreview({ sticker, scale, showCutLines, settings }) {
+function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) {
   const { x, y, width, height, type, data } = sticker;
   
   const pixelX = x * scale;
@@ -49,21 +49,35 @@ function StickerPreview({ sticker, scale, showCutLines, settings }) {
     );
   };
   
-  const renderFace = () => (
-    <div className="w-full h-full">
-      {data.coverImage ? (
-        <img
-          src={data.coverImage}
-          alt={data.albumName}
-          className="w-full h-full object-cover"
-        />
-      ) : (
+  const renderFace = () => {
+    if (!data.coverImage) {
+      return (
         <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs">
           Disc Cover
         </div>
-      )}
-    </div>
-  );
+      );
+    }
+    
+    return (
+      <div className="w-full h-full overflow-hidden" style={{ backgroundColor: data.colors?.dominant || '#e0e0e0' }}>
+        <img
+          src={data.coverImage}
+          alt={data.albumName}
+          style={{ 
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center',
+            display: 'block',
+            margin: 0,
+            padding: 0,
+            minWidth: '100%',
+            minHeight: '100%'
+          }}
+        />
+      </div>
+    );
+  };
   
   const renderFront = () => {
     // Combined front cover with fold line
@@ -76,12 +90,18 @@ function StickerPreview({ sticker, scale, showCutLines, settings }) {
     return (
       <div className="w-full h-full flex flex-col">
         {/* Part A - Main cover image */}
-        <div className="w-full" style={{ height: `${partAHeightPercent}%` }}>
+        <div className="w-full overflow-hidden" style={{ height: `${partAHeightPercent}%`, backgroundColor: data.colors?.dominant || '#e0e0e0' }}>
           {data.coverImage ? (
             <img
               src={data.coverImage}
               alt={data.albumName}
-              className="w-full h-full object-cover"
+              style={{ 
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center',
+                display: 'block'
+              }}
             />
           ) : (
             <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs">
@@ -142,26 +162,30 @@ function StickerPreview({ sticker, scale, showCutLines, settings }) {
           {data.albumName}
         </div>
         <div 
-          className="text-gray-700 truncate" 
+          className="flex justify-between items-baseline"
           style={{ 
             fontSize: `${artistSize}pt`,
-            ...getFontStyleCSS(artistStyle),
           }}
         >
-          {data.artistName}
-        </div>
-        <div 
-          className="text-gray-600 mb-1" 
-          style={{ 
-            fontSize: `${yearSize}pt`,
-            ...getFontStyleCSS(yearStyle),
-          }}
-        >
-          {data.year}
+          <span 
+            className="text-gray-700 truncate flex-1" 
+            style={{...getFontStyleCSS(artistStyle)}}
+          >
+            {data.artistName}
+          </span>
+          <span 
+            className="ml-2 text-gray-600" 
+            style={{ 
+              fontSize: `${yearSize}pt`,
+              ...getFontStyleCSS(yearStyle),
+            }}
+          >
+            {data.year}
+          </span>
         </div>
         
         {/* Track list */}
-        <div className="space-y-0.5">
+        <div className="space-y-0.5 mt-1">
           {data.tracks?.slice(0, 15).map((track) => (
             <div 
               key={track.number} 
@@ -212,8 +236,8 @@ function StickerPreview({ sticker, scale, showCutLines, settings }) {
     >
       {renderSticker()}
       
-      {/* Sticker type label (for debugging) */}
-      {showCutLines && (
+      {/* Sticker type label (toggle with checkbox) */}
+      {showLabels && (
         <div className="absolute top-0 right-0 bg-black bg-opacity-50 text-white text-xs px-1 pointer-events-none">
           {sticker.label || type}
         </div>

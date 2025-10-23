@@ -393,13 +393,11 @@ function SettingsModal({ isOpen, onClose }) {
               {/* Helper component for typography row */}
               {[
                 { key: 'spine', label: 'Disc Edge (Spine)' },
-                { key: 'discFaceTitle', label: 'Disc Face - Title' },
-                { key: 'discFaceArtist', label: 'Disc Face - Artist' },
                 { key: 'holderBackTitle', label: 'Holder Back - Album Title' },
                 { key: 'holderBackArtist', label: 'Holder Back - Artist' },
                 { key: 'holderBackYear', label: 'Holder Back - Year' },
-                { key: 'trackList', label: 'Holder Back - Track List' },
-              ].map(({ key, label }) => (
+                { key: 'trackList', label: 'Holder Back - Track List', hasLineHeight: true },
+              ].map(({ key, label, hasLineHeight }) => (
                 <div key={key} className="mb-6 p-4 bg-gray-50 rounded-lg">
                   <h4 className="font-medium text-gray-900 mb-3">{label}</h4>
                   
@@ -416,18 +414,20 @@ function SettingsModal({ isOpen, onClose }) {
                       />
                     </label>
                     
-                    {/* Line Height */}
-                    <label className="block text-sm">
-                      Line Height (mm)
-                      <input
-                        type="number"
-                        value={settings.design.lineHeights?.[key] || 2.5}
-                        onChange={(e) => updateLineHeight(key, e.target.value)}
-                        className="mt-1 input-field w-full"
-                        step="0.1"
-                        min="0"
-                      />
-                    </label>
+                    {/* Line Height - Only for Track List */}
+                    {hasLineHeight && (
+                      <label className="block text-sm">
+                        Line Height (mm)
+                        <input
+                          type="number"
+                          value={settings.design.lineHeights?.[key] || 2.5}
+                          onChange={(e) => updateLineHeight(key, e.target.value)}
+                          className="mt-1 input-field w-full"
+                          step="0.1"
+                          min="0"
+                        />
+                      </label>
+                    )}
                     
                     {/* Font Styles */}
                     <div className="block text-sm">
@@ -534,6 +534,16 @@ function SettingsModal({ isOpen, onClose }) {
                     className="mr-2"
                   />
                   <span className="text-sm">Enable cut lines</span>
+                </label>
+                
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={settings.print.showLabels}
+                    onChange={(e) => updatePrintSetting('showLabels', e.target.checked)}
+                    className="mr-2"
+                  />
+                  <span className="text-sm">Show labels</span>
                 </label>
                 
                 <label className="flex items-center">

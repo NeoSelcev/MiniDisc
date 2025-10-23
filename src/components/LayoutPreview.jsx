@@ -8,7 +8,6 @@ function LayoutPreview() {
   const { albums, settings } = useAppStore();
   const [layout, setLayout] = useState(null);
   const [stats, setStats] = useState(null);
-  const [showCutLines, setShowCutLines] = useState(true);
   const [generating, setGenerating] = useState(false);
   
   // Recalculate layout when albums or settings change
@@ -48,28 +47,7 @@ function LayoutPreview() {
   const a4Height = settings.paper.height * previewScale;
   
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 h-full flex flex-col">
-      {/* Top bar with just cut lines toggle and export button */}
-      <div className="flex items-center justify-end mb-4 space-x-2">
-        <label className="flex items-center space-x-2 text-sm">
-          <input
-            type="checkbox"
-            checked={showCutLines}
-            onChange={(e) => setShowCutLines(e.target.checked)}
-            className="rounded"
-          />
-          <span>Cut lines</span>
-        </label>
-        
-        <button
-          onClick={handleGeneratePDF}
-          disabled={!layout || !layout.fits || generating}
-          className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {generating ? 'Generating...' : '📄 Export PDF'}
-        </button>
-      </div>
-      
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 h-full flex flex-col relative">
       {albums.length === 0 ? (
         <div className="flex items-center justify-center h-full bg-gray-50 rounded border-2 border-dashed border-gray-300">
           <div className="text-center text-gray-500">
@@ -87,10 +65,42 @@ function LayoutPreview() {
               height: `${a4Height}px`,
             }}
           >
-            {/* Printable area margins */}
+            {/* Non-printable area (grayed out) - Top */}
+            <div
+              className="absolute top-0 left-0 right-0 bg-gray-400 bg-opacity-30 pointer-events-none z-10"
+              style={{
+                height: `${settings.print.margins.top * previewScale}px`,
+              }}
+            />
+            
+            {/* Non-printable area - Bottom */}
+            <div
+              className="absolute bottom-0 left-0 right-0 bg-gray-400 bg-opacity-30 pointer-events-none z-10"
+              style={{
+                height: `${settings.print.margins.bottom * previewScale}px`,
+              }}
+            />
+            
+            {/* Non-printable area - Left */}
+            <div
+              className="absolute top-0 bottom-0 left-0 bg-gray-400 bg-opacity-30 pointer-events-none z-10"
+              style={{
+                width: `${settings.print.margins.left * previewScale}px`,
+              }}
+            />
+            
+            {/* Non-printable area - Right */}
+            <div
+              className="absolute top-0 bottom-0 right-0 bg-gray-400 bg-opacity-30 pointer-events-none z-10"
+              style={{
+                width: `${settings.print.margins.right * previewScale}px`,
+              }}
+            />
+            
+            {/* Printable area border (optional dashed line) */}
             {settings.print.bleedMarks && (
               <div
-                className="absolute border-2 border-dashed border-red-300"
+                className="absolute border-2 border-dashed border-red-300 pointer-events-none z-20"
                 style={{
                   left: `${settings.print.margins.left * previewScale}px`,
                   top: `${settings.print.margins.top * previewScale}px`,
@@ -106,7 +116,8 @@ function LayoutPreview() {
                 key={sticker.id}
                 sticker={sticker}
                 scale={previewScale}
-                showCutLines={showCutLines}
+                showCutLines={settings.print.cutLines.enabled}
+                showLabels={settings.print.showLabels}
                 settings={settings}
               />
             ))}
@@ -122,19 +133,38 @@ function LayoutPreview() {
           
           {/* Layout info - bottom left corner */}
           {stats && (
-            <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 p-3">
-              <h2 className="text-sm font-semibold text-gray-900 mb-1">Layout Preview</h2>
-              <div className="text-xs text-gray-600 space-y-0.5">
-                <p>
-                  {stats.currentSets} albums • {stats.placedStickers}/{stats.totalStickers} stickers • 
-                  {stats.efficiency.toFixed(1)}% efficiency
-                </p>
-                <p className={stats.fitsOnPage ? 'text-green-600' : 'text-red-600'}>
-                  {stats.fitsOnPage ? '✓ All stickers fit on page' : `✗ ${stats.failedStickers} stickers don't fit`}
-                </p>
+            <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 p-3 max-w-xs z-20">
+              <h2 className="text-sm font-semibold text-gray-900 mb-2">Layout Preview</h2>
+              <div className="text-xs text-gray-600 space-y-1">
+                <div className="flex items-center">
+                  <span className="font-medium mr-2">Albums:</span>
+                  <span>{stats.currentSets}</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="font-medium mr-2">Stickers:</span>
+                  <span>{stats.placedStickers}/{stats.totalStickers}</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="font-medium mr-2">Efficiency:</span>
+                  <span>{stats.efficiency.toFixed(1)}%</span>
+                </div>
+                <div className={`flex items-center font-medium ${stats.fitsOnPage ? 'text-green-600' : 'text-red-600'}`}>
+                  {stats.fitsOnPage ? '✓ All stickers fit' : `✗ ${stats.failedStickers} don't fit`}
+                </div>
               </div>
             </div>
           )}
+          
+          {/* Floating Export PDF button - bottom right */}
+          <button
+            onClick={handleGeneratePDF}
+            disabled={!layout || !layout.fits || generating}
+            className="absolute bottom-4 right-4 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg flex items-center space-x-2 z-30"
+            title="Export to PDF"
+          >
+            <span>📄</span>
+            <span>{generating ? 'Generating...' : 'Export PDF'}</span>
+          </button>
         </div>
       )}
     </div>

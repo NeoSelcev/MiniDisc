@@ -204,28 +204,52 @@ export function calculateLayout(albums, settings) {
  * Validate that no stickers overlap
  */
 function validateNoOverlaps(stickers, minSpacing) {
+  let hasOverlap = false;
   for (let i = 0; i < stickers.length; i++) {
     for (let j = i + 1; j < stickers.length; j++) {
       const s1 = stickers[i];
       const s2 = stickers[j];
       
-      // Check if rectangles overlap (with spacing tolerance)
-      const overlap = !(
-        s1.x + s1.width + minSpacing / 2 <= s2.x ||
-        s2.x + s2.width + minSpacing / 2 <= s1.x ||
-        s1.y + s1.height + minSpacing / 2 <= s2.y ||
-        s2.y + s2.height + minSpacing / 2 <= s1.y
+      // Calculate actual distance between stickers
+      const xGap = Math.max(0, 
+        Math.min(s1.x + s1.width, s2.x + s2.width) - Math.max(s1.x, s2.x)
+      );
+      const yGap = Math.max(0,
+        Math.min(s1.y + s1.height, s2.y + s2.height) - Math.max(s1.y, s2.y)
       );
       
-      if (overlap) {
+      // Check if they actually overlap (both gaps > 0 means overlap)
+      if (xGap > 0 && yGap > 0) {
+        hasOverlap = true;
         console.error('❌ OVERLAP DETECTED!', {
-          sticker1: { id: s1.id, type: s1.type, x: s1.x, y: s1.y, w: s1.width, h: s1.height },
-          sticker2: { id: s2.id, type: s2.type, x: s2.x, y: s2.y, w: s2.width, h: s2.height },
+          sticker1: { id: s1.id, type: s1.type, x: s1.x.toFixed(2), y: s1.y.toFixed(2), w: s1.width, h: s1.height },
+          sticker2: { id: s2.id, type: s2.type, x: s2.x.toFixed(2), y: s2.y.toFixed(2), w: s2.width, h: s2.height },
+          xOverlap: xGap.toFixed(2),
+          yOverlap: yGap.toFixed(2),
+          minSpacing,
+        });
+      }
+      
+      // Also check if spacing is too small
+      const rightGap = s2.x - (s1.x + s1.width);
+      const leftGap = s1.x - (s2.x + s2.width);
+      const bottomGap = s2.y - (s1.y + s1.height);
+      const topGap = s1.y - (s2.y + s2.height);
+      
+      const actualGap = Math.max(rightGap, leftGap, bottomGap, topGap);
+      
+      // If stickers are adjacent (one gap is small), check spacing
+      if (actualGap >= 0 && actualGap < minSpacing) {
+        console.warn('⚠️  INSUFFICIENT SPACING!', {
+          sticker1: { id: s1.id, type: s1.type },
+          sticker2: { id: s2.id, type: s2.type },
+          actualGap: actualGap.toFixed(2),
           minSpacing,
         });
       }
     }
   }
+  return !hasOverlap;
 }
 
 /**

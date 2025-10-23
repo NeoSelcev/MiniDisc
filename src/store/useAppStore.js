@@ -7,6 +7,15 @@ function migrateSettings(settings) {
   
   // Check if new structure exists (with fontStyles and renamed keys)
   if (settings.design?.fontStyles && settings.design?.fontSizes?.holderBackTitle) {
+    // Remove obsolete disc face font settings if they exist
+    if (settings.design.fontSizes.discFaceTitle) {
+      delete settings.design.fontSizes.discFaceTitle;
+      delete settings.design.fontSizes.discFaceArtist;
+      delete settings.design.fontStyles.discFaceTitle;
+      delete settings.design.fontStyles.discFaceArtist;
+      delete settings.design.lineHeights.discFaceTitle;
+      delete settings.design.lineHeights.discFaceArtist;
+    }
     return settings;
   }
   
@@ -19,29 +28,19 @@ function migrateSettings(settings) {
       ...settings.design,
       fontSizes: {
         spine: oldFontSizes.spine || settings.design?.trackFontSize || 8,
-        discFaceTitle: oldFontSizes.discFace || 10,
-        discFaceArtist: oldFontSizes.discFaceArtist || 8,
-        holderBackTitle: oldFontSizes.coverTitle || 14,
-        holderBackArtist: oldFontSizes.coverArtist || 10,
-        holderBackYear: oldFontSizes.holderBackYear || 9,
-        trackList: oldFontSizes.trackList || settings.design?.trackFontSize || 8,
+        holderBackTitle: oldFontSizes.coverTitle || 5.5,
+        holderBackArtist: oldFontSizes.coverArtist || 5,
+        holderBackYear: oldFontSizes.holderBackYear || 5,
+        trackList: oldFontSizes.trackList || settings.design?.trackFontSize || 4.5,
       },
       fontStyles: {
         spine: { bold: false, italic: false, underline: false },
-        discFaceTitle: { bold: true, italic: false, underline: false },
-        discFaceArtist: { bold: false, italic: false, underline: false },
         holderBackTitle: { bold: true, italic: false, underline: false },
-        holderBackArtist: { bold: false, italic: false, underline: false },
+        holderBackArtist: { bold: true, italic: false, underline: false },
         holderBackYear: { bold: false, italic: false, underline: false },
-        trackList: { bold: false, italic: false, underline: false },
+        trackList: { bold: true, italic: false, underline: false },
       },
       lineHeights: {
-        spine: settings.design?.lineHeights?.spine || 2.5,
-        discFaceTitle: settings.design?.lineHeights?.discFace || 3,
-        discFaceArtist: settings.design?.lineHeights?.discFaceArtist || 2.5,
-        holderBackTitle: settings.design?.lineHeights?.coverTitle || 4,
-        holderBackArtist: settings.design?.lineHeights?.coverArtist || 3,
-        holderBackYear: settings.design?.lineHeights?.holderBackYear || 2.5,
         trackList: settings.design?.lineHeights?.trackList || 2.5,
       },
       // Remove old properties
@@ -71,6 +70,7 @@ const DEFAULT_SETTINGS = {
       width: 0.5,
     },
     bleedMarks: false,
+    showLabels: false, // Show sticker type labels in preview
   },
   design: {
     colorExtraction: {
@@ -79,29 +79,19 @@ const DEFAULT_SETTINGS = {
     defaultFont: 'Inter',
     fontSizes: {
       spine: 8, // pt - Disc edge (spine) sticker text
-      discFaceTitle: 10, // pt - MiniDisc face main title
-      discFaceArtist: 8, // pt - MiniDisc face artist name
-      holderBackTitle: 14, // pt - Back cover (track list) album title
-      holderBackArtist: 10, // pt - Back cover artist name
-      holderBackYear: 9, // pt - Back cover year
-      trackList: 8, // pt - Track names on back cover
+      holderBackTitle: 5.5, // pt - Back cover (track list) album title
+      holderBackArtist: 5, // pt - Back cover artist name
+      holderBackYear: 5, // pt - Back cover year
+      trackList: 4.5, // pt - Track names on back cover
     },
     fontStyles: {
       spine: { bold: false, italic: false, underline: false },
-      discFaceTitle: { bold: true, italic: false, underline: false },
-      discFaceArtist: { bold: false, italic: false, underline: false },
       holderBackTitle: { bold: true, italic: false, underline: false },
-      holderBackArtist: { bold: false, italic: false, underline: false },
+      holderBackArtist: { bold: true, italic: false, underline: false },
       holderBackYear: { bold: false, italic: false, underline: false },
-      trackList: { bold: false, italic: false, underline: false },
+      trackList: { bold: true, italic: false, underline: false },
     },
     lineHeights: {
-      spine: 2.5, // mm
-      discFaceTitle: 3, // mm
-      discFaceArtist: 2.5, // mm
-      holderBackTitle: 4, // mm - Album title line height
-      holderBackArtist: 3, // mm - Artist line height
-      holderBackYear: 2.5, // mm - Year line height
       trackList: 2.5, // mm - Track list line height
     },
     fontSizeRange: { min: 6, max: 24 }, // Overall limits

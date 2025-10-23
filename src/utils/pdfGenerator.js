@@ -51,8 +51,17 @@ export async function generatePDF(albums, settings, layout) {
  * Draw a single sticker
  */
 async function drawSticker(pdf, sticker, settings) {
-  const { x, y, width, height, type, data } = sticker;
+  const { x, y, width, height, type, data, rotation } = sticker;
   
+  // For now, don't handle rotation in PDF - just draw normally
+  // Rotation is handled in the layout, dimensions are already swapped
+  await drawStickerContent(pdf, x, y, width, height, type, data, settings, sticker);
+}
+
+/**
+ * Draw sticker content
+ */
+async function drawStickerContent(pdf, x, y, width, height, type, data, settings, sticker) {
   switch (type) {
     case 'spine':
       drawSpineSticker(pdf, x, y, width, height, data, settings, sticker);
@@ -122,10 +131,43 @@ function drawSpineSticker(pdf, x, y, width, height, data, settings, sticker) {
  * Draw face sticker (disc)
  */
 async function drawFaceSticker(pdf, x, y, width, height, data, settings) {
-  // If album cover exists, draw it (do not stretch - use 'FAST' compression)
+  // If album cover exists, draw it with proper aspect ratio
   if (data.coverImage) {
     try {
-      pdf.addImage(data.coverImage, 'JPEG', x, y, width, height, undefined, 'FAST');
+      // Calculate dimensions to fit within the sticker while maintaining aspect ratio
+      const img = new Image();
+      img.src = data.coverImage;
+      
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+      });
+      
+      const imgRatio = img.width / img.height;
+      const stickerRatio = width / height;
+      
+      let imgWidth, imgHeight, imgX, imgY;
+      
+      if (imgRatio > stickerRatio) {
+        // Image is wider - fit to width
+        imgWidth = width;
+        imgHeight = width / imgRatio;
+        imgX = x;
+        imgY = y + (height - imgHeight) / 2;
+      } else {
+        // Image is taller - fit to height  
+        imgHeight = height;
+        imgWidth = height * imgRatio;
+        imgX = x + (width - imgWidth) / 2;
+        imgY = y;
+      }
+      
+      // Draw background first
+      pdf.setFillColor(data.colors?.dominant || '#e0e0e0');
+      pdf.rect(x, y, width, height, 'F');
+      
+      // Draw image centered with maintained aspect ratio
+      pdf.addImage(data.coverImage, 'JPEG', imgX, imgY, imgWidth, imgHeight, undefined, 'FAST');
     } catch (error) {
       console.error('Failed to add disc face image:', error);
       drawPlaceholder(pdf, x, y, width, height, 'Disc Face');
@@ -236,32 +278,34 @@ function drawBackSticker(pdf, x, y, width, height, data, settings) {
   };
   
   // Album title
-  const titleSize = fontSizes.holderBackTitle || 14;
-  const titleLineHeight = lineHeights.holderBackTitle || 4;
+  const titleSize = fontSizes.holderBackTitle || 5.5;
+  const titleLineHeight = lineHeights.trackList || 2.5;
   pdf.setFontSize(titleSize);
   applyFontStyle('holderBackTitle');
   pdf.setTextColor(0, 0, 0);
   pdf.text(truncateText(data.albumName, width - 2 * padding), x + padding, currentY + titleSize * 0.35);
   currentY += titleLineHeight;
   
-  // Artist
-  const artistSize = fontSizes.holderBackArtist || 10;
-  const artistLineHeight = lineHeights.holderBackArtist || 3;
+  // Artist and Year on same line
+  const artistSize = fontSizes.holderBackArtist || 5;
+  const yearSize = fontSizes.holderBackYear || 5;
+  const artistLineHeight = lineHeights.trackList || 2.5;
+  
   pdf.setFontSize(artistSize);
   applyFontStyle('holderBackArtist');
-  pdf.text(truncateText(data.artistName, width - 2 * padding), x + padding, currentY + artistSize * 0.35);
-  currentY += artistLineHeight;
+  const artistText = truncateText(data.artistName, width - 20); // Leave space for year
+  pdf.text(artistText, x + padding, currentY + artistSize * 0.35);
   
-  // Year
-  const yearSize = fontSizes.holderBackYear || 9;
-  const yearLineHeight = lineHeights.holderBackYear || 2.5;
+  // Year at end of line
   pdf.setFontSize(yearSize);
   applyFontStyle('holderBackYear');
-  pdf.text(`${data.year || 'N/A'}`, x + padding, currentY + yearSize * 0.35);
-  currentY += yearLineHeight + 2;
+  const yearText = `${data.year || 'N/A'}`;
+  const yearWidth = pdf.getTextWidth(yearText);
+  pdf.text(yearText, x + width - padding - yearWidth, currentY + yearSize * 0.35);
+  currentY += artistLineHeight + 1;
   
   // Track list
-  const trackSize = fontSizes.trackList || 8;
+  const trackSize = fontSizes.trackList || 4.5;
   const trackLineHeight = lineHeights.trackList || 2.5;
   pdf.setFontSize(trackSize);
   applyFontStyle('trackList');
