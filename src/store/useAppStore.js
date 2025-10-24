@@ -28,6 +28,7 @@ function migrateSettings(settings) {
       ...settings.design,
       fontSizes: {
         spine: oldFontSizes.spine || settings.design?.trackFontSize || 8,
+        face: oldFontSizes.face || 6,
         holderBackTitle: oldFontSizes.coverTitle || 5.5,
         holderBackArtist: oldFontSizes.coverArtist || 5,
         holderBackYear: oldFontSizes.holderBackYear || 5,
@@ -35,6 +36,7 @@ function migrateSettings(settings) {
       },
       fontStyles: {
         spine: { bold: false, italic: false, underline: false },
+        face: { bold: true, italic: false, underline: false },
         holderBackTitle: { bold: true, italic: false, underline: false },
         holderBackArtist: { bold: true, italic: false, underline: false },
         holderBackYear: { bold: false, italic: false, underline: false },
@@ -78,7 +80,8 @@ const DEFAULT_SETTINGS = {
     },
     defaultFont: 'Inter',
     fontSizes: {
-      spine: 8, // pt - Disc edge (spine) sticker text
+      spine: 8, // pt - Holder front edge (spine) sticker text
+      face: 6, // pt - Disc face sticker text
       holderBackTitle: 5.5, // pt - Back cover (track list) album title
       holderBackArtist: 5, // pt - Back cover artist name
       holderBackYear: 5, // pt - Back cover year
@@ -86,6 +89,7 @@ const DEFAULT_SETTINGS = {
     },
     fontStyles: {
       spine: { bold: false, italic: false, underline: false },
+      face: { bold: true, italic: false, underline: false },
       holderBackTitle: { bold: true, italic: false, underline: false },
       holderBackArtist: { bold: true, italic: false, underline: false },
       holderBackYear: { bold: false, italic: false, underline: false },

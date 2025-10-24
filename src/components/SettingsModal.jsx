@@ -392,7 +392,8 @@ function SettingsModal({ isOpen, onClose }) {
               
               {/* Helper component for typography row */}
               {[
-                { key: 'spine', label: 'Disc Edge (Spine)' },
+                { key: 'spine', label: 'Holder Front Edge (Spine)' },
+                { key: 'face', label: 'Disc Face (On Disc Edge)' },
                 { key: 'holderBackTitle', label: 'Holder Back - Album Title' },
                 { key: 'holderBackArtist', label: 'Holder Back - Artist' },
                 { key: 'holderBackYear', label: 'Holder Back - Year' },

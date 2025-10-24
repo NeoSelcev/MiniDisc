@@ -50,31 +50,27 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
   };
   
   const renderFace = () => {
-    if (!data.coverImage) {
-      return (
-        <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs">
-          Disc Cover
-        </div>
-      );
-    }
+    const faceStyle = settings.design.fontStyles?.face || {};
+    const fontSize = settings.design.fontSizes?.face || 6;
+    
+    const getFontStyleCSS = (style) => ({
+      fontWeight: style.bold ? 'bold' : 'normal',
+      fontStyle: style.italic ? 'italic' : 'normal',
+      textDecoration: style.underline ? 'underline' : 'none',
+    });
     
     return (
-      <div className="w-full h-full overflow-hidden" style={{ backgroundColor: data.colors?.dominant || '#e0e0e0' }}>
-        <img
-          src={data.coverImage}
-          alt={data.albumName}
-          style={{ 
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            objectPosition: 'center',
-            display: 'block',
-            margin: 0,
-            padding: 0,
-            minWidth: '100%',
-            minHeight: '100%'
-          }}
-        />
+      <div
+        className="w-full h-full flex flex-col items-center justify-center text-center px-1 py-0.5 overflow-hidden border-2 border-purple-500"
+        style={{
+          backgroundColor: data.colors?.dominant || '#e0e0e0',
+          color: data.colors?.fontColor || '#000',
+          fontSize: `${fontSize}pt`,
+          ...getFontStyleCSS(faceStyle),
+        }}
+      >
+        <div className="truncate w-full font-bold">{data.albumName}</div>
+        <div className="truncate w-full text-xs opacity-90">{data.artistName}</div>
       </div>
     );
   };

@@ -299,7 +299,7 @@ function createStickersForAlbum(album, dimensions) {
       id: `${album.id}-spine`,
       albumId: album.id,
       type: 'spine',
-      label: 'Disc Edge (Spine)',
+      label: 'Holder Front Edge (Spine)',
       width: dimensions.edgeSticker.width,
       height: dimensions.edgeSticker.height,
       data: album,

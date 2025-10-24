@@ -128,53 +128,55 @@ function drawSpineSticker(pdf, x, y, width, height, data, settings, sticker) {
 }
 
 /**
- * Draw face sticker (disc)
+ * Draw face sticker (disc edge sticker with text)
  */
 async function drawFaceSticker(pdf, x, y, width, height, data, settings) {
-  // If album cover exists, draw it with proper aspect ratio
-  if (data.coverImage) {
-    try {
-      // Calculate dimensions to fit within the sticker while maintaining aspect ratio
-      const img = new Image();
-      img.src = data.coverImage;
-      
-      await new Promise((resolve, reject) => {
-        img.onload = resolve;
-        img.onerror = reject;
-      });
-      
-      const imgRatio = img.width / img.height;
-      const stickerRatio = width / height;
-      
-      let imgWidth, imgHeight, imgX, imgY;
-      
-      if (imgRatio > stickerRatio) {
-        // Image is wider - fit to width
-        imgWidth = width;
-        imgHeight = width / imgRatio;
-        imgX = x;
-        imgY = y + (height - imgHeight) / 2;
-      } else {
-        // Image is taller - fit to height  
-        imgHeight = height;
-        imgWidth = height * imgRatio;
-        imgX = x + (width - imgWidth) / 2;
-        imgY = y;
-      }
-      
-      // Draw background first
-      pdf.setFillColor(data.colors?.dominant || '#e0e0e0');
-      pdf.rect(x, y, width, height, 'F');
-      
-      // Draw image centered with maintained aspect ratio
-      pdf.addImage(data.coverImage, 'JPEG', imgX, imgY, imgWidth, imgHeight, undefined, 'FAST');
-    } catch (error) {
-      console.error('Failed to add disc face image:', error);
-      drawPlaceholder(pdf, x, y, width, height, 'Disc Face');
-    }
+  const { dominant } = data.colors || {};
+  const fontSettings = settings.design?.fontSizes || {};
+  const fontStyles = settings.design?.fontStyles?.face || {};
+  
+  // Background with dominant color
+  pdf.setFillColor(dominant || '#e0e0e0');
+  pdf.rect(x, y, width, height, 'F');
+  
+  // Purple border (2pt = ~0.7mm)
+  pdf.setDrawColor(128, 0, 128); // Purple
+  pdf.setLineWidth(0.5);
+  pdf.rect(x, y, width, height, 'S');
+  
+  // Apply font styles
+  if (fontStyles.bold && fontStyles.italic) {
+    pdf.setFont(undefined, 'bolditalic');
+  } else if (fontStyles.bold) {
+    pdf.setFont(undefined, 'bold');
+  } else if (fontStyles.italic) {
+    pdf.setFont(undefined, 'italic');
   } else {
-    drawPlaceholder(pdf, x, y, width, height, 'Disc Face');
+    pdf.setFont(undefined, 'normal');
   }
+  
+  // Text
+  const fontSize = fontSettings.face || 6;
+  pdf.setFontSize(fontSize);
+  pdf.setTextColor(data.colors?.fontColor || '#000000');
+  
+  // Album name (centered, slightly above middle)
+  const albumText = truncateText(data.albumName, width - 2);
+  pdf.text(albumText, x + width / 2, y + height / 2 - 2, {
+    align: 'center',
+    baseline: 'middle',
+  });
+  
+  // Artist name (centered, slightly below middle, smaller)
+  pdf.setFontSize(fontSize * 0.8);
+  const artistText = truncateText(data.artistName, width - 2);
+  pdf.text(artistText, x + width / 2, y + height / 2 + 2, {
+    align: 'center',
+    baseline: 'middle',
+  });
+  
+  // Reset font
+  pdf.setFont(undefined, 'normal');
 }
 
 /**
