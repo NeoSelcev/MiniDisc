@@ -42,8 +42,21 @@ function migrateSettings(settings) {
         holderBackYear: { bold: false, italic: false, underline: false },
         trackList: { bold: true, italic: false, underline: false },
       },
+      fontFamilies: {
+        spine: 'Arial',
+        face: 'Arial',
+        holderBackTitle: 'Arial',
+        holderBackArtist: 'Arial',
+        holderBackYear: 'Arial',
+        trackList: 'Arial',
+      },
       lineHeights: {
-        trackList: settings.design?.lineHeights?.trackList || 2.5,
+        spine: 1.2,
+        face: 1.2,
+        holderBackTitle: 1.2,
+        holderBackArtist: 1.2,
+        holderBackYear: 1.2,
+        trackList: 1.2,
       },
       // Remove old properties
       trackFontSize: undefined,
@@ -95,8 +108,21 @@ const DEFAULT_SETTINGS = {
       holderBackYear: { bold: false, italic: false, underline: false },
       trackList: { bold: true, italic: false, underline: false },
     },
+    fontFamilies: {
+      spine: 'Arial',
+      face: 'Arial',
+      holderBackTitle: 'Arial',
+      holderBackArtist: 'Arial',
+      holderBackYear: 'Arial',
+      trackList: 'Arial',
+    },
     lineHeights: {
-      trackList: 2.5, // mm - Track list line height
+      spine: 1.2, // Line height multiplier
+      face: 1.2,
+      holderBackTitle: 1.2,
+      holderBackArtist: 1.2,
+      holderBackYear: 1.2,
+      trackList: 1.2,
     },
     fontSizeRange: { min: 6, max: 24 }, // Overall limits
   },

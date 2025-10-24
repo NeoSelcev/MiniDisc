@@ -133,6 +133,19 @@ function SettingsModal({ isOpen, onClose }) {
     });
   };
   
+  const updateFontFamily = (field, value) => {
+    updateSettings({
+      ...settings,
+      design: {
+        ...settings.design,
+        fontFamilies: {
+          ...settings.design.fontFamilies,
+          [field]: value,
+        },
+      },
+    });
+  };
+  
   const updateLineHeight = (field, value) => {
     updateSettings({
       ...settings,
@@ -140,7 +153,7 @@ function SettingsModal({ isOpen, onClose }) {
         ...settings.design,
         lineHeights: {
           ...settings.design.lineHeights,
-          [field]: parseFloat(value) || 2,
+          [field]: parseFloat(value) || 1.2,
         },
       },
     });
@@ -397,12 +410,33 @@ function SettingsModal({ isOpen, onClose }) {
                 { key: 'holderBackTitle', label: 'Holder Back - Album Title' },
                 { key: 'holderBackArtist', label: 'Holder Back - Artist' },
                 { key: 'holderBackYear', label: 'Holder Back - Year' },
-                { key: 'trackList', label: 'Holder Back - Track List', hasLineHeight: true },
-              ].map(({ key, label, hasLineHeight }) => (
+                { key: 'trackList', label: 'Holder Back - Track List' },
+              ].map(({ key, label }) => (
                 <div key={key} className="mb-6 p-4 bg-gray-50 rounded-lg">
                   <h4 className="font-medium text-gray-900 mb-3">{label}</h4>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {/* Font Family */}
+                    <label className="block text-sm">
+                      Font Family
+                      <select
+                        value={settings.design.fontFamilies?.[key] || 'Arial'}
+                        onChange={(e) => updateFontFamily(key, e.target.value)}
+                        className="mt-1 input-field w-full"
+                      >
+                        <option value="Arial">Arial</option>
+                        <option value="Helvetica">Helvetica</option>
+                        <option value="Times New Roman">Times New Roman</option>
+                        <option value="Courier New">Courier New</option>
+                        <option value="Georgia">Georgia</option>
+                        <option value="Verdana">Verdana</option>
+                        <option value="Tahoma">Tahoma</option>
+                        <option value="Trebuchet MS">Trebuchet MS</option>
+                        <option value="Impact">Impact</option>
+                        <option value="Comic Sans MS">Comic Sans MS</option>
+                      </select>
+                    </label>
+                    
                     {/* Font Size */}
                     <label className="block text-sm">
                       Font Size (pt)
@@ -415,20 +449,19 @@ function SettingsModal({ isOpen, onClose }) {
                       />
                     </label>
                     
-                    {/* Line Height - Only for Track List */}
-                    {hasLineHeight && (
-                      <label className="block text-sm">
-                        Line Height (mm)
-                        <input
-                          type="number"
-                          value={settings.design.lineHeights?.[key] || 2.5}
-                          onChange={(e) => updateLineHeight(key, e.target.value)}
-                          className="mt-1 input-field w-full"
-                          step="0.1"
-                          min="0"
-                        />
-                      </label>
-                    )}
+                    {/* Line Height */}
+                    <label className="block text-sm">
+                      Line Height
+                      <input
+                        type="number"
+                        value={settings.design.lineHeights?.[key] || 1.2}
+                        onChange={(e) => updateLineHeight(key, e.target.value)}
+                        className="mt-1 input-field w-full"
+                        step="0.1"
+                        min="0.5"
+                        max="3"
+                      />
+                    </label>
                     
                     {/* Font Styles */}
                     <div className="block text-sm">

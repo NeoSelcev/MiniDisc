@@ -30,6 +30,8 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
   
   const renderSpine = () => {
     const spineStyle = settings.design.fontStyles?.spine || {};
+    const fontFamily = settings.design.fontFamilies?.spine || 'Arial';
+    const lineHeight = settings.design.lineHeights?.spine || 1.2;
     
     return (
       <div
@@ -39,6 +41,8 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
           color: data.colors?.fontColor || '#000',
           padding: '1px',
           fontSize: `${settings.design.fontSizes?.spine || 8}pt`,
+          fontFamily: fontFamily,
+          lineHeight: lineHeight,
           fontWeight: spineStyle.bold ? 'bold' : 'normal',
           fontStyle: spineStyle.italic ? 'italic' : 'normal',
           textDecoration: spineStyle.underline ? 'underline' : 'none',
@@ -50,27 +54,31 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
   };
   
   const renderFace = () => {
-    const faceStyle = settings.design.fontStyles?.face || {};
-    const fontSize = settings.design.fontSizes?.face || 6;
-    
-    const getFontStyleCSS = (style) => ({
-      fontWeight: style.bold ? 'bold' : 'normal',
-      fontStyle: style.italic ? 'italic' : 'normal',
-      textDecoration: style.underline ? 'underline' : 'none',
-    });
-    
+    // Restore: Only show the album cover image, no text
+    if (!data.coverImage) {
+      return (
+        <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs">
+          Disc Cover
+        </div>
+      );
+    }
     return (
-      <div
-        className="w-full h-full flex flex-col items-center justify-center text-center px-1 py-0.5 overflow-hidden border-2 border-purple-500"
-        style={{
-          backgroundColor: data.colors?.dominant || '#e0e0e0',
-          color: data.colors?.fontColor || '#000',
-          fontSize: `${fontSize}pt`,
-          ...getFontStyleCSS(faceStyle),
-        }}
-      >
-        <div className="truncate w-full font-bold">{data.albumName}</div>
-        <div className="truncate w-full text-xs opacity-90">{data.artistName}</div>
+      <div className="w-full h-full overflow-hidden" style={{ backgroundColor: data.colors?.dominant || '#e0e0e0' }}>
+        <img
+          src={data.coverImage}
+          alt={data.albumName}
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center',
+            display: 'block',
+            margin: 0,
+            padding: 0,
+            minWidth: '100%',
+            minHeight: '100%'
+          }}
+        />
       </div>
     );
   };
@@ -139,6 +147,16 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
     const yearStyle = settings.design.fontStyles?.holderBackYear || {};
     const trackStyle = settings.design.fontStyles?.trackList || {};
     
+    const titleFont = settings.design.fontFamilies?.holderBackTitle || 'Arial';
+    const artistFont = settings.design.fontFamilies?.holderBackArtist || 'Arial';
+    const yearFont = settings.design.fontFamilies?.holderBackYear || 'Arial';
+    const trackFont = settings.design.fontFamilies?.trackList || 'Arial';
+    
+    const titleLineHeight = settings.design.lineHeights?.holderBackTitle || 1.2;
+    const artistLineHeight = settings.design.lineHeights?.holderBackArtist || 1.2;
+    const yearLineHeight = settings.design.lineHeights?.holderBackYear || 1.2;
+    const trackLineHeight = settings.design.lineHeights?.trackList || 1.2;
+    
     const getFontStyleCSS = (style) => ({
       fontWeight: style.bold ? 'bold' : 'normal',
       fontStyle: style.italic ? 'italic' : 'normal',
@@ -152,6 +170,8 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
           className="truncate" 
           style={{ 
             fontSize: `${titleSize}pt`,
+            fontFamily: titleFont,
+            lineHeight: titleLineHeight,
             ...getFontStyleCSS(titleStyle),
           }}
         >
@@ -165,7 +185,11 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
         >
           <span 
             className="text-gray-700 truncate flex-1" 
-            style={{...getFontStyleCSS(artistStyle)}}
+            style={{
+              fontFamily: artistFont,
+              lineHeight: artistLineHeight,
+              ...getFontStyleCSS(artistStyle)
+            }}
           >
             {data.artistName}
           </span>
@@ -173,6 +197,8 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
             className="ml-2 text-gray-600" 
             style={{ 
               fontSize: `${yearSize}pt`,
+              fontFamily: yearFont,
+              lineHeight: yearLineHeight,
               ...getFontStyleCSS(yearStyle),
             }}
           >
@@ -186,7 +212,11 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
             <div 
               key={track.number} 
               className="flex justify-between truncate"
-              style={getFontStyleCSS(trackStyle)}
+              style={{
+                fontFamily: trackFont,
+                lineHeight: trackLineHeight,
+                ...getFontStyleCSS(trackStyle)
+              }}
             >
               <span className="truncate flex-1">
                 {track.number}. {track.name}
@@ -242,7 +272,7 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
         width: `${pixelWidth}px`,
         height: `${pixelHeight}px`,
         border: showCutLines ? '1px dashed #999' : 'none',
-        overflow: 'hidden',
+        overflow: 'visible', // Changed from 'hidden' to 'visible' to allow rotated content to display
       }}
     >
       <div
@@ -251,6 +281,7 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
           height: `${contentHeight}px`,
           transform,
           transformOrigin,
+          overflow: 'hidden', // Clip content within the inner rotated container
         }}
       >
         {renderSticker()}
