@@ -218,8 +218,24 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
   };
   
   // Apply rotation transform if needed
-  const transform = sticker.rotation ? `rotate(${sticker.rotation}deg)` : 'none';
-  const transformOrigin = 'top left';
+  // For 90-degree rotation, the layout optimizer has already swapped width/height
+  // We need to create a container with the ROTATED dimensions and rotate the content inside
+  let transform = 'none';
+  let transformOrigin = 'top left';
+  let contentWidth = pixelWidth;
+  let contentHeight = pixelHeight;
+  
+  if (sticker.rotation === 90) {
+    // When rotated, the container has swapped dimensions (width/height already swapped by optimizer)
+    // But the content inside needs to be rotated and positioned correctly
+    // Use original dimensions for the rotated content
+    contentWidth = pixelHeight;  // Content width is container height
+    contentHeight = pixelWidth;   // Content height is container width
+    transform = `rotate(90deg) translateY(-100%)`;
+    transformOrigin = 'top left';
+  } else if (sticker.rotation) {
+    transform = `rotate(${sticker.rotation}deg)`;
+  }
   
   return (
     <div
@@ -230,11 +246,19 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
         width: `${pixelWidth}px`,
         height: `${pixelHeight}px`,
         border: showCutLines ? '1px dashed #999' : 'none',
-        transform,
-        transformOrigin,
+        overflow: 'hidden',
       }}
     >
-      {renderSticker()}
+      <div
+        style={{
+          width: `${contentWidth}px`,
+          height: `${contentHeight}px`,
+          transform,
+          transformOrigin,
+        }}
+      >
+        {renderSticker()}
+      </div>
       
       {/* Sticker type label (toggle with checkbox) */}
       {showLabels && (
