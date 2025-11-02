@@ -317,8 +317,8 @@ function AlbumEditModal({ album, isOpen, onClose }) {
 
         {/* Confirmation Dialog */}
         {showConfirmDialog && (
-          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-lg">
-            <div className="bg-white rounded-lg p-6 max-w-md shadow-xl">
+          <div className="absolute inset-0 bg-white bg-opacity-95 flex items-center justify-center rounded-lg">
+            <div className="bg-white rounded-lg p-6 max-w-md shadow-2xl border-2 border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900 mb-3">
                 Unsaved Changes
               </h3>
