@@ -209,6 +209,7 @@ function AlbumList() {
       {editingAlbum && (
         <AlbumEditModal
           album={editingAlbum}
+          isOpen={true}
           onClose={() => setEditingAlbum(null)}
         />
       )}

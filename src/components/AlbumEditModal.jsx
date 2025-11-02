@@ -1,14 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useAppStore from '../store/useAppStore';
 
 function AlbumEditModal({ album, isOpen, onClose }) {
   const { updateAlbum } = useAppStore();
   const [formData, setFormData] = useState({
-    albumName: album?.albumName || '',
-    artistName: album?.artistName || '',
-    year: album?.year || new Date().getFullYear(),
-    tracks: album?.tracks || [],
+    albumName: '',
+    artistName: '',
+    year: new Date().getFullYear(),
+    tracks: [],
   });
+  
+  // Sync formData with album prop when it changes
+  useEffect(() => {
+    if (album) {
+      setFormData({
+        albumName: album.albumName || '',
+        artistName: album.artistName || '',
+        year: album.year || new Date().getFullYear(),
+        tracks: album.tracks || [],
+      });
+    }
+  }, [album]);
   
   if (!isOpen || !album) return null;
   
@@ -61,15 +73,32 @@ function AlbumEditModal({ album, isOpen, onClose }) {
     let totalSeconds = 0;
     formData.tracks.forEach(track => {
       if (track.duration) {
-        const [mins, secs] = track.duration.split(':').map(Number);
-        if (!isNaN(mins) && !isNaN(secs)) {
-          totalSeconds += mins * 60 + secs;
+        // Handle both formats: number (seconds from Spotify) and string (mm:ss from manual input)
+        if (typeof track.duration === 'number') {
+          totalSeconds += track.duration;
+        } else if (typeof track.duration === 'string' && track.duration.includes(':')) {
+          const [mins, secs] = track.duration.split(':').map(Number);
+          if (!isNaN(mins) && !isNaN(secs)) {
+            totalSeconds += mins * 60 + secs;
+          }
         }
       }
     });
     const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
+    const seconds = Math.floor(totalSeconds % 60);
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  const formatDuration = (duration) => {
+    if (!duration) return '';
+    // If it's a number (seconds from Spotify), convert to mm:ss
+    if (typeof duration === 'number') {
+      const mins = Math.floor(duration / 60);
+      const secs = Math.floor(duration % 60);
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+    // If it's already a string, return as is
+    return duration;
   };
   
   return (
@@ -176,7 +205,7 @@ function AlbumEditModal({ album, isOpen, onClose }) {
                     
                     <input
                       type="text"
-                      value={track.duration || ''}
+                      value={formatDuration(track.duration)}
                       onChange={(e) => handleTrackChange(index, 'duration', e.target.value)}
                       placeholder="mm:ss"
                       className="w-16 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary-500 text-center"
