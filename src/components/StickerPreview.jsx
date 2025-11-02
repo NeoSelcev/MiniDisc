@@ -265,7 +265,7 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
   
   return (
     <div
-      className="absolute"
+      className="absolute sticker-preview"
       style={{
         left: `${pixelX}px`,
         top: `${pixelY}px`,

@@ -63,12 +63,14 @@ function App() {
   
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header onOpenSettings={() => setShowSettings(true)} />
+      <div className="no-print">
+        <Header onOpenSettings={() => setShowSettings(true)} />
+      </div>
       
       <main className="container mx-auto px-4 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left sidebar - Album list */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 no-print">
             <AlbumList />
           </div>
           
@@ -80,10 +82,12 @@ function App() {
       </main>
       
       {/* Settings Modal */}
-      <SettingsModal 
-        isOpen={showSettings} 
-        onClose={() => setShowSettings(false)} 
-      />
+      <div className="no-print">
+        <SettingsModal 
+          isOpen={showSettings} 
+          onClose={() => setShowSettings(false)} 
+        />
+      </div>
     </div>
   );
 }

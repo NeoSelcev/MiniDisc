@@ -110,12 +110,12 @@ function SpotifyCallback() {
             <div className="text-red-600 text-6xl mb-4">✕</div>
             <h2 className="text-xl font-semibold mb-2">Connection Failed</h2>
             <p className="text-gray-600 mb-4">Unable to connect to Spotify</p>
-            <a
-              href="#main"
-              className="inline-block px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 transition"
+            <button
+              onClick={() => window.location.href = '/'}
+              className="inline-block px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 transition cursor-pointer"
             >
               Back to App
-            </a>
+            </button>
           </>
         )}
       </div>
