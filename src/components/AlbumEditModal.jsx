@@ -9,20 +9,58 @@ function AlbumEditModal({ album, isOpen, onClose }) {
     year: new Date().getFullYear(),
     tracks: [],
   });
+  const [originalData, setOriginalData] = useState(null);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   
   // Sync formData with album prop when it changes
   useEffect(() => {
     if (album) {
-      setFormData({
+      const data = {
         albumName: album.albumName || '',
         artistName: album.artistName || '',
         year: album.year || new Date().getFullYear(),
         tracks: album.tracks || [],
-      });
+      };
+      setFormData(data);
+      setOriginalData(JSON.parse(JSON.stringify(data))); // Deep clone
     }
   }, [album]);
+
+  // Handle ESC key
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        handleClose();
+      }
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [isOpen, formData, originalData]);
   
   if (!isOpen || !album) return null;
+
+  const hasChanges = () => {
+    return JSON.stringify(formData) !== JSON.stringify(originalData);
+  };
+
+  const handleClose = () => {
+    if (hasChanges()) {
+      setShowConfirmDialog(true);
+    } else {
+      onClose();
+    }
+  };
+
+  const handleSaveAndClose = () => {
+    updateAlbum(album.id, formData);
+    setShowConfirmDialog(false);
+    onClose();
+  };
+
+  const handleDiscardAndClose = () => {
+    setShowConfirmDialog(false);
+    onClose();
+  };
   
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -106,7 +144,7 @@ function AlbumEditModal({ album, isOpen, onClose }) {
       {/* Backdrop */}
       <div 
         className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
-        onClick={onClose}
+        onClick={handleClose}
       />
       
       {/* Modal */}
@@ -263,7 +301,7 @@ function AlbumEditModal({ album, isOpen, onClose }) {
           <div className="flex space-x-3 pt-4">
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition"
             >
               Cancel
@@ -276,6 +314,40 @@ function AlbumEditModal({ album, isOpen, onClose }) {
             </button>
           </div>
         </form>
+
+        {/* Confirmation Dialog */}
+        {showConfirmDialog && (
+          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-lg">
+            <div className="bg-white rounded-lg p-6 max-w-md shadow-xl">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                Unsaved Changes
+              </h3>
+              <p className="text-gray-600 mb-6">
+                You have unsaved changes. Do you want to save or discard them?
+              </p>
+              <div className="flex space-x-3">
+                <button
+                  onClick={handleDiscardAndClose}
+                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition"
+                >
+                  Discard
+                </button>
+                <button
+                  onClick={() => setShowConfirmDialog(false)}
+                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSaveAndClose}
+                  className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

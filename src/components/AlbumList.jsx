@@ -153,19 +153,9 @@ function AlbumList() {
             <div
               key={album.id}
               onClick={() => {
-                if (selectedAlbumId === album.id) {
-                  // If already selected, open edit modal
-                  setEditingAlbum(album);
-                } else {
-                  // First click: select
-                  selectAlbum(album.id);
-                }
+                setEditingAlbum(album);
               }}
-              className={`p-3 border rounded cursor-pointer transition ${
-                selectedAlbumId === album.id
-                  ? 'border-primary-500 bg-primary-50'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
+              className="p-3 border border-gray-200 rounded cursor-pointer transition hover:border-primary-500 hover:bg-primary-50"
             >
               <div className="flex items-start space-x-3">
                 {album.coverImage && (
