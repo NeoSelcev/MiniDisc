@@ -2,15 +2,18 @@ import { useState, useEffect } from 'react';
 import useAppStore from '../store/useAppStore';
 
 function AlbumEditModal({ album, isOpen, onClose }) {
-  const { updateAlbum } = useAppStore();
+  const { updateAlbum, removeAlbum } = useAppStore();
   const [formData, setFormData] = useState({
     albumName: '',
     artistName: '',
     year: new Date().getFullYear(),
     tracks: [],
+    coverImage: null,
   });
   const [originalData, setOriginalData] = useState(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [isNewAlbum, setIsNewAlbum] = useState(false);
   
   // Sync formData with album prop when it changes
   useEffect(() => {
@@ -20,9 +23,14 @@ function AlbumEditModal({ album, isOpen, onClose }) {
         artistName: album.artistName || '',
         year: album.year || new Date().getFullYear(),
         tracks: album.tracks || [],
+        coverImage: album.coverImage || null,
       };
       setFormData(data);
+      setImagePreview(album.coverImage || null);
       setOriginalData(JSON.parse(JSON.stringify(data))); // Deep clone
+      
+      // Check if this is a new album (no cover image = just created manually)
+      setIsNewAlbum(!album.coverImage);
     }
   }, [album]);
 
@@ -39,12 +47,19 @@ function AlbumEditModal({ album, isOpen, onClose }) {
   
   if (!isOpen || !album) return null;
 
+  const isValidAlbum = () => {
+    return formData.coverImage !== null;
+  };
+
   const hasChanges = () => {
     return JSON.stringify(formData) !== JSON.stringify(originalData);
   };
 
   const handleClose = () => {
-    if (hasChanges()) {
+    // If it's a new album without required fields, show special warning
+    if (isNewAlbum && !isValidAlbum()) {
+      setShowConfirmDialog(true);
+    } else if (hasChanges()) {
       setShowConfirmDialog(true);
     } else {
       onClose();
@@ -52,18 +67,35 @@ function AlbumEditModal({ album, isOpen, onClose }) {
   };
 
   const handleSaveAndClose = () => {
+    // Validate before saving
+    if (!isValidAlbum()) {
+      alert('Please add a cover image before saving.');
+      return;
+    }
+    
     updateAlbum(album.id, formData);
     setShowConfirmDialog(false);
     onClose();
   };
 
   const handleDiscardAndClose = () => {
+    // If new album is being discarded, remove it from the list
+    if (isNewAlbum && !isValidAlbum()) {
+      removeAlbum(album.id);
+    }
     setShowConfirmDialog(false);
     onClose();
   };
   
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Validate image is present
+    if (!formData.coverImage) {
+      alert('Please add a cover image before saving.');
+      return;
+    }
+    
     updateAlbum(album.id, formData);
     onClose();
   };
@@ -74,6 +106,23 @@ function AlbumEditModal({ album, isOpen, onClose }) {
       ...prev,
       [name]: name === 'year' ? parseInt(value) : value,
     }));
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, coverImage: reader.result }));
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setFormData(prev => ({ ...prev, coverImage: null }));
+    setImagePreview(null);
   };
 
   const handleTrackChange = (index, field, value) => {
@@ -155,15 +204,53 @@ function AlbumEditModal({ album, isOpen, onClose }) {
         <h2 className="text-2xl font-bold text-gray-900 mb-4">Edit Album</h2>
         
         <form onSubmit={handleSubmit} className="space-y-4">
-          {album.coverImage && (
-            <div className="flex justify-center mb-4">
-              <img
-                src={album.coverImage}
-                alt={album.albumName}
-                className="w-32 h-32 rounded object-cover shadow-md"
-              />
-            </div>
-          )}
+          {/* Cover Image Upload */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Cover Image <span className="text-red-500">*</span>
+            </label>
+            {imagePreview ? (
+              <div className="flex items-start gap-4">
+                <img
+                  src={imagePreview}
+                  alt={formData.albumName}
+                  className="w-32 h-32 rounded object-cover shadow-md"
+                />
+                <div className="flex flex-col gap-2">
+                  <label className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 transition cursor-pointer text-center">
+                    Change Image
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleRemoveImage}
+                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                  >
+                    Remove Image
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                <p className="text-gray-500 mb-3">No cover image yet</p>
+                <label className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 transition cursor-pointer inline-block">
+                  Upload Image
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    required
+                  />
+                </label>
+              </div>
+            )}
+          </div>
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -319,32 +406,59 @@ function AlbumEditModal({ album, isOpen, onClose }) {
         {showConfirmDialog && (
           <div className="absolute inset-0 bg-white bg-opacity-95 flex items-center justify-center rounded-lg">
             <div className="bg-white rounded-lg p-6 max-w-md shadow-2xl border-2 border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                Unsaved Changes
-              </h3>
-              <p className="text-gray-600 mb-6">
-                You have unsaved changes. Do you want to save or discard them?
-              </p>
-              <div className="flex space-x-3">
-                <button
-                  onClick={handleDiscardAndClose}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition"
-                >
-                  Discard
-                </button>
-                <button
-                  onClick={() => setShowConfirmDialog(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSaveAndClose}
-                  className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
-                >
-                  Save
-                </button>
-              </div>
+              {isNewAlbum && !isValidAlbum() ? (
+                <>
+                  <h3 className="text-lg font-semibold text-red-600 mb-3">
+                    ⚠️ Incomplete Album
+                  </h3>
+                  <p className="text-gray-600 mb-6">
+                    This album is missing required information (cover image). If you exit now, the album will not be saved.
+                  </p>
+                  <div className="flex space-x-3">
+                    <button
+                      onClick={handleDiscardAndClose}
+                      className="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
+                    >
+                      Discard Album
+                    </button>
+                    <button
+                      onClick={() => setShowConfirmDialog(false)}
+                      className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
+                    >
+                      Continue Editing
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                    Unsaved Changes
+                  </h3>
+                  <p className="text-gray-600 mb-6">
+                    You have unsaved changes. Do you want to save or discard them?
+                  </p>
+                  <div className="flex space-x-3">
+                    <button
+                      onClick={handleDiscardAndClose}
+                      className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition"
+                    >
+                      Discard
+                    </button>
+                    <button
+                      onClick={() => setShowConfirmDialog(false)}
+                      className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleSaveAndClose}
+                      className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
+                    >
+                      Save
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )}

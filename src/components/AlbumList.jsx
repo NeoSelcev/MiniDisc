@@ -15,35 +15,19 @@ function AlbumList() {
   const handleManualAdd = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    const imageFile = formData.get('coverImage');
     
-    // Convert image to base64 if provided
-    if (imageFile && imageFile.size > 0) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        addAlbum({
-          albumName: formData.get('albumName'),
-          artistName: formData.get('artistName'),
-          year: parseInt(formData.get('year')) || new Date().getFullYear(),
-          coverImage: reader.result,
-          tracks: [],
-        });
-        
-        setShowManualAdd(false);
-        e.target.reset();
-      };
-      reader.readAsDataURL(imageFile);
-    } else {
-      addAlbum({
-        albumName: formData.get('albumName'),
-        artistName: formData.get('artistName'),
-        year: parseInt(formData.get('year')) || new Date().getFullYear(),
-        tracks: [],
-      });
-      
-      setShowManualAdd(false);
-      e.target.reset();
-    }
+    const newAlbum = addAlbum({
+      albumName: formData.get('albumName'),
+      artistName: formData.get('artistName'),
+      year: parseInt(formData.get('year')) || new Date().getFullYear(),
+      tracks: [],
+    });
+    
+    setShowManualAdd(false);
+    e.target.reset();
+    
+    // Open edit modal immediately
+    setEditingAlbum(newAlbum);
   };
   
   return (
@@ -112,17 +96,6 @@ function AlbumList() {
             max="2100"
             className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
           />
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Cover Image (optional)
-            </label>
-            <input
-              type="file"
-              name="coverImage"
-              accept="image/*"
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
-            />
-          </div>
           <div className="flex space-x-2">
             <button
               type="submit"

@@ -184,28 +184,28 @@ const useAppStore = create(
       },
       
       addAlbum: (album) => {
+        const newAlbum = {
+          id: crypto.randomUUID(),
+          spotifyId: album.spotifyId || null,
+          albumName: album.albumName || '',
+          artistName: album.artistName || '',
+          year: album.year || new Date().getFullYear(),
+          coverImage: album.coverImage || null,
+          tracks: album.tracks || [],
+          colors: album.colors || {
+            dominant: '#000000',
+            secondary: ['#666666', '#999999'],
+          },
+          stickers: {
+            spine: { position: null, rotation: 0, customText: null },
+            face: { position: null, rotation: 0 },
+            frontFolded: { position: null, rotation: 0 },
+            back: { position: null, rotation: 0, customText: null },
+          },
+          createdAt: new Date().toISOString(),
+        };
+        
         set((state) => {
-          const newAlbum = {
-            id: crypto.randomUUID(),
-            spotifyId: album.spotifyId || null,
-            albumName: album.albumName || '',
-            artistName: album.artistName || '',
-            year: album.year || new Date().getFullYear(),
-            coverImage: album.coverImage || null,
-            tracks: album.tracks || [],
-            colors: album.colors || {
-              dominant: '#000000',
-              secondary: ['#666666', '#999999'],
-            },
-            stickers: {
-              spine: { position: null, rotation: 0, customText: null },
-              face: { position: null, rotation: 0 },
-              frontFolded: { position: null, rotation: 0 },
-              back: { position: null, rotation: 0, customText: null },
-            },
-            createdAt: new Date().toISOString(),
-          };
-          
           get().saveToUndoStack(state);
           
           return {
@@ -216,6 +216,8 @@ const useAppStore = create(
             },
           };
         });
+        
+        return newAlbum; // Return the new album
       },
       
       removeAlbum: (albumId) => {
