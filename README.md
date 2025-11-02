@@ -45,7 +45,9 @@ A modern web application for designing and printing custom stickers for Sony Min
 ### Design Tools
 - 🎨 **Color Extraction** - Dominant + 2 secondary colors from covers
 - 🖼️ **Image Upload** - Custom artwork support
-- ✏️ **Manual Editing** - All fields editable (title, artist, tracks, year)
+- ✏️ **Manual Editing** - All fields editable (title, artist, year)
+- 🎵 **Track List Editor** - Add/remove/reorder tracks with durations (mm:ss)
+- ⏱️ **Auto Duration Calculation** - Total album duration computed automatically
 - 🎯 **Typography Control** - 6 font size settings for different sticker parts
 - 📐 **Dimension Customization** - All sticker sizes configurable
 
@@ -246,21 +248,34 @@ This starts:
    - Artist name (required)
    - Year (optional)
    - Upload custom cover image (optional)
-3. Click **"Add Album"**
-4. Edit tracks by clicking on the album in the list
+3. Click **"Add"**
+4. **Double-click the album** in the list to open edit modal
+5. Add tracks using the **Track List Editor**:
+   - Click **"➕ Add Track"**
+   - Enter track name and duration (mm:ss format)
+   - Use ⬆️⬇️ buttons to reorder tracks
+   - Use 🗑️ button to remove tracks
+   - Total duration is calculated automatically
 
 ### Editing Albums
 
-- **Click on album** in left sidebar to select
-- **Edit fields** directly in the edit form:
-  - Album name
-  - Artist name
-  - Year
-  - Cover image (upload new)
-  - Track list (add/remove/reorder)
-  - Custom colors (override extracted colors)
-- **Delete** - Click trash icon
-- Changes save automatically
+- **Single-click** on album in sidebar to **select** it
+- **Double-click** on album to open **Edit Modal**
+- In Edit Modal you can modify:
+  - **Album name** - Text field
+  - **Artist name** - Text field
+  - **Year** - Number field
+  - **Track List**:
+    - Add tracks with **"➕ Add Track"** button
+    - Edit track names (text input)
+    - Edit track durations in **mm:ss** format (e.g., "3:45")
+    - Reorder tracks with ⬆️ and ⬇️ buttons
+    - Remove tracks with 🗑️ button
+    - View auto-calculated total duration
+- **Save** - Click "Save Changes"
+- **Cancel** - Click "Cancel" or close modal
+- **Delete album** - Click trash icon in album list
+- All changes save automatically after closing modal
 
 ### Layout Preview
 
