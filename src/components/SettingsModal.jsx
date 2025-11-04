@@ -421,9 +421,9 @@ function SettingsModal({ isOpen, onClose }) {
             
             {/* Typography Settings */}
             <section>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Typography Settings</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Typography Settings</h3>
               
-              {/* Helper component for typography row */}
+              {/* Typography rows for stickers with Line Height */}
               {[
                 { key: 'spine', label: 'MiniDisc Edge Sticker (Spine)' },
                 { key: 'holderBackTitle', label: 'Holder Back - Album Title' },
@@ -431,8 +431,8 @@ function SettingsModal({ isOpen, onClose }) {
                 { key: 'holderBackYear', label: 'Holder Back - Year' },
                 { key: 'trackList', label: 'Holder Back - Track List' },
               ].map(({ key, label }) => (
-                <div key={key} className="mb-6 p-4 bg-gray-50 rounded-lg">
-                  <h4 className="font-medium text-gray-900 mb-3">{label}</h4>
+                <div key={key} className="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-3">{label}</h4>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {/* Font Family */}
@@ -521,7 +521,86 @@ function SettingsModal({ isOpen, onClose }) {
                 </div>
               ))}
               
-              <p className="text-xs text-gray-600 mt-4">
+              {/* Special row for Holder Front Edge Part - WITHOUT Line Height */}
+              <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Holder Front - Edge Part (Spine)</h4>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {/* Font Family */}
+                  <label className="block text-sm">
+                    Font Family
+                    <select
+                      value={settings.design.fontFamilies?.spine || 'Arial'}
+                      onChange={(e) => updateFontFamily('spine', e.target.value)}
+                      className="mt-1 input-field w-full"
+                    >
+                      <option value="Arial">Arial</option>
+                      <option value="Helvetica">Helvetica</option>
+                      <option value="Times New Roman">Times New Roman</option>
+                      <option value="Courier New">Courier New</option>
+                      <option value="Georgia">Georgia</option>
+                      <option value="Verdana">Verdana</option>
+                      <option value="Tahoma">Tahoma</option>
+                      <option value="Trebuchet MS">Trebuchet MS</option>
+                      <option value="Impact">Impact</option>
+                      <option value="Comic Sans MS">Comic Sans MS</option>
+                    </select>
+                  </label>
+                  
+                  {/* Font Size */}
+                  <label className="block text-sm">
+                    Font Size (pt)
+                    <input
+                      type="number"
+                      value={settings.design.fontSizes?.spine || 8}
+                      onChange={(e) => updateFontSize('spine', e.target.value)}
+                      className="mt-1 input-field w-full"
+                      step="0.5"
+                    />
+                  </label>
+                  
+                  {/* Font Styles */}
+                  <div className="block text-sm">
+                    <div className="text-sm mb-1">Font Style</div>
+                    <div className="flex items-center space-x-3 mt-2">
+                      <label className="flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={settings.design.fontStyles?.spine?.bold || false}
+                          onChange={(e) => updateFontStyle('spine', 'bold', e.target.checked)}
+                          className="mr-1"
+                        />
+                        <span className="font-bold">B</span>
+                      </label>
+                      
+                      <label className="flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={settings.design.fontStyles?.spine?.italic || false}
+                          onChange={(e) => updateFontStyle('spine', 'italic', e.target.checked)}
+                          className="mr-1"
+                        />
+                        <span className="italic">I</span>
+                      </label>
+                      
+                      <label className="flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={settings.design.fontStyles?.spine?.underline || false}
+                          onChange={(e) => updateFontStyle('spine', 'underline', e.target.checked)}
+                          className="mr-1"
+                        />
+                        <span className="underline">U</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
+                  <strong>Note:</strong> Front edge part uses the same font settings as the MiniDisc Edge Sticker. Line height doesn't apply to single-line text (~3mm).
+                </p>
+              </div>
+              
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-4">
                 <strong>Typography Guidelines:</strong> Spine and track list text should be 6-8pt to fit within small heights. 
                 Disc face text 8-12pt. Holder back (inner cover) text can vary based on content.
               </p>

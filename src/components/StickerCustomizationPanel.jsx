@@ -4,7 +4,7 @@ import { faMagnifyingGlass, faCog, faXmark, faRotateRight } from '@fortawesome/f
 import useAppStore from '../store/useAppStore';
 
 const StickerCustomizationPanel = ({ album, stickerType, onClose, position: initialPosition, onPanelHover }) => {
-  const { getStickerCustomization, updateStickerCustomization } = useAppStore();
+  const { getStickerCustomization, updateStickerCustomization, settings, updateSettings } = useAppStore();
   
   // Get initial values (album-specific or defaults)
   const initialCustomization = getStickerCustomization(album, stickerType);
@@ -38,6 +38,37 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
     // Get fresh defaults from store (without album customization)
     const defaults = getStickerCustomization({ id: album.id, stickerCustomization: null }, stickerType);
     setCustomization(defaults);
+  };
+  
+  // Update global font family
+  const updateFontFamily = (key, value) => {
+    updateSettings({
+      ...settings,
+      design: {
+        ...settings.design,
+        fontFamilies: {
+          ...settings.design.fontFamilies,
+          [key]: value,
+        },
+      },
+    });
+  };
+  
+  // Update global font style
+  const updateFontStyle = (key, style, value) => {
+    updateSettings({
+      ...settings,
+      design: {
+        ...settings.design,
+        fontStyles: {
+          ...settings.design.fontStyles,
+          [key]: {
+            ...settings.design.fontStyles?.[key],
+            [style]: value,
+          },
+        },
+      },
+    });
   };
   
   // Close on Escape key
@@ -160,6 +191,63 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
               <h3 className="font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
                 <span className="text-lg">🅰️</span> Text Settings
               </h3>
+              
+              <div>
+                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
+                  Font Family <span className="text-xs">(global)</span>
+                </label>
+                <select
+                  value={settings.design.fontFamilies?.spine || 'Arial'}
+                  onChange={(e) => updateFontFamily('spine', e.target.value)}
+                  className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-sm"
+                >
+                  <option value="Arial">Arial</option>
+                  <option value="Helvetica">Helvetica</option>
+                  <option value="Times New Roman">Times New Roman</option>
+                  <option value="Courier New">Courier New</option>
+                  <option value="Georgia">Georgia</option>
+                  <option value="Verdana">Verdana</option>
+                  <option value="Tahoma">Tahoma</option>
+                  <option value="Trebuchet MS">Trebuchet MS</option>
+                  <option value="Impact">Impact</option>
+                  <option value="Comic Sans MS">Comic Sans MS</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-2">
+                  Font Style <span className="text-xs">(global)</span>
+                </label>
+                <div className="flex items-center space-x-4">
+                  <label className="flex items-center cursor-pointer text-sm">
+                    <input
+                      type="checkbox"
+                      checked={settings.design.fontStyles?.spine?.bold || false}
+                      onChange={(e) => updateFontStyle('spine', 'bold', e.target.checked)}
+                      className="mr-1"
+                    />
+                    <span className="font-bold">Bold</span>
+                  </label>
+                  <label className="flex items-center cursor-pointer text-sm">
+                    <input
+                      type="checkbox"
+                      checked={settings.design.fontStyles?.spine?.italic || false}
+                      onChange={(e) => updateFontStyle('spine', 'italic', e.target.checked)}
+                      className="mr-1"
+                    />
+                    <span className="italic">Italic</span>
+                  </label>
+                  <label className="flex items-center cursor-pointer text-sm">
+                    <input
+                      type="checkbox"
+                      checked={settings.design.fontStyles?.spine?.underline || false}
+                      onChange={(e) => updateFontStyle('spine', 'underline', e.target.checked)}
+                      className="mr-1"
+                    />
+                    <span className="underline">Underline</span>
+                  </label>
+                </div>
+              </div>
               
               <div>
                 <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
@@ -381,6 +469,63 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
               
               <div>
                 <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
+                  Font Family <span className="text-xs">(global)</span>
+                </label>
+                <select
+                  value={settings.design.fontFamilies?.spine || 'Arial'}
+                  onChange={(e) => updateFontFamily('spine', e.target.value)}
+                  className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-sm"
+                >
+                  <option value="Arial">Arial</option>
+                  <option value="Helvetica">Helvetica</option>
+                  <option value="Times New Roman">Times New Roman</option>
+                  <option value="Courier New">Courier New</option>
+                  <option value="Georgia">Georgia</option>
+                  <option value="Verdana">Verdana</option>
+                  <option value="Tahoma">Tahoma</option>
+                  <option value="Trebuchet MS">Trebuchet MS</option>
+                  <option value="Impact">Impact</option>
+                  <option value="Comic Sans MS">Comic Sans MS</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-2">
+                  Font Style <span className="text-xs">(global)</span>
+                </label>
+                <div className="flex items-center space-x-4">
+                  <label className="flex items-center cursor-pointer text-sm">
+                    <input
+                      type="checkbox"
+                      checked={settings.design.fontStyles?.spine?.bold || false}
+                      onChange={(e) => updateFontStyle('spine', 'bold', e.target.checked)}
+                      className="mr-1"
+                    />
+                    <span className="font-bold">Bold</span>
+                  </label>
+                  <label className="flex items-center cursor-pointer text-sm">
+                    <input
+                      type="checkbox"
+                      checked={settings.design.fontStyles?.spine?.italic || false}
+                      onChange={(e) => updateFontStyle('spine', 'italic', e.target.checked)}
+                      className="mr-1"
+                    />
+                    <span className="italic">Italic</span>
+                  </label>
+                  <label className="flex items-center cursor-pointer text-sm">
+                    <input
+                      type="checkbox"
+                      checked={settings.design.fontStyles?.spine?.underline || false}
+                      onChange={(e) => updateFontStyle('spine', 'underline', e.target.checked)}
+                      className="mr-1"
+                    />
+                    <span className="underline">Underline</span>
+                  </label>
+                </div>
+              </div>
+              
+              <div>
+                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
                   Font Size: <strong>{customization.titleFontSize}pt</strong>
                 </label>
                 <input
@@ -395,44 +540,6 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
                 <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
                   <span>4pt</span>
                   <span>8pt</span>
-                </div>
-              </div>
-              
-              <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
-                  Letter Spacing: <strong>{customization.letterSpacing}</strong>
-                </label>
-                <input
-                  type="range"
-                  min="0"
-                  max="0.1"
-                  step="0.01"
-                  value={customization.letterSpacing}
-                  onChange={(e) => handleChange('letterSpacing', parseFloat(e.target.value))}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
-                  <span>0</span>
-                  <span>0.1</span>
-                </div>
-              </div>
-              
-              <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
-                  Line Height: <strong>{customization.lineHeight}</strong>
-                </label>
-                <input
-                  type="range"
-                  min="1"
-                  max="2"
-                  step="0.1"
-                  value={customization.lineHeight}
-                  onChange={(e) => handleChange('lineHeight', parseFloat(e.target.value))}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
-                  <span>1.0</span>
-                  <span>2.0</span>
                 </div>
               </div>
             </div>
@@ -519,6 +626,63 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
             <h3 className="font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
               <span className="text-lg">📃</span> Track List
             </h3>
+            
+            <div>
+              <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
+                Font Family <span className="text-xs">(global)</span>
+              </label>
+              <select
+                value={settings.design.fontFamilies?.trackList || 'Arial'}
+                onChange={(e) => updateFontFamily('trackList', e.target.value)}
+                className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-sm"
+              >
+                <option value="Arial">Arial</option>
+                <option value="Helvetica">Helvetica</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Verdana">Verdana</option>
+                <option value="Tahoma">Tahoma</option>
+                <option value="Trebuchet MS">Trebuchet MS</option>
+                <option value="Impact">Impact</option>
+                <option value="Comic Sans MS">Comic Sans MS</option>
+              </select>
+            </div>
+            
+            <div>
+              <label className="text-sm text-gray-600 dark:text-gray-400 block mb-2">
+                Font Style <span className="text-xs">(global)</span>
+              </label>
+              <div className="flex items-center space-x-4">
+                <label className="flex items-center cursor-pointer text-sm">
+                  <input
+                    type="checkbox"
+                    checked={settings.design.fontStyles?.trackList?.bold || false}
+                    onChange={(e) => updateFontStyle('trackList', 'bold', e.target.checked)}
+                    className="mr-1"
+                  />
+                  <span className="font-bold">Bold</span>
+                </label>
+                <label className="flex items-center cursor-pointer text-sm">
+                  <input
+                    type="checkbox"
+                    checked={settings.design.fontStyles?.trackList?.italic || false}
+                    onChange={(e) => updateFontStyle('trackList', 'italic', e.target.checked)}
+                    className="mr-1"
+                  />
+                  <span className="italic">Italic</span>
+                </label>
+                <label className="flex items-center cursor-pointer text-sm">
+                  <input
+                    type="checkbox"
+                    checked={settings.design.fontStyles?.trackList?.underline || false}
+                    onChange={(e) => updateFontStyle('trackList', 'underline', e.target.checked)}
+                    className="mr-1"
+                  />
+                  <span className="underline">Underline</span>
+                </label>
+              </div>
+            </div>
             
             <div>
               <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
