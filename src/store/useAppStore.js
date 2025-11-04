@@ -150,6 +150,9 @@ const useAppStore = create(
       // Selected album for editing
       selectedAlbumId: null,
       
+      // Active customization panel (only one can be open at a time)
+      activeCustomizationPanel: null, // Format: { albumId: string, stickerType: string } or null
+      
       // Undo/Redo stacks (max 10 actions)
       undoStack: [],
       redoStack: [],
@@ -202,6 +205,7 @@ const useAppStore = create(
             frontFolded: { position: null, rotation: 0 },
             back: { position: null, rotation: 0, customText: null },
           },
+          stickerCustomization: album.stickerCustomization || null,
           createdAt: new Date().toISOString(),
         };
         
@@ -255,17 +259,97 @@ const useAppStore = create(
         set({ selectedAlbumId: albumId });
       },
       
+      // Customization panel management
+      openCustomizationPanel: (albumId, stickerType) => {
+        set({ activeCustomizationPanel: { albumId, stickerType } });
+      },
+      
+      closeCustomizationPanel: () => {
+        set({ activeCustomizationPanel: null });
+      },
+      
       // Undo/Redo functionality
       saveToUndoStack: (state) => {
-        const snapshot = {
-          albums: state.albums,
-          settings: state.settings,
+        const undoStack = [...state.undoStack, state];
+        if (undoStack.length > 50) {
+          undoStack.shift();
+        }
+        set({ undoStack, redoStack: [] });
+      },
+
+      // NEW: Update sticker customization for specific album and sticker type
+      updateStickerCustomization: (albumId, stickerType, customization) => {
+        set((state) => ({
+          albums: state.albums.map((album) => {
+            if (album.id === albumId) {
+              // If customization is null, we want to remove it (reset to defaults)
+              if (customization === null) {
+                const newStickerCustomization = { ...album.stickerCustomization };
+                delete newStickerCustomization[stickerType];
+                return {
+                  ...album,
+                  stickerCustomization: newStickerCustomization,
+                };
+              }
+              
+              // Otherwise, merge the new customization
+              return {
+                ...album,
+                stickerCustomization: {
+                  ...album.stickerCustomization,
+                  [stickerType]: {
+                    ...(album.stickerCustomization?.[stickerType] || {}),
+                    ...customization,
+                  },
+                },
+              };
+            }
+            return album;
+          }),
+        }));
+      },
+
+      // NEW: Get effective customization (album-specific or global defaults)
+      getStickerCustomization: (album, stickerType) => {
+        const state = get();
+        const albumCustom = album?.stickerCustomization?.[stickerType];
+        
+        // If album has custom settings, use them
+        if (albumCustom) return albumCustom;
+        
+        // Otherwise, return defaults from settings
+        const settings = state.settings;
+        
+        const defaults = {
+          spine: {
+            fontSize: settings.spineFontSize || 8,
+            lineHeight: 1.2,
+          },
+          face: {
+            imageZoom: 100,
+            imageOffsetX: 0,
+            imageOffsetY: 0,
+            titleFontSize: settings.faceTitleFontSize || 6,
+            artistFontSize: settings.faceArtistFontSize || 5,
+            lineHeight: 1.2,
+          },
+          front: {
+            imageZoom: 100,
+            imageOffsetX: 0,
+            imageOffsetY: 0,
+            titleFontSize: settings.frontTitleFontSize || 14,
+            artistFontSize: settings.frontArtistFontSize || 10,
+          },
+          back: {
+            titleFontSize: settings.backTitleFontSize || 5.5,
+            artistFontSize: settings.backArtistFontSize || 5,
+            yearFontSize: settings.backYearFontSize || 5,
+            trackListFontSize: settings.backTrackListFontSize || 4.5,
+            lineHeight: 1.2,
+          },
         };
         
-        set((current) => ({
-          undoStack: [...current.undoStack.slice(-9), snapshot], // Keep max 10
-          redoStack: [], // Clear redo on new action
-        }));
+        return defaults[stickerType] || {};
       },
       
       undo: () => {

@@ -22,6 +22,24 @@ function SettingsModal({ isOpen, onClose }) {
     return () => window.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
   
+  // Close modal on click outside
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const handleClickOutside = (e) => {
+      // Delay check to allow modal to render
+      setTimeout(() => {
+        if (modalRef.current && !modalRef.current.contains(e.target)) {
+          onClose();
+        }
+      }, 0);
+    };
+    
+    // Use mousedown to prevent conflicts with button clicks
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpen, onClose]);
+  
   // Handle dragging
   useEffect(() => {
     if (!isDragging) return;
@@ -198,7 +216,7 @@ function SettingsModal({ isOpen, onClose }) {
       {/* Modal */}
       <div 
         ref={modalRef}
-        className="absolute bg-white rounded-lg shadow-2xl overflow-hidden pointer-events-auto"
+        className="absolute bg-white rounded-lg border-2 border-gray-300 overflow-hidden pointer-events-auto"
         style={{
           left: `${position.x}px`,
           top: `${position.y}px`,
@@ -208,6 +226,7 @@ function SettingsModal({ isOpen, onClose }) {
           minHeight: '300px',
           maxWidth: '90vw',
           maxHeight: '90vh',
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.2)',
         }}
         onClick={(e) => e.stopPropagation()}
       >

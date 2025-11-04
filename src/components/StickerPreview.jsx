@@ -1,5 +1,38 @@
+import { useState, useEffect } from 'react';
+import useAppStore from '../store/useAppStore';
+import StickerCustomizationPanel from './StickerCustomizationPanel';
+
 function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) {
   const { x, y, width, height, type, data } = sticker;
+  const [isHovered, setIsHovered] = useState(false);
+  const [isPanelHovered, setIsPanelHovered] = useState(false);
+  
+  const activeCustomizationPanel = useAppStore((state) => state.activeCustomizationPanel);
+  const openCustomizationPanel = useAppStore((state) => state.openCustomizationPanel);
+  const closeCustomizationPanel = useAppStore((state) => state.closeCustomizationPanel);
+  
+  // Subscribe to albums array to trigger re-render when customization changes
+  const albums = useAppStore((state) => state.albums);
+  const getStickerCustomization = useAppStore((state) => state.getStickerCustomization);
+  
+  // Get current album with latest customization
+  const currentAlbum = albums.find(a => a.id === data.id) || data;
+  
+  // Check if THIS sticker's customization panel is open
+  const isThisPanelOpen = activeCustomizationPanel?.albumId === data.id && activeCustomizationPanel?.stickerType === type;
+  
+  // Check if ANY panel is open (for dimming other stickers)
+  const isAnyPanelOpen = activeCustomizationPanel !== null;
+  
+  // Reset isPanelHovered when panel closes
+  useEffect(() => {
+    if (!isThisPanelOpen) {
+      setIsPanelHovered(false);
+    }
+  }, [isThisPanelOpen]);
+  
+  // Get customization for this specific album and sticker type
+  const customization = getStickerCustomization(currentAlbum, type);
   
   const pixelX = x * scale;
   const pixelY = y * scale;
@@ -31,7 +64,8 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
   const renderSpine = () => {
     const spineStyle = settings.design.fontStyles?.spine || {};
     const fontFamily = settings.design.fontFamilies?.spine || 'Arial';
-    const lineHeight = settings.design.lineHeights?.spine || 1.2;
+    const lineHeight = customization.lineHeight || settings.design.lineHeights?.spine || 1.2;
+    const fontSize = customization.fontSize || settings.design.fontSizes?.spine || 8;
     
     return (
       <div
@@ -40,7 +74,7 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
           backgroundColor: data.colors?.dominant || '#e0e0e0',
           color: data.colors?.fontColor || '#000',
           padding: '1px',
-          fontSize: `${settings.design.fontSizes?.spine || 8}pt`,
+          fontSize: `${fontSize}pt`,
           fontFamily: fontFamily,
           lineHeight: lineHeight,
           fontWeight: spineStyle.bold ? 'bold' : 'normal',
@@ -62,21 +96,27 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
         </div>
       );
     }
+    
+    const zoom = customization.imageZoom || 100;
+    const offsetX = customization.imageOffsetX || 0;
+    const offsetY = customization.imageOffsetY || 0;
+    
     return (
       <div className="w-full h-full overflow-hidden" style={{ backgroundColor: data.colors?.dominant || '#e0e0e0' }}>
         <img
           src={data.coverImage}
           alt={data.albumName}
           style={{
-            width: '100%',
-            height: '100%',
+            width: `${zoom}%`,
+            height: `${zoom}%`,
             objectFit: 'cover',
             objectPosition: 'center',
             display: 'block',
             margin: 0,
             padding: 0,
-            minWidth: '100%',
-            minHeight: '100%'
+            minWidth: `${zoom}%`,
+            minHeight: `${zoom}%`,
+            transform: `translate(${offsetX}px, ${offsetY}px)`,
           }}
         />
       </div>
@@ -91,6 +131,11 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
     const partAHeightPercent = (partAHeight / height) * 100;
     const partBHeightPercent = (partBHeight / height) * 100;
     
+    const zoom = customization.imageZoom || 100;
+    const offsetX = customization.imageOffsetX || 0;
+    const offsetY = customization.imageOffsetY || 0;
+    const titleSize = customization.titleFontSize || settings.design.fontSizes?.spine || 8;
+    
     return (
       <div className="w-full h-full flex flex-col">
         {/* Part A - Main cover image */}
@@ -100,11 +145,12 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
               src={data.coverImage}
               alt={data.albumName}
               style={{ 
-                width: '100%',
-                height: '100%',
+                width: `${zoom}%`,
+                height: `${zoom}%`,
                 objectFit: 'cover',
                 objectPosition: 'center',
-                display: 'block'
+                display: 'block',
+                transform: `translate(${offsetX}px, ${offsetY}px)`,
               }}
             />
           ) : (
@@ -125,7 +171,7 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
             backgroundColor: data.colors?.dominant || '#e0e0e0',
             color: data.colors?.fontColor || '#000',
             padding: '1px',
-            fontSize: `${settings.design.fontSizes?.spine || 8}pt`,
+            fontSize: `${titleSize}pt`,
           }}
         >
           <span className="truncate">
@@ -137,10 +183,11 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
   };
   
   const renderBack = () => {
-    const fontSize = settings.design.fontSizes?.trackList || 8;
-    const titleSize = settings.design.fontSizes?.holderBackTitle || 14;
-    const artistSize = settings.design.fontSizes?.holderBackArtist || 10;
-    const yearSize = settings.design.fontSizes?.holderBackYear || 9;
+    const fontSize = customization.trackListFontSize || settings.design.fontSizes?.trackList || 8;
+    const titleSize = customization.titleFontSize || settings.design.fontSizes?.holderBackTitle || 14;
+    const artistSize = customization.artistFontSize || settings.design.fontSizes?.holderBackArtist || 10;
+    const yearSize = customization.yearFontSize || settings.design.fontSizes?.holderBackYear || 9;
+    const lineHeight = customization.lineHeight || settings.design.lineHeights?.trackList || 1.2;
     
     const titleStyle = settings.design.fontStyles?.holderBackTitle || {};
     const artistStyle = settings.design.fontStyles?.holderBackArtist || {};
@@ -155,7 +202,6 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
     const titleLineHeight = settings.design.lineHeights?.holderBackTitle || 1.2;
     const artistLineHeight = settings.design.lineHeights?.holderBackArtist || 1.2;
     const yearLineHeight = settings.design.lineHeights?.holderBackYear || 1.2;
-    const trackLineHeight = settings.design.lineHeights?.trackList || 1.2;
     
     const getFontStyleCSS = (style) => ({
       fontWeight: style.bold ? 'bold' : 'normal',
@@ -207,14 +253,13 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
         </div>
         
         {/* Track list */}
-        <div className="space-y-0.5 mt-1">
+        <div className="space-y-0.5 mt-1" style={{ lineHeight }}>
           {data.tracks?.slice(0, 15).map((track) => (
             <div 
               key={track.number} 
               className="flex justify-between truncate"
               style={{
                 fontFamily: trackFont,
-                lineHeight: trackLineHeight,
                 ...getFontStyleCSS(trackStyle)
               }}
             >
@@ -265,7 +310,7 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
   
   return (
     <div
-      className="absolute sticker-preview"
+      className="absolute sticker-preview group"
       style={{
         left: `${pixelX}px`,
         top: `${pixelY}px`,
@@ -273,6 +318,17 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
         height: `${pixelHeight}px`,
         border: showCutLines ? '1px dashed #999' : 'none',
         overflow: 'visible', // Changed from 'hidden' to 'visible' to allow rotated content to display
+        opacity: isAnyPanelOpen ? (isThisPanelOpen ? 1 : 0.3) : 1,
+        transition: 'opacity 0.2s ease',
+        cursor: isHovered && !isPanelHovered && !isThisPanelOpen ? 'pointer' : 'default',
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={(e) => {
+        if (isHovered && !isPanelHovered && !isThisPanelOpen) {
+          e.stopPropagation();
+          openCustomizationPanel(data.id, type);
+        }
       }}
     >
       <div
@@ -286,6 +342,36 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
       >
         {renderSticker()}
       </div>
+      
+      {/* Settings icon overlay (centered, only show on hover, hide when panel is hovered or open, hide in print) */}
+      <div
+        className="absolute inset-0 flex items-center justify-center print:hidden z-50 pointer-events-none transition-opacity duration-300"
+        style={{
+          opacity: isHovered && !isPanelHovered && !isThisPanelOpen ? 0.95 : 0,
+        }}
+      >
+        <div
+          className="w-20 h-20 text-white text-4xl rounded-full flex items-center justify-center transition-transform duration-300"
+          style={{
+            background: 'radial-gradient(ellipse at center, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.5) 30%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0) 100%)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            transform: isHovered && !isPanelHovered && !isThisPanelOpen ? 'scale(1)' : 'scale(0.8)',
+          }}
+        >
+          ⚙️
+        </div>
+      </div>
+      
+      {/* Customization Panel */}
+      {isThisPanelOpen && (
+        <StickerCustomizationPanel
+          album={currentAlbum}
+          stickerType={type}
+          onClose={closeCustomizationPanel}
+          onPanelHover={(hovered) => setIsPanelHovered(hovered)}
+        />
+      )}
       
       {/* Sticker type label (toggle with checkbox) */}
       {showLabels && (
