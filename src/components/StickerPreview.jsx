@@ -127,7 +127,7 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
   
   const renderFront = () => {
     // Combined front cover with fold line
-    // Part A (main cover) is at top, Part B (fold strip) is at bottom
+    // Image Part (main cover) is at top, Edge Part (fold strip) is at bottom
     const partAHeight = sticker.parts?.partA?.height || (height - 3); // 65mm
     const partBHeight = sticker.parts?.partB?.height || 3; // 3mm fold
     const partAHeightPercent = (partAHeight / height) * 100;
@@ -140,7 +140,7 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
     
     return (
       <div className="w-full h-full flex flex-col">
-        {/* Part A - Main cover image */}
+        {/* Image Part - Main cover image */}
         <div className="w-full overflow-hidden" style={{ height: `${partAHeightPercent}%`, backgroundColor: data.colors?.dominant || '#e0e0e0' }}>
           {data.coverImage ? (
             <img
@@ -165,7 +165,7 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
         {/* Fold line */}
         <div className="w-full border-t-2 border-dashed border-gray-400" style={{ height: '1px' }}></div>
         
-        {/* Part B - Fold strip with album info */}
+        {/* Edge Part (Spine) - Fold strip with album info */}
         <div
           className="w-full flex items-center justify-center text-xs font-medium overflow-hidden"
           style={{

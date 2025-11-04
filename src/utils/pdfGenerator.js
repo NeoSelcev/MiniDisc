@@ -187,7 +187,7 @@ async function drawFrontSticker(pdf, x, y, width, height, data, settings, sticke
   const partAHeight = sticker.parts?.partA?.height || dimensions.holderFrontPartA.height;
   const partBHeight = sticker.parts?.partB?.height || dimensions.holderFrontPartB.height;
   
-  // Part A - Album cover
+  // Image Part - Album cover
   if (data.coverImage) {
     try {
       // Maintain aspect ratio - do not stretch
@@ -200,7 +200,7 @@ async function drawFrontSticker(pdf, x, y, width, height, data, settings, sticke
     drawPlaceholder(pdf, x, y, width, partAHeight, 'Front Cover');
   }
   
-  // Part B - Spine/fold text
+  // Edge Part (Spine) - Spine/fold text
   const partBY = y + partAHeight;
   const { dominant } = data.colors || {};
   

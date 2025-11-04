@@ -93,7 +93,7 @@ const DEFAULT_SETTINGS = {
     },
     defaultFont: 'Inter',
     fontSizes: {
-      spine: 8, // pt - Holder front edge (spine) sticker text
+      spine: 8, // pt - MiniDisc edge sticker (spine) text
       face: 6, // pt - Disc face sticker text
       holderBackTitle: 5.5, // pt - Back cover (track list) album title
       holderBackArtist: 5, // pt - Back cover artist name
@@ -322,30 +322,35 @@ const useAppStore = create(
         
         const defaults = {
           spine: {
-            fontSize: settings.spineFontSize || 8,
-            lineHeight: 1.2,
+            fontSize: settings.design?.fontSizes?.spine || 8,
+            letterSpacing: 0,
+            lineHeight: settings.design?.lineHeights?.spine || 1.2,
           },
           face: {
+            // Face is image-only, no text settings
             imageZoom: 100,
             imageOffsetX: 0,
             imageOffsetY: 0,
-            titleFontSize: settings.faceTitleFontSize || 6,
-            artistFontSize: settings.faceArtistFontSize || 5,
-            lineHeight: 1.2,
           },
           front: {
+            // Image Part: Image settings
             imageZoom: 100,
             imageOffsetX: 0,
             imageOffsetY: 0,
-            titleFontSize: settings.frontTitleFontSize || 14,
-            artistFontSize: settings.frontArtistFontSize || 10,
+            // Edge Part (Spine): Fold text settings
+            titleFontSize: settings.design?.fontSizes?.spine || 8,
+            letterSpacing: 0,
+            lineHeight: settings.design?.lineHeights?.spine || 1.2,
           },
           back: {
-            titleFontSize: settings.backTitleFontSize || 5.5,
-            artistFontSize: settings.backArtistFontSize || 5,
-            yearFontSize: settings.backYearFontSize || 5,
-            trackListFontSize: settings.backTrackListFontSize || 4.5,
-            lineHeight: 1.2,
+            // Album info
+            titleFontSize: settings.design?.fontSizes?.holderBackTitle || 14,
+            artistFontSize: settings.design?.fontSizes?.holderBackArtist || 10,
+            yearFontSize: settings.design?.fontSizes?.holderBackYear || 9,
+            // Track list
+            trackListFontSize: settings.design?.fontSizes?.trackList || 8,
+            letterSpacing: 0,
+            lineHeight: settings.design?.lineHeights?.trackList || 1.2,
           },
         };
         

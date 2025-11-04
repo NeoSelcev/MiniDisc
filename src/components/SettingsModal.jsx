@@ -278,7 +278,7 @@ function SettingsModal({ isOpen, onClose }) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Edge Sticker */}
                 <div className="border border-gray-200 rounded p-4">
-                  <h4 className="font-medium mb-2">Edge Sticker (Spine)</h4>
+                  <h4 className="font-medium mb-2">MiniDisc Edge (Spine)</h4>
                   <div className="space-y-2">
                     <label className="block text-sm">
                       Width (mm)
@@ -332,9 +332,9 @@ function SettingsModal({ isOpen, onClose }) {
                   </div>
                 </div>
                 
-                {/* Holder Front Part A */}
+                {/* Holder Front Image Part */}
                 <div className="border border-gray-200 rounded p-4">
-                  <h4 className="font-medium mb-2">Holder Front - Part A</h4>
+                  <h4 className="font-medium mb-2">Holder Front - Image Part</h4>
                   <div className="space-y-2">
                     <label className="block text-sm">
                       Width (mm)
@@ -361,12 +361,12 @@ function SettingsModal({ isOpen, onClose }) {
                   </div>
                 </div>
                 
-                {/* Holder Front Part B */}
+                {/* Holder Front Edge Part */}
                 <div className="border border-gray-200 rounded p-4">
-                  <h4 className="font-medium mb-2">Holder Front - Part B (Spine)</h4>
+                  <h4 className="font-medium mb-2">Holder Front - Edge Part (Spine)</h4>
                   <div className="space-y-2">
                     <label className="block text-sm">
-                      Width (mm) <span className="text-gray-500 text-xs">(Auto: matches Part A)</span>
+                      Width (mm) <span className="text-gray-500 text-xs">(Auto: matches Image Part)</span>
                       <input
                         type="number"
                         value={settings.dimensions.holderFrontPartA.width}
@@ -425,8 +425,7 @@ function SettingsModal({ isOpen, onClose }) {
               
               {/* Helper component for typography row */}
               {[
-                { key: 'spine', label: 'Holder Front Edge (Spine)' },
-                { key: 'face', label: 'Disc Face (On Disc Edge)' },
+                { key: 'spine', label: 'MiniDisc Edge Sticker (Spine)' },
                 { key: 'holderBackTitle', label: 'Holder Back - Album Title' },
                 { key: 'holderBackArtist', label: 'Holder Back - Artist' },
                 { key: 'holderBackYear', label: 'Holder Back - Year' },

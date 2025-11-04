@@ -290,7 +290,7 @@ function pruneOverlappingRectangles(rectangles) {
  * 4. Back cover (track list) - 68mm × 58mm
  */
 function createStickersForAlbum(album, dimensions) {
-  // Calculate combined front cover dimensions (Part A + Part B folded together)
+  // Calculate combined front cover dimensions (Image Part + Edge Part folded together)
   const frontCoverWidth = dimensions.holderFrontPartA.width; // 68mm
   const frontCoverHeight = dimensions.holderFrontPartA.height + dimensions.holderFrontPartB.height; // 65mm + 3mm = 68mm
   
@@ -299,7 +299,7 @@ function createStickersForAlbum(album, dimensions) {
       id: `${album.id}-spine`,
       albumId: album.id,
       type: 'spine',
-      label: 'Holder Front Edge (Spine)',
+      label: 'MiniDisc Edge (Spine)',
       width: dimensions.edgeSticker.width,
       height: dimensions.edgeSticker.height,
       data: album,

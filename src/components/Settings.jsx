@@ -117,7 +117,7 @@ function Settings({ isOpen, onClose }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             {/* Edge Sticker */}
             <div className="border border-gray-200 rounded p-3 sm:p-4">
-              <h4 className="font-medium mb-2 text-sm sm:text-base">Edge Sticker (Spine)</h4>
+              <h4 className="font-medium mb-2 text-sm sm:text-base">MiniDisc Edge (Spine)</h4>
               <div className="space-y-2">
                 <label className="block text-xs sm:text-sm">
                   Width (mm)
@@ -173,9 +173,9 @@ function Settings({ isOpen, onClose }) {
               </div>
             </div>
             
-            {/* Holder Front Part A */}
+            {/* Holder Front Image Part */}
             <div className="border border-gray-200 rounded p-3 sm:p-4">
-              <h4 className="font-medium mb-2 text-sm sm:text-base">Holder Front - Part A</h4>
+              <h4 className="font-medium mb-2 text-sm sm:text-base">Holder Front - Image Part</h4>
               <div className="space-y-2">
                 <label className="block text-xs sm:text-sm">
                   Width (mm)
@@ -202,9 +202,9 @@ function Settings({ isOpen, onClose }) {
               </div>
             </div>
             
-            {/* Holder Front Part B */}
+            {/* Holder Front Edge Part */}
             <div className="border border-gray-200 rounded p-3 sm:p-4">
-              <h4 className="font-medium mb-2 text-sm sm:text-base">Holder Front - Part B (Spine)</h4>
+              <h4 className="font-medium mb-2 text-sm sm:text-base">Holder Front - Edge Part (Spine)</h4>
               <div className="space-y-2">
                 <label className="block text-xs sm:text-sm">
                   Width (mm)

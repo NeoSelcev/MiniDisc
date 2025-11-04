@@ -146,156 +146,63 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
   const renderFields = () => {
     switch (stickerType) {
       case 'spine':
+        // Spine sticker shows only album name text
         return (
-          <div className="space-y-3">
-            <h3 className="font-semibold text-gray-700">🅰️ Typography</h3>
-            
-            <div>
-              <label className="text-sm text-gray-600">Font Size: {customization.fontSize}pt</label>
-              <input
-                type="range"
-                min="6"
-                max="12"
-                step="0.5"
-                value={customization.fontSize}
-                onChange={(e) => handleChange('fontSize', parseFloat(e.target.value))}
-                className="w-full"
-              />
+          <div className="space-y-4">
+            <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded border border-blue-200 dark:border-blue-800">
+              <p className="text-xs text-blue-800 dark:text-blue-300">
+                <strong>MiniDisc Edge (Spine)</strong><br/>
+                Displays album name as vertical text on the edge
+              </p>
             </div>
             
-            <div>
-              <label className="text-sm text-gray-600">Letter Spacing: {customization.letterSpacing}</label>
-              <input
-                type="range"
-                min="0"
-                max="0.2"
-                step="0.01"
-                value={customization.letterSpacing}
-                onChange={(e) => handleChange('letterSpacing', parseFloat(e.target.value))}
-                className="w-full"
-              />
-            </div>
-            
-            <div>
-              <label className="text-sm text-gray-600">Line Height: {customization.lineHeight}</label>
-              <input
-                type="range"
-                min="1"
-                max="2"
-                step="0.1"
-                value={customization.lineHeight}
-                onChange={(e) => handleChange('lineHeight', parseFloat(e.target.value))}
-                className="w-full"
-              />
-            </div>
-          </div>
-        );
-      
-      case 'face':
-        return (
-          <>
             <div className="space-y-3">
-              <h3 className="font-semibold text-gray-700 dark:text-gray-300">📸 Image</h3>
+              <h3 className="font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                <span className="text-lg">🅰️</span> Text Settings
+              </h3>
               
               <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">
-                  <FontAwesomeIcon icon={faMagnifyingGlass} className="mr-1 w-3 h-3" /> Zoom: {customization.imageZoom}%
+                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
+                  Font Size: <strong>{customization.fontSize}pt</strong>
                 </label>
                 <input
                   type="range"
-                  min="50"
-                  max="200"
-                  step="5"
-                  value={customization.imageZoom}
-                  onChange={(e) => handleChange('imageZoom', parseInt(e.target.value))}
-                  className="w-full"
-                />
-              </div>
-              
-              <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">↔️ Position X: {customization.imageOffsetX}px</label>
-                <input
-                  type="range"
-                  min="-50"
-                  max="50"
-                  step="1"
-                  value={customization.imageOffsetX}
-                  onChange={(e) => handleChange('imageOffsetX', parseInt(e.target.value))}
-                  className="w-full"
-                />
-              </div>
-              
-              <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">↕️ Position Y: {customization.imageOffsetY}px</label>
-                <input
-                  type="range"
-                  min="-50"
-                  max="50"
-                  step="1"
-                  value={customization.imageOffsetY}
-                  onChange={(e) => handleChange('imageOffsetY', parseInt(e.target.value))}
-                  className="w-full"
-                />
-              </div>
-            </div>
-            
-            <div className="space-y-3 mt-4">
-              <h3 className="font-semibold text-gray-700 dark:text-gray-300">🅰️ Typography</h3>
-              
-              <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">Title Font Size: {customization.titleFontSize}pt</label>
-                <input
-                  type="range"
-                  min="4"
-                  max="8"
+                  min="6"
+                  max="12"
                   step="0.5"
-                  value={customization.titleFontSize}
-                  onChange={(e) => handleChange('titleFontSize', parseFloat(e.target.value))}
+                  value={customization.fontSize}
+                  onChange={(e) => handleChange('fontSize', parseFloat(e.target.value))}
                   className="w-full"
                 />
+                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
+                  <span>6pt</span>
+                  <span>12pt</span>
+                </div>
               </div>
               
               <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">Artist Font Size: {customization.artistFontSize}pt</label>
-                <input
-                  type="range"
-                  min="3"
-                  max="7"
-                  step="0.5"
-                  value={customization.artistFontSize}
-                  onChange={(e) => handleChange('artistFontSize', parseFloat(e.target.value))}
-                  className="w-full"
-                />
-              </div>
-              
-              <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">Year Font Size: {customization.yearFontSize}pt</label>
-                <input
-                  type="range"
-                  min="3"
-                  max="7"
-                  step="0.5"
-                  value={customization.yearFontSize}
-                  onChange={(e) => handleChange('yearFontSize', parseFloat(e.target.value))}
-                  className="w-full"
-                />
-              </div>
-              
-              <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">Letter Spacing: {customization.letterSpacing}</label>
+                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
+                  Letter Spacing: <strong>{customization.letterSpacing}</strong>
+                </label>
                 <input
                   type="range"
                   min="0"
-                  max="0.1"
+                  max="0.2"
                   step="0.01"
                   value={customization.letterSpacing}
                   onChange={(e) => handleChange('letterSpacing', parseFloat(e.target.value))}
                   className="w-full"
                 />
+                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
+                  <span>0</span>
+                  <span>0.2</span>
+                </div>
               </div>
               
               <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">Line Height: {customization.lineHeight}</label>
+                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
+                  Line Height: <strong>{customization.lineHeight}</strong>
+                </label>
                 <input
                   type="range"
                   min="1"
@@ -305,20 +212,34 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
                   onChange={(e) => handleChange('lineHeight', parseFloat(e.target.value))}
                   className="w-full"
                 />
+                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
+                  <span>1.0</span>
+                  <span>2.0</span>
+                </div>
               </div>
             </div>
-          </>
+          </div>
         );
       
-      case 'front':
+      case 'face':
+        // Face sticker shows only the disc cover image
         return (
-          <>
+          <div className="space-y-4">
+            <div className="bg-purple-50 dark:bg-purple-900/20 p-3 rounded border border-purple-200 dark:border-purple-800">
+              <p className="text-xs text-purple-800 dark:text-purple-300">
+                <strong>Disc Face (On Disc Edge)</strong><br/>
+                Displays album cover image on the visible disc edge
+              </p>
+            </div>
+            
             <div className="space-y-3">
-              <h3 className="font-semibold text-gray-700 dark:text-gray-300">📸 Image</h3>
+              <h3 className="font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                <FontAwesomeIcon icon={faMagnifyingGlass} className="w-4 h-4" /> Image Settings
+              </h3>
               
               <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">
-                  <FontAwesomeIcon icon={faMagnifyingGlass} className="mr-1 w-3 h-3" /> Zoom: {customization.imageZoom}%
+                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
+                  Zoom: <strong>{customization.imageZoom}%</strong>
                 </label>
                 <input
                   type="range"
@@ -329,10 +250,16 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
                   onChange={(e) => handleChange('imageZoom', parseInt(e.target.value))}
                   className="w-full"
                 />
+                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
+                  <span>50%</span>
+                  <span>200%</span>
+                </div>
               </div>
               
               <div>
-                <label className="text-sm text-gray-600">↔️ Position X: {customization.imageOffsetX}px</label>
+                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
+                  Position X: <strong>{customization.imageOffsetX}px</strong>
+                </label>
                 <input
                   type="range"
                   min="-50"
@@ -342,10 +269,16 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
                   onChange={(e) => handleChange('imageOffsetX', parseInt(e.target.value))}
                   className="w-full"
                 />
+                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
+                  <span>-50px</span>
+                  <span>+50px</span>
+                </div>
               </div>
               
               <div>
-                <label className="text-sm text-gray-600">↕️ Position Y: {customization.imageOffsetY}px</label>
+                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
+                  Position Y: <strong>{customization.imageOffsetY}px</strong>
+                </label>
                 <input
                   type="range"
                   min="-50"
@@ -355,14 +288,101 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
                   onChange={(e) => handleChange('imageOffsetY', parseInt(e.target.value))}
                   className="w-full"
                 />
+                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
+                  <span>-50px</span>
+                  <span>+50px</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      
+      case 'front':
+        // Front sticker has Image Part (cover image) and Edge Part (folded spine text)
+        return (
+          <div className="space-y-4">
+            <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded border border-green-200 dark:border-green-800">
+              <p className="text-xs text-green-800 dark:text-green-300">
+                <strong>Holder Front</strong><br/>
+                <strong>Image Part:</strong> Cover image (main area)<br/>
+                <strong>Edge Part (Spine):</strong> Album info text (folded spine, ~3mm)
+              </p>
+            </div>
+            
+            {/* Image Part - Image Settings */}
+            <div className="space-y-3">
+              <h3 className="font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2 border-b pb-2 dark:border-gray-600">
+                <FontAwesomeIcon icon={faMagnifyingGlass} className="w-4 h-4" /> Image Part - Image Settings
+              </h3>
+              
+              <div>
+                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
+                  Zoom: <strong>{customization.imageZoom}%</strong>
+                </label>
+                <input
+                  type="range"
+                  min="50"
+                  max="200"
+                  step="5"
+                  value={customization.imageZoom}
+                  onChange={(e) => handleChange('imageZoom', parseInt(e.target.value))}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
+                  <span>50%</span>
+                  <span>200%</span>
+                </div>
+              </div>
+              
+              <div>
+                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
+                  Position X: <strong>{customization.imageOffsetX}px</strong>
+                </label>
+                <input
+                  type="range"
+                  min="-50"
+                  max="50"
+                  step="1"
+                  value={customization.imageOffsetX}
+                  onChange={(e) => handleChange('imageOffsetX', parseInt(e.target.value))}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
+                  <span>-50px</span>
+                  <span>+50px</span>
+                </div>
+              </div>
+              
+              <div>
+                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
+                  Position Y: <strong>{customization.imageOffsetY}px</strong>
+                </label>
+                <input
+                  type="range"
+                  min="-50"
+                  max="50"
+                  step="1"
+                  value={customization.imageOffsetY}
+                  onChange={(e) => handleChange('imageOffsetY', parseInt(e.target.value))}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
+                  <span>-50px</span>
+                  <span>+50px</span>
+                </div>
               </div>
             </div>
             
-            <div className="space-y-3 mt-4">
-              <h3 className="font-semibold text-gray-700">🅰️ Typography</h3>
+            {/* Edge Part - Text Settings for Folded Spine */}
+            <div className="space-y-3 pt-3 border-t dark:border-gray-600">
+              <h3 className="font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                <span className="text-lg">🅰️</span> Edge Part (Spine) - Text Settings
+              </h3>
               
               <div>
-                <label className="text-sm text-gray-600">Title Font Size: {customization.titleFontSize}pt</label>
+                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
+                  Font Size: <strong>{customization.titleFontSize}pt</strong>
+                </label>
                 <input
                   type="range"
                   min="4"
@@ -372,36 +392,16 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
                   onChange={(e) => handleChange('titleFontSize', parseFloat(e.target.value))}
                   className="w-full"
                 />
+                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
+                  <span>4pt</span>
+                  <span>8pt</span>
+                </div>
               </div>
               
               <div>
-                <label className="text-sm text-gray-600">Artist Font Size: {customization.artistFontSize}pt</label>
-                <input
-                  type="range"
-                  min="3"
-                  max="7"
-                  step="0.5"
-                  value={customization.artistFontSize}
-                  onChange={(e) => handleChange('artistFontSize', parseFloat(e.target.value))}
-                  className="w-full"
-                />
-              </div>
-              
-              <div>
-                <label className="text-sm text-gray-600">Year Font Size: {customization.yearFontSize}pt</label>
-                <input
-                  type="range"
-                  min="3"
-                  max="7"
-                  step="0.5"
-                  value={customization.yearFontSize}
-                  onChange={(e) => handleChange('yearFontSize', parseFloat(e.target.value))}
-                  className="w-full"
-                />
-              </div>
-              
-              <div>
-                <label className="text-sm text-gray-600">Letter Spacing: {customization.letterSpacing}</label>
+                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
+                  Letter Spacing: <strong>{customization.letterSpacing}</strong>
+                </label>
                 <input
                   type="range"
                   min="0"
@@ -411,10 +411,138 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
                   onChange={(e) => handleChange('letterSpacing', parseFloat(e.target.value))}
                   className="w-full"
                 />
+                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
+                  <span>0</span>
+                  <span>0.1</span>
+                </div>
               </div>
+              
+              <div>
+                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
+                  Line Height: <strong>{customization.lineHeight}</strong>
+                </label>
+                <input
+                  type="range"
+                  min="1"
+                  max="2"
+                  step="0.1"
+                  value={customization.lineHeight}
+                  onChange={(e) => handleChange('lineHeight', parseFloat(e.target.value))}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
+                  <span>1.0</span>
+                  <span>2.0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+    
+    case 'back':
+      // Back sticker shows album title, artist, year, and track list
+      return (
+        <div className="space-y-4">
+          <div className="bg-orange-50 dark:bg-orange-900/20 p-3 rounded border border-orange-200 dark:border-orange-800">
+            <p className="text-xs text-orange-800 dark:text-orange-300">
+              <strong>Holder Back (Track List)</strong><br/>
+              Displays album title, artist, year, and complete track listing
+            </p>
+          </div>
+          
+          {/* Album Info Text Settings */}
+          <div className="space-y-3">
+            <h3 className="font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2 border-b pb-2 dark:border-gray-600">
+              <span className="text-lg">📄</span> Album Info
+            </h3>
             
             <div>
-              <label className="text-sm text-gray-600">Line Height: {customization.lineHeight}</label>
+              <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
+                Title Font Size: <strong>{customization.titleFontSize}pt</strong>
+              </label>
+              <input
+                type="range"
+                min="8"
+                max="16"
+                step="0.5"
+                value={customization.titleFontSize}
+                onChange={(e) => handleChange('titleFontSize', parseFloat(e.target.value))}
+                className="w-full"
+              />
+              <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
+                <span>8pt</span>
+                <span>16pt</span>
+              </div>
+            </div>
+            
+            <div>
+              <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
+                Artist Font Size: <strong>{customization.artistFontSize}pt</strong>
+              </label>
+              <input
+                type="range"
+                min="6"
+                max="12"
+                step="0.5"
+                value={customization.artistFontSize}
+                onChange={(e) => handleChange('artistFontSize', parseFloat(e.target.value))}
+                className="w-full"
+              />
+              <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
+                <span>6pt</span>
+                <span>12pt</span>
+              </div>
+            </div>
+            
+            <div>
+              <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
+                Year Font Size: <strong>{customization.yearFontSize}pt</strong>
+              </label>
+              <input
+                type="range"
+                min="6"
+                max="12"
+                step="0.5"
+                value={customization.yearFontSize}
+                onChange={(e) => handleChange('yearFontSize', parseFloat(e.target.value))}
+                className="w-full"
+              />
+              <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
+                <span>6pt</span>
+                <span>12pt</span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Track List Settings */}
+          <div className="space-y-3 pt-3 border-t dark:border-gray-600">
+            <h3 className="font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+              <span className="text-lg">📃</span> Track List
+            </h3>
+            
+            <div>
+              <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
+                Track Font Size: <strong>{customization.trackListFontSize}pt</strong>
+              </label>
+              <input
+                type="range"
+                min="3"
+                max="8"
+                step="0.5"
+                value={customization.trackListFontSize}
+                onChange={(e) => handleChange('trackListFontSize', parseFloat(e.target.value))}
+                className="w-full"
+              />
+              <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
+                <span>3pt</span>
+                <span>8pt</span>
+              </div>
+            </div>
+            
+            <div>
+              <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
+                Line Height: <strong>{customization.lineHeight}</strong>
+              </label>
               <input
                 type="range"
                 min="1"
@@ -424,53 +552,30 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
                 onChange={(e) => handleChange('lineHeight', parseFloat(e.target.value))}
                 className="w-full"
               />
+              <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
+                <span>1.0</span>
+                <span>2.0</span>
+              </div>
             </div>
-          </div>
-        </>
-      );
-    
-    case 'back':
-      return (
-        <div className="space-y-3">
-          <h3 className="font-semibold text-gray-700">🅰️ Typography</h3>
-          
-          <div>
-            <label className="text-sm text-gray-600">Track Font Size: {customization.trackFontSize}pt</label>
-            <input
-              type="range"
-              min="3"
-              max="6"
-              step="0.5"
-              value={customization.trackFontSize}
-              onChange={(e) => handleChange('trackFontSize', parseFloat(e.target.value))}
-              className="w-full"
-            />
-          </div>
-          
-          <div>
-            <label className="text-sm text-gray-600">Letter Spacing: {customization.letterSpacing}</label>
-            <input
-              type="range"
-              min="0"
-              max="0.1"
-              step="0.01"
-              value={customization.letterSpacing}
-              onChange={(e) => handleChange('letterSpacing', parseFloat(e.target.value))}
-              className="w-full"
-            />
-          </div>
-          
-          <div>
-            <label className="text-sm text-gray-600">Line Height: {customization.lineHeight}</label>
-            <input
-              type="range"
-              min="1"
-              max="2"
-              step="0.1"
-              value={customization.lineHeight}
-              onChange={(e) => handleChange('lineHeight', parseFloat(e.target.value))}
-              className="w-full"
-            />
+            
+            <div>
+              <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
+                Letter Spacing: <strong>{customization.letterSpacing}</strong>
+              </label>
+              <input
+                type="range"
+                min="0"
+                max="0.1"
+                step="0.01"
+                value={customization.letterSpacing}
+                onChange={(e) => handleChange('letterSpacing', parseFloat(e.target.value))}
+                className="w-full"
+              />
+              <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
+                <span>0</span>
+                <span>0.1</span>
+              </div>
+            </div>
           </div>
         </div>
       );
