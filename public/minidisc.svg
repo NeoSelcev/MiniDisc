@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- MiniDisc Icon -->
+  <defs>
+    <linearGradient id="discGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main disc body -->
+  <rect x="15" y="20" width="70" height="60" rx="5" fill="url(#discGradient)" />
+  
+  <!-- Shutter/opening -->
+  <rect x="25" y="30" width="50" height="40" rx="3" fill="#1F2937" opacity="0.3"/>
+  
+  <!-- Center hole indicator -->
+  <circle cx="50" cy="50" r="8" fill="#E5E7EB" />
+  <circle cx="50" cy="50" r="4" fill="#1F2937" />
+  
+  <!-- Decorative lines -->
+  <line x1="20" y1="35" x2="20" y2="65" stroke="#E5E7EB" stroke-width="1.5" opacity="0.5"/>
+  <line x1="80" y1="35" x2="80" y2="65" stroke="#E5E7EB" stroke-width="1.5" opacity="0.5"/>
+  
+  <!-- Label area -->
+  <rect x="55" y="40" width="15" height="20" rx="2" fill="#E5E7EB" opacity="0.7"/>
+</svg>

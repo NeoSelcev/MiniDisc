@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPrint } from '@fortawesome/free-solid-svg-icons';
 import useAppStore from '../store/useAppStore';
 import { calculateLayout, getLayoutStats } from '../utils/layoutOptimizer';
 import StickerPreview from './StickerPreview';
@@ -69,19 +71,19 @@ function LayoutPreview() {
             </div>
             
             {stats && (
-              <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 p-3 max-w-xs z-20">
-                <h2 className="text-sm font-semibold text-gray-900 mb-2">Layout Preview</h2>
-                <div className="text-xs text-gray-600 space-y-1">
+              <div className="absolute bottom-4 left-4 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-3 max-w-xs z-20">
+                <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">Layout Preview</h2>
+                <div className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
                   <div className="flex items-center"><span className="font-medium mr-2">Albums:</span><span>{stats.currentSets}</span></div>
                   <div className="flex items-center"><span className="font-medium mr-2">Stickers:</span><span>{stats.placedStickers}/{stats.totalStickers}</span></div>
                   <div className="flex items-center"><span className="font-medium mr-2">Efficiency:</span><span>{stats.efficiency.toFixed(1)}%</span></div>
-                  <div className={`flex items-center font-medium ${stats.fitsOnPage ? 'text-green-600' : 'text-red-600'}`}>{stats.fitsOnPage ? 'All stickers fit' : `${stats.failedStickers} dont fit`}</div>
+                  <div className={`flex items-center font-medium ${stats.fitsOnPage ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>{stats.fitsOnPage ? 'All stickers fit' : `${stats.failedStickers} dont fit`}</div>
                 </div>
               </div>
             )}
             
             <button onClick={handlePrint} disabled={!layout || !layout.fits} className="absolute bottom-4 right-4 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg flex items-center space-x-2 z-30" title="Print layout">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clipRule="evenodd" /></svg>
+              <FontAwesomeIcon icon={faPrint} className="h-5 w-5" />
               <span>Print</span>
             </button>
           </div>

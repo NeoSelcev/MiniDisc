@@ -1,4 +1,7 @@
-import { useEffect, useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faSpotify } from '@fortawesome/free-brands-svg-icons';
 import useAppStore from '../store/useAppStore';
 
 function SettingsModal({ isOpen, onClose }) {
@@ -232,39 +235,37 @@ function SettingsModal({ isOpen, onClose }) {
       >
         {/* Header - Draggable */}
         <div 
-          className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between cursor-move select-none"
+          className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between cursor-move select-none"
           onMouseDown={handleDragStart}
         >
-          <h2 className="text-2xl font-bold text-gray-900">Settings</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Settings</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition"
+            className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition"
             aria-label="Close"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <FontAwesomeIcon icon={faXmark} className="w-6 h-6" />
           </button>
         </div>
         
         {/* Content - Scrollable */}
-        <div className="modal-content overflow-y-auto px-6 py-4 space-y-8" style={{ height: 'calc(100% - 120px)' }}>
+        <div className="modal-content overflow-y-auto px-6 py-4 space-y-8 bg-white dark:bg-gray-800" style={{ height: 'calc(100% - 120px)' }}>
             {/* Spotify Setup Help */}
-            <section className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-blue-900 mb-3 flex items-center">
-                <span className="mr-2">🎵</span>
+            <section className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
+              <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3 flex items-center">
+                <FontAwesomeIcon icon={faSpotify} className="mr-2 w-5 h-5" />
                 Spotify Integration Setup
               </h3>
-              <div className="space-y-3 text-sm text-blue-800">
+              <div className="space-y-3 text-sm text-blue-800 dark:text-blue-200">
                 <p>
                   <strong>How to get your Spotify token:</strong> The app will automatically generate one when you click "Connect Spotify".
                 </p>
-                <div className="bg-white rounded p-3 space-y-2">
-                  <p className="font-medium text-blue-900">Quick Setup (3 steps):</p>
+                <div className="bg-white dark:bg-gray-800 rounded p-3 space-y-2">
+                  <p className="font-medium text-blue-900 dark:text-blue-300">Quick Setup (3 steps):</p>
                   <ol className="list-decimal list-inside space-y-1 ml-2">
-                    <li>Create a Spotify app at <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">developer.spotify.com/dashboard</a></li>
-                    <li>Set redirect URI to: <code className="bg-gray-100 px-2 py-0.5 rounded text-xs break-all">http://127.0.0.1:5173/callback</code></li>
-                    <li>Copy Client ID & Secret to the <code className="bg-gray-100 px-2 py-0.5 rounded text-xs">.env</code> file</li>
+                    <li>Create a Spotify app at <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline break-all">developer.spotify.com/dashboard</a></li>
+                    <li>Set redirect URI to: <code className="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded text-xs break-all">http://127.0.0.1:5173/callback</code></li>
+                    <li>Copy Client ID & Secret to the <code className="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded text-xs">.env</code> file</li>
                   </ol>
                 </div>
               </div>

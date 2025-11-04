@@ -1,4 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import useAppStore from '../store/useAppStore';
 import { exchangeCodeForToken } from '../utils/spotifyAPI';
 
@@ -87,29 +89,33 @@ function SpotifyCallback() {
   }, [setSpotifyAuth]);
   
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded-lg shadow-lg text-center max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg text-center max-w-md">
         {status === 'processing' && (
           <>
             <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary-600 mx-auto mb-4"></div>
-            <h2 className="text-xl font-semibold mb-2">Connecting to Spotify...</h2>
-            <p className="text-gray-600">Please wait while we authenticate</p>
+            <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">Connecting to Spotify...</h2>
+            <p className="text-gray-600 dark:text-gray-400">Please wait while we authenticate</p>
           </>
         )}
         
         {status === 'success' && (
           <>
-            <div className="text-green-600 text-6xl mb-4">✓</div>
-            <h2 className="text-xl font-semibold mb-2">Connected!</h2>
-            <p className="text-gray-600">Redirecting back to the app...</p>
+            <div className="text-green-600 dark:text-green-400 text-6xl mb-4">
+              <FontAwesomeIcon icon={faCheck} />
+            </div>
+            <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">Connected!</h2>
+            <p className="text-gray-600 dark:text-gray-400">Redirecting back to the app...</p>
           </>
         )}
         
         {status === 'error' && (
           <>
-            <div className="text-red-600 text-6xl mb-4">✕</div>
-            <h2 className="text-xl font-semibold mb-2">Connection Failed</h2>
-            <p className="text-gray-600 mb-4">Unable to connect to Spotify</p>
+            <div className="text-red-600 dark:text-red-400 text-6xl mb-4">
+              <FontAwesomeIcon icon={faXmark} />
+            </div>
+            <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">Connection Failed</h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">Unable to connect to Spotify</p>
             <button
               onClick={() => window.location.href = '/'}
               className="inline-block px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 transition cursor-pointer"

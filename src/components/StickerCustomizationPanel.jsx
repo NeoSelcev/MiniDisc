@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMagnifyingGlass, faCog, faXmark, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 import useAppStore from '../store/useAppStore';
 
 const StickerCustomizationPanel = ({ album, stickerType, onClose, position: initialPosition, onPanelHover }) => {
@@ -193,10 +195,12 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
         return (
           <>
             <div className="space-y-3">
-              <h3 className="font-semibold text-gray-700">📸 Image</h3>
+              <h3 className="font-semibold text-gray-700 dark:text-gray-300">📸 Image</h3>
               
               <div>
-                <label className="text-sm text-gray-600">🔍 Zoom: {customization.imageZoom}%</label>
+                <label className="text-sm text-gray-600 dark:text-gray-400">
+                  <FontAwesomeIcon icon={faMagnifyingGlass} className="mr-1 w-3 h-3" /> Zoom: {customization.imageZoom}%
+                </label>
                 <input
                   type="range"
                   min="50"
@@ -209,7 +213,7 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
               </div>
               
               <div>
-                <label className="text-sm text-gray-600">↔️ Position X: {customization.imageOffsetX}px</label>
+                <label className="text-sm text-gray-600 dark:text-gray-400">↔️ Position X: {customization.imageOffsetX}px</label>
                 <input
                   type="range"
                   min="-50"
@@ -222,7 +226,7 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
               </div>
               
               <div>
-                <label className="text-sm text-gray-600">↕️ Position Y: {customization.imageOffsetY}px</label>
+                <label className="text-sm text-gray-600 dark:text-gray-400">↕️ Position Y: {customization.imageOffsetY}px</label>
                 <input
                   type="range"
                   min="-50"
@@ -236,10 +240,10 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
             </div>
             
             <div className="space-y-3 mt-4">
-              <h3 className="font-semibold text-gray-700">🅰️ Typography</h3>
+              <h3 className="font-semibold text-gray-700 dark:text-gray-300">🅰️ Typography</h3>
               
               <div>
-                <label className="text-sm text-gray-600">Title Font Size: {customization.titleFontSize}pt</label>
+                <label className="text-sm text-gray-600 dark:text-gray-400">Title Font Size: {customization.titleFontSize}pt</label>
                 <input
                   type="range"
                   min="4"
@@ -252,7 +256,7 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
               </div>
               
               <div>
-                <label className="text-sm text-gray-600">Artist Font Size: {customization.artistFontSize}pt</label>
+                <label className="text-sm text-gray-600 dark:text-gray-400">Artist Font Size: {customization.artistFontSize}pt</label>
                 <input
                   type="range"
                   min="3"
@@ -265,7 +269,7 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
               </div>
               
               <div>
-                <label className="text-sm text-gray-600">Year Font Size: {customization.yearFontSize}pt</label>
+                <label className="text-sm text-gray-600 dark:text-gray-400">Year Font Size: {customization.yearFontSize}pt</label>
                 <input
                   type="range"
                   min="3"
@@ -278,7 +282,7 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
               </div>
               
               <div>
-                <label className="text-sm text-gray-600">Letter Spacing: {customization.letterSpacing}</label>
+                <label className="text-sm text-gray-600 dark:text-gray-400">Letter Spacing: {customization.letterSpacing}</label>
                 <input
                   type="range"
                   min="0"
@@ -291,7 +295,7 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
               </div>
               
               <div>
-                <label className="text-sm text-gray-600">Line Height: {customization.lineHeight}</label>
+                <label className="text-sm text-gray-600 dark:text-gray-400">Line Height: {customization.lineHeight}</label>
                 <input
                   type="range"
                   min="1"
@@ -310,10 +314,12 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
         return (
           <>
             <div className="space-y-3">
-              <h3 className="font-semibold text-gray-700">📸 Image</h3>
+              <h3 className="font-semibold text-gray-700 dark:text-gray-300">📸 Image</h3>
               
               <div>
-                <label className="text-sm text-gray-600">🔍 Zoom: {customization.imageZoom}%</label>
+                <label className="text-sm text-gray-600 dark:text-gray-400">
+                  <FontAwesomeIcon icon={faMagnifyingGlass} className="mr-1 w-3 h-3" /> Zoom: {customization.imageZoom}%
+                </label>
                 <input
                   type="range"
                   min="50"
@@ -484,13 +490,13 @@ const stickerTitles = {
 return (
   <div
     ref={panelRef}
-    className="fixed bg-white rounded-lg border-2 border-gray-300 overflow-hidden z-50"
+    className="fixed bg-white dark:bg-gray-800 rounded-lg border-2 border-gray-300 dark:border-gray-600 overflow-hidden z-50"
     style={{
       left: `${position.x}px`,
       top: `${position.y}px`,
       width: `${size.width}px`,
       height: `${size.height}px`,
-      boxShadow: '0 20px 60px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.2)',
+      boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.08)',
     }}
     onMouseEnter={() => onPanelHover?.(true)}
     onMouseLeave={() => onPanelHover?.(false)}
@@ -498,32 +504,32 @@ return (
   >
     {/* Header - Draggable */}
     <div
-      className="bg-gray-100 text-gray-800 px-4 py-3 cursor-move flex justify-between items-center select-none border-b"
+      className="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-4 py-3 cursor-move flex justify-between items-center select-none border-b dark:border-gray-600"
       onMouseDown={handleDragStart}
     >
       <div className="flex items-center gap-2">
-        <span className="text-lg">⚙️</span>
+        <FontAwesomeIcon icon={faCog} className="w-4 h-4" />
         <h3 className="font-semibold">{stickerTitles[stickerType]}</h3>
       </div>
       <div className="flex items-center gap-2">
         <button
           onClick={handleReset}
-          className="hover:bg-gray-200 rounded px-2 py-1 transition-colors text-lg"
+          className="hover:bg-gray-200 dark:hover:bg-gray-600 rounded px-2 py-1 transition-colors"
           title="Reset to defaults"
         >
-          🔄
+          <FontAwesomeIcon icon={faRotateRight} className="w-4 h-4" />
         </button>
         <button
           onClick={onClose}
-          className="hover:bg-gray-200 rounded px-2 py-1 transition-colors"
+          className="hover:bg-gray-200 dark:hover:bg-gray-600 rounded px-2 py-1 transition-colors"
         >
-          ✕
+          <FontAwesomeIcon icon={faXmark} className="w-4 h-4" />
         </button>
       </div>
     </div>
     
     {/* Content - Scrollable */}
-    <div className="p-4 overflow-y-auto" style={{ height: 'calc(100% - 60px)' }}>
+    <div className="p-4 overflow-y-auto bg-white dark:bg-gray-800" style={{ height: 'calc(100% - 60px)' }}>
       {renderFields()}
     </div>
     

@@ -1,4 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faSpotify } from '@fortawesome/free-brands-svg-icons';
 import useAppStore from '../store/useAppStore';
 import { searchAlbums, getAlbumDetails, makeSpotifyRequest, getAuthUrl, downloadImageAsBase64 } from '../utils/spotifyAPI';
 import { extractColors } from '../utils/colorExtraction';
@@ -134,25 +137,25 @@ function SpotifySearch({ onClose }) {
   };
   
   return (
-    <div className="bg-white border border-gray-300 rounded-lg p-4 shadow-lg">
+    <div className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-4 shadow-lg">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="font-semibold text-gray-900">Spotify Search</h3>
+        <h3 className="font-semibold text-gray-900 dark:text-gray-100">Spotify Search</h3>
         <button
           onClick={onClose}
-          className="text-gray-500 hover:text-gray-700"
+          className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
         >
-          ✕
+          <FontAwesomeIcon icon={faXmark} className="w-4 h-4" />
         </button>
       </div>
       
       {!isAuthenticated ? (
         <div className="text-center py-6">
-          <p className="mb-4 text-gray-600">Connect to Spotify to search albums</p>
+          <p className="mb-4 text-gray-600 dark:text-gray-400">Connect to Spotify to search albums</p>
           <button
             onClick={handleConnect}
             className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
           >
-            🎵 Connect Spotify
+            <FontAwesomeIcon icon={faSpotify} className="mr-1 w-4 h-4" /> Connect Spotify
           </button>
         </div>
       ) : (
@@ -164,7 +167,7 @@ function SpotifySearch({ onClose }) {
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               placeholder="Search for album or artist..."
-              className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-gray-100"
             />
             <button
               onClick={handleSearch}
@@ -176,7 +179,7 @@ function SpotifySearch({ onClose }) {
           </div>
           
           {error && (
-            <div className="mb-3 p-2 bg-red-50 border border-red-200 rounded text-sm text-red-700">
+            <div className="mb-3 p-2 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded text-sm text-red-700 dark:text-red-300">
               {error}
             </div>
           )}
@@ -186,7 +189,7 @@ function SpotifySearch({ onClose }) {
               <div
                 key={album.id}
                 onClick={() => handleSelectAlbum(album)}
-                className="flex items-center space-x-3 p-2 border border-gray-200 rounded hover:border-primary-500 hover:bg-primary-50 cursor-pointer transition"
+                className="flex items-center space-x-3 p-2 border border-gray-200 dark:border-gray-700 rounded hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 cursor-pointer transition"
               >
                 {album.imageUrl && (
                   <img
@@ -196,19 +199,19 @@ function SpotifySearch({ onClose }) {
                   />
                 )}
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-medium text-gray-900 truncate">
+                  <h4 className="font-medium text-gray-900 dark:text-gray-100 truncate">
                     {album.name}
                   </h4>
-                  <p className="text-sm text-gray-600 truncate">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
                     {album.artist}
                   </p>
-                  <p className="text-xs text-gray-500">{album.year}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-500">{album.year}</p>
                 </div>
               </div>
             ))}
             
             {searchResults.length === 0 && !loading && searchQuery && (
-              <p className="text-center text-gray-500 py-4">No results found</p>
+              <p className="text-center text-gray-500 dark:text-gray-400 py-4">No results found</p>
             )}
           </div>
         </>

@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCog } from '@fortawesome/free-solid-svg-icons';
 import useAppStore from '../store/useAppStore';
 import StickerCustomizationPanel from './StickerCustomizationPanel';
 
-function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) {
-  const { x, y, width, height, type, data } = sticker;
+function StickerPreview({ dimensions, position, sticker, showLabels = false, scale, showCutLines, settings }) {
+  const { x, y, width, height, type: stickerType, data } = sticker;
   const [isHovered, setIsHovered] = useState(false);
   const [isPanelHovered, setIsPanelHovered] = useState(false);
   
@@ -19,7 +21,7 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
   const currentAlbum = albums.find(a => a.id === data.id) || data;
   
   // Check if THIS sticker's customization panel is open
-  const isThisPanelOpen = activeCustomizationPanel?.albumId === data.id && activeCustomizationPanel?.stickerType === type;
+  const isThisPanelOpen = activeCustomizationPanel?.albumId === data.id && activeCustomizationPanel?.stickerType === stickerType;
   
   // Check if ANY panel is open (for dimming other stickers)
   const isAnyPanelOpen = activeCustomizationPanel !== null;
@@ -32,7 +34,7 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
   }, [isThisPanelOpen]);
   
   // Get customization for this specific album and sticker type
-  const customization = getStickerCustomization(currentAlbum, type);
+  const customization = getStickerCustomization(currentAlbum, stickerType);
   
   const pixelX = x * scale;
   const pixelY = y * scale;
@@ -40,7 +42,7 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
   const pixelHeight = height * scale;
   
   const renderSticker = () => {
-    switch (type) {
+    switch (stickerType) {
       case 'spine':
         return renderSpine();
       case 'face':
@@ -327,7 +329,7 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
       onClick={(e) => {
         if (isHovered && !isPanelHovered && !isThisPanelOpen) {
           e.stopPropagation();
-          openCustomizationPanel(data.id, type);
+          openCustomizationPanel(data.id, stickerType);
         }
       }}
     >
@@ -359,7 +361,7 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
             transform: isHovered && !isPanelHovered && !isThisPanelOpen ? 'scale(1)' : 'scale(0.8)',
           }}
         >
-          ⚙️
+          <FontAwesomeIcon icon={faCog} />
         </div>
       </div>
       
@@ -367,7 +369,7 @@ function StickerPreview({ sticker, scale, showCutLines, showLabels, settings }) 
       {isThisPanelOpen && (
         <StickerCustomizationPanel
           album={currentAlbum}
-          stickerType={type}
+          stickerType={stickerType}
           onClose={closeCustomizationPanel}
           onPanelHover={(hovered) => setIsPanelHovered(hovered)}
         />
