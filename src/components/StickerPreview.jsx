@@ -68,6 +68,7 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
     const fontFamily = settings.design.fontFamilies?.spine || 'Arial';
     const lineHeight = customization.lineHeight || settings.design.lineHeights?.spine || 1.2;
     const fontSize = customization.fontSize || settings.design.fontSizes?.spine || 8;
+    const letterSpacing = customization.letterSpacing !== undefined ? customization.letterSpacing : 0;
     
     return (
       <div
@@ -79,6 +80,7 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
           fontSize: `${fontSize}pt`,
           fontFamily: fontFamily,
           lineHeight: lineHeight,
+          letterSpacing: `${letterSpacing}em`,
           fontWeight: spineStyle.bold ? 'bold' : 'normal',
           fontStyle: spineStyle.italic ? 'italic' : 'normal',
           textDecoration: spineStyle.underline ? 'underline' : 'none',
@@ -138,6 +140,10 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
     const offsetY = customization.imageOffsetY || 0;
     const titleSize = customization.titleFontSize || settings.design.fontSizes?.spine || 8;
     
+    // Get font family and styles for Edge Part (uses spine settings)
+    const spineStyle = settings.design.fontStyles?.spine || {};
+    const fontFamily = settings.design.fontFamilies?.spine || 'Arial';
+    
     return (
       <div className="w-full h-full flex flex-col">
         {/* Image Part - Main cover image */}
@@ -174,6 +180,10 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
             color: data.colors?.fontColor || '#000',
             padding: '1px',
             fontSize: `${titleSize}pt`,
+            fontFamily: fontFamily,
+            fontWeight: spineStyle.bold ? 'bold' : 'normal',
+            fontStyle: spineStyle.italic ? 'italic' : 'normal',
+            textDecoration: spineStyle.underline ? 'underline' : 'none',
           }}
         >
           <span className="truncate">
@@ -190,6 +200,7 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
     const artistSize = customization.artistFontSize || settings.design.fontSizes?.holderBackArtist || 10;
     const yearSize = customization.yearFontSize || settings.design.fontSizes?.holderBackYear || 9;
     const lineHeight = customization.lineHeight || settings.design.lineHeights?.trackList || 1.2;
+    const letterSpacing = customization.letterSpacing !== undefined ? customization.letterSpacing : 0;
     
     const titleStyle = settings.design.fontStyles?.holderBackTitle || {};
     const artistStyle = settings.design.fontStyles?.holderBackArtist || {};
@@ -255,7 +266,7 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
         </div>
         
         {/* Track list */}
-        <div className="space-y-0.5 mt-1" style={{ lineHeight }}>
+        <div className="space-y-0.5 mt-1" style={{ lineHeight, letterSpacing: `${letterSpacing}em` }}>
           {data.tracks?.slice(0, 15).map((track) => (
             <div 
               key={track.number} 
