@@ -38,9 +38,12 @@ export const FontFamilySelect = ({
         value={value || 'Arial'}
         onChange={onChange}
         className={`w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-xs ${className}`}
+        style={{ fontFamily: value || 'Arial' }}
       >
         {FONT_OPTIONS.map(font => (
-          <option key={font} value={font}>{font}</option>
+          <option key={font} value={font} style={{ fontFamily: font }}>
+            {font}
+          </option>
         ))}
       </select>
     </div>
