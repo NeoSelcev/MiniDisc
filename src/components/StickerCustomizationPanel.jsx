@@ -2,6 +2,14 @@ import { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass, faCog, faXmark, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 import useAppStore from '../store/useAppStore';
+import { 
+  FontFamilySelect, 
+  FontStyleCheckboxes, 
+  FontSizeInput, 
+  LineHeightSlider,
+  LetterSpacingSlider,
+  LineHeightLetterSpacingGrid
+} from './TypographyControls';
 
 const StickerCustomizationPanel = ({ album, stickerType, onClose, position: initialPosition, onPanelHover }) => {
   const { getStickerCustomization, updateStickerCustomization, settings, updateSettings } = useAppStore();
@@ -67,6 +75,45 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
             [style]: value,
           },
         },
+      },
+    });
+  };
+  
+  // Update global line height
+  const updateLineHeight = (key, value) => {
+    updateSettings({
+      ...settings,
+      design: {
+        ...settings.design,
+        lineHeights: {
+          ...settings.design.lineHeights,
+          [key]: parseFloat(value) || 1.2,
+        },
+      },
+    });
+  };
+  
+  // Update global letter spacing
+  const updateLetterSpacing = (key, value) => {
+    updateSettings({
+      ...settings,
+      design: {
+        ...settings.design,
+        letterSpacing: {
+          ...settings.design.letterSpacing,
+          [key]: parseFloat(value) || 0,
+        },
+      },
+    });
+  };
+  
+  // Update global track list style
+  const updateTrackListStyle = (value) => {
+    updateSettings({
+      ...settings,
+      design: {
+        ...settings.design,
+        trackListStyle: value,
       },
     });
   };
@@ -193,60 +240,26 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
               </h3>
               
               <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
-                  Font Family <span className="text-xs">(global)</span>
-                </label>
-                <select
-                  value={settings.design.fontFamilies?.spine || 'Arial'}
+                <FontFamilySelect
+                  value={settings.design.fontFamilies?.spine}
                   onChange={(e) => updateFontFamily('spine', e.target.value)}
+                  label="Font Family"
+                  showGlobalLabel={true}
                   className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-sm"
-                >
-                  <option value="Arial">Arial</option>
-                  <option value="Helvetica">Helvetica</option>
-                  <option value="Times New Roman">Times New Roman</option>
-                  <option value="Courier New">Courier New</option>
-                  <option value="Georgia">Georgia</option>
-                  <option value="Verdana">Verdana</option>
-                  <option value="Tahoma">Tahoma</option>
-                  <option value="Trebuchet MS">Trebuchet MS</option>
-                  <option value="Impact">Impact</option>
-                  <option value="Comic Sans MS">Comic Sans MS</option>
-                </select>
+                />
               </div>
               
               <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-2">
-                  Font Style <span className="text-xs">(global)</span>
-                </label>
-                <div className="flex items-center space-x-4">
-                  <label className="flex items-center cursor-pointer text-sm">
-                    <input
-                      type="checkbox"
-                      checked={settings.design.fontStyles?.spine?.bold || false}
-                      onChange={(e) => updateFontStyle('spine', 'bold', e.target.checked)}
-                      className="mr-1"
-                    />
-                    <span className="font-bold">Bold</span>
-                  </label>
-                  <label className="flex items-center cursor-pointer text-sm">
-                    <input
-                      type="checkbox"
-                      checked={settings.design.fontStyles?.spine?.italic || false}
-                      onChange={(e) => updateFontStyle('spine', 'italic', e.target.checked)}
-                      className="mr-1"
-                    />
-                    <span className="italic">Italic</span>
-                  </label>
-                  <label className="flex items-center cursor-pointer text-sm">
-                    <input
-                      type="checkbox"
-                      checked={settings.design.fontStyles?.spine?.underline || false}
-                      onChange={(e) => updateFontStyle('spine', 'underline', e.target.checked)}
-                      className="mr-1"
-                    />
-                    <span className="underline">Underline</span>
-                  </label>
-                </div>
+                <FontStyleCheckboxes
+                  bold={settings.design.fontStyles?.spine?.bold}
+                  italic={settings.design.fontStyles?.spine?.italic}
+                  underline={settings.design.fontStyles?.spine?.underline}
+                  onBoldChange={(e) => updateFontStyle('spine', 'bold', e.target.checked)}
+                  onItalicChange={(e) => updateFontStyle('spine', 'italic', e.target.checked)}
+                  onUnderlineChange={(e) => updateFontStyle('spine', 'underline', e.target.checked)}
+                  label="Font Style"
+                  showGlobalLabel={true}
+                />
               </div>
               
               <div>
@@ -468,60 +481,26 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
               </h3>
               
               <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
-                  Font Family <span className="text-xs">(global)</span>
-                </label>
-                <select
-                  value={settings.design.fontFamilies?.spine || 'Arial'}
+                <FontFamilySelect
+                  value={settings.design.fontFamilies?.spine}
                   onChange={(e) => updateFontFamily('spine', e.target.value)}
+                  label="Font Family"
+                  showGlobalLabel={true}
                   className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-sm"
-                >
-                  <option value="Arial">Arial</option>
-                  <option value="Helvetica">Helvetica</option>
-                  <option value="Times New Roman">Times New Roman</option>
-                  <option value="Courier New">Courier New</option>
-                  <option value="Georgia">Georgia</option>
-                  <option value="Verdana">Verdana</option>
-                  <option value="Tahoma">Tahoma</option>
-                  <option value="Trebuchet MS">Trebuchet MS</option>
-                  <option value="Impact">Impact</option>
-                  <option value="Comic Sans MS">Comic Sans MS</option>
-                </select>
+                />
               </div>
               
               <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-2">
-                  Font Style <span className="text-xs">(global)</span>
-                </label>
-                <div className="flex items-center space-x-4">
-                  <label className="flex items-center cursor-pointer text-sm">
-                    <input
-                      type="checkbox"
-                      checked={settings.design.fontStyles?.spine?.bold || false}
-                      onChange={(e) => updateFontStyle('spine', 'bold', e.target.checked)}
-                      className="mr-1"
-                    />
-                    <span className="font-bold">Bold</span>
-                  </label>
-                  <label className="flex items-center cursor-pointer text-sm">
-                    <input
-                      type="checkbox"
-                      checked={settings.design.fontStyles?.spine?.italic || false}
-                      onChange={(e) => updateFontStyle('spine', 'italic', e.target.checked)}
-                      className="mr-1"
-                    />
-                    <span className="italic">Italic</span>
-                  </label>
-                  <label className="flex items-center cursor-pointer text-sm">
-                    <input
-                      type="checkbox"
-                      checked={settings.design.fontStyles?.spine?.underline || false}
-                      onChange={(e) => updateFontStyle('spine', 'underline', e.target.checked)}
-                      className="mr-1"
-                    />
-                    <span className="underline">Underline</span>
-                  </label>
-                </div>
+                <FontStyleCheckboxes
+                  bold={settings.design.fontStyles?.spine?.bold}
+                  italic={settings.design.fontStyles?.spine?.italic}
+                  underline={settings.design.fontStyles?.spine?.underline}
+                  onBoldChange={(e) => updateFontStyle('spine', 'bold', e.target.checked)}
+                  onItalicChange={(e) => updateFontStyle('spine', 'italic', e.target.checked)}
+                  onUnderlineChange={(e) => updateFontStyle('spine', 'underline', e.target.checked)}
+                  label="Font Style"
+                  showGlobalLabel={true}
+                />
               </div>
               
               <div>
@@ -550,196 +529,376 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
       // Back sticker shows album title, artist, year, and track list
       return (
         <div className="space-y-4">
-          <div className="bg-orange-50 dark:bg-orange-900/20 p-3 rounded border border-orange-200 dark:border-orange-800">
-            <p className="text-xs text-orange-800 dark:text-orange-300">
-              <strong>Holder Back (Track List)</strong><br/>
-              Displays album title, artist, year, and complete track listing
+          <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 p-3 rounded border-2 border-purple-300 dark:border-purple-700">
+            <p className="text-sm font-semibold text-purple-800 dark:text-purple-300 mb-1">
+              📄 Holder Back Cover Typography
+            </p>
+            <p className="text-xs text-gray-700 dark:text-gray-400">
+              Complete typography control for all back cover text elements
             </p>
           </div>
           
-          {/* Album Info Text Settings */}
-          <div className="space-y-3">
-            <h3 className="font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2 border-b pb-2 dark:border-gray-600">
-              <span className="text-lg">📄</span> Album Info
-            </h3>
+          {/* 1. Album Title */}
+          <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+            <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-3 flex items-center gap-2">
+              <span className="text-purple-600 dark:text-purple-400">1.</span> Album Title
+            </h4>
             
-            <div>
-              <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
-                Title Font Size: <strong>{customization.titleFontSize}pt</strong>
-              </label>
-              <input
-                type="range"
-                min="8"
-                max="16"
-                step="0.5"
-                value={customization.titleFontSize}
-                onChange={(e) => handleChange('titleFontSize', parseFloat(e.target.value))}
-                className="w-full"
-              />
-              <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
-                <span>8pt</span>
-                <span>16pt</span>
+            <div className="space-y-2">
+              <div>
+                <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                  Font Size: <strong>{customization.titleFontSize}pt</strong>
+                </label>
+                <input
+                  type="range"
+                  min="8"
+                  max="20"
+                  step="0.5"
+                  value={customization.titleFontSize}
+                  onChange={(e) => handleChange('titleFontSize', parseFloat(e.target.value))}
+                  className="w-full"
+                />
               </div>
-            </div>
-            
-            <div>
-              <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
-                Artist Font Size: <strong>{customization.artistFontSize}pt</strong>
-              </label>
-              <input
-                type="range"
-                min="6"
-                max="12"
-                step="0.5"
-                value={customization.artistFontSize}
-                onChange={(e) => handleChange('artistFontSize', parseFloat(e.target.value))}
-                className="w-full"
-              />
-              <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
-                <span>6pt</span>
-                <span>12pt</span>
+              
+              <div>
+                <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                  Font Family
+                </label>
+                <select
+                  value={customization.titleFontFamily || 'Arial'}
+                  onChange={(e) => handleChange('titleFontFamily', e.target.value)}
+                  className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-xs"
+                >
+                  <option value="Arial">Arial</option>
+                  <option value="Helvetica">Helvetica</option>
+                  <option value="Times New Roman">Times New Roman</option>
+                  <option value="Courier New">Courier New</option>
+                  <option value="Georgia">Georgia</option>
+                  <option value="Verdana">Verdana</option>
+                  <option value="Tahoma">Tahoma</option>
+                  <option value="Trebuchet MS">Trebuchet MS</option>
+                  <option value="Impact">Impact</option>
+                  <option value="Comic Sans MS">Comic Sans MS</option>
+                </select>
               </div>
-            </div>
-            
-            <div>
-              <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
-                Year Font Size: <strong>{customization.yearFontSize}pt</strong>
-              </label>
-              <input
-                type="range"
-                min="6"
-                max="12"
-                step="0.5"
-                value={customization.yearFontSize}
-                onChange={(e) => handleChange('yearFontSize', parseFloat(e.target.value))}
-                className="w-full"
+              
+              <div>
+                <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                  Font Style
+                </label>
+                <div className="flex items-center gap-3">
+                  <label className="flex items-center cursor-pointer text-xs">
+                    <input
+                      type="checkbox"
+                      checked={customization.titleFontBold || false}
+                      onChange={(e) => handleChange('titleFontBold', e.target.checked)}
+                      className="mr-1"
+                    />
+                    <span className="font-bold">B</span>
+                  </label>
+                  <label className="flex items-center cursor-pointer text-xs">
+                    <input
+                      type="checkbox"
+                      checked={customization.titleFontItalic || false}
+                      onChange={(e) => handleChange('titleFontItalic', e.target.checked)}
+                      className="mr-1"
+                    />
+                    <span className="italic">I</span>
+                  </label>
+                  <label className="flex items-center cursor-pointer text-xs">
+                    <input
+                      type="checkbox"
+                      checked={customization.titleFontUnderline || false}
+                      onChange={(e) => handleChange('titleFontUnderline', e.target.checked)}
+                      className="mr-1"
+                    />
+                    <span className="underline">U</span>
+                  </label>
+                </div>
+              </div>
+              
+              <LineHeightLetterSpacingGrid
+                lineHeightValue={customization.titleLineHeight}
+                lineHeightOnChange={(e) => handleChange('titleLineHeight', parseFloat(e.target.value))}
+                lineHeightMin={0.8}
+                lineHeightMax={2}
+                letterSpacingValue={customization.titleLetterSpacing}
+                letterSpacingOnChange={(e) => handleChange('titleLetterSpacing', parseFloat(e.target.value))}
+                letterSpacingMin={0}
+                letterSpacingMax={0.2}
               />
-              <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
-                <span>6pt</span>
-                <span>12pt</span>
+            </div>
+          </div>
+          
+          {/* 2. Artist Name */}
+          <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+            <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-3 flex items-center gap-2">
+              <span className="text-purple-600 dark:text-purple-400">2.</span> Artist Name
+            </h4>
+            
+            <div className="space-y-2">
+              <div>
+                <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                  Font Size: <strong>{customization.artistFontSize}pt</strong>
+                </label>
+                <input
+                  type="range"
+                  min="6"
+                  max="16"
+                  step="0.5"
+                  value={customization.artistFontSize}
+                  onChange={(e) => handleChange('artistFontSize', parseFloat(e.target.value))}
+                  className="w-full"
+                />
+              </div>
+              
+              <FontFamilySelect
+                value={settings.design.fontFamilies?.holderBackArtist}
+                onChange={(e) => updateFontFamily('holderBackArtist', e.target.value)}
+                label="Font Family"
+                showGlobalLabel={true}
+                className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-xs"
+              />
+              
+              <FontStyleCheckboxes
+                bold={settings.design.fontStyles?.holderBackArtist?.bold}
+                italic={settings.design.fontStyles?.holderBackArtist?.italic}
+                underline={settings.design.fontStyles?.holderBackArtist?.underline}
+                onBoldChange={(e) => updateFontStyle('holderBackArtist', 'bold', e.target.checked)}
+                onItalicChange={(e) => updateFontStyle('holderBackArtist', 'italic', e.target.checked)}
+                onUnderlineChange={(e) => updateFontStyle('holderBackArtist', 'underline', e.target.checked)}
+                label="Font Style"
+                showGlobalLabel={true}
+              />
+              
+              <LineHeightLetterSpacingGrid
+                lineHeightValue={settings.design.lineHeights?.holderBackArtist}
+                lineHeightOnChange={(e) => updateLineHeight('holderBackArtist', e.target.value)}
+                lineHeightMin={0.8}
+                lineHeightMax={2}
+                letterSpacingValue={settings.design.letterSpacing?.holderBackArtist}
+                letterSpacingOnChange={(e) => updateLetterSpacing('holderBackArtist', e.target.value)}
+                letterSpacingMin={0}
+                letterSpacingMax={0.2}
+                showGlobalLabel={true}
+              />
+            </div>
+          </div>
+          
+          {/* 3. Year of Production */}
+          <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+            <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-3 flex items-center gap-2">
+              <span className="text-purple-600 dark:text-purple-400">3.</span> Year of Production
+            </h4>
+            
+            <div className="space-y-2">
+              <div>
+                <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                  Font Size: <strong>{customization.yearFontSize}pt</strong>
+                </label>
+                <input
+                  type="range"
+                  min="6"
+                  max="14"
+                  step="0.5"
+                  value={customization.yearFontSize}
+                  onChange={(e) => handleChange('yearFontSize', parseFloat(e.target.value))}
+                  className="w-full"
+                />
+              </div>
+              
+              <FontFamilySelect
+                value={settings.design.fontFamilies?.holderBackYear}
+                onChange={(e) => updateFontFamily('holderBackYear', e.target.value)}
+                label="Font Family"
+                showGlobalLabel={true}
+                className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-xs"
+              />
+              
+              <FontStyleCheckboxes
+                bold={settings.design.fontStyles?.holderBackYear?.bold}
+                italic={settings.design.fontStyles?.holderBackYear?.italic}
+                underline={settings.design.fontStyles?.holderBackYear?.underline}
+                onBoldChange={(e) => updateFontStyle('holderBackYear', 'bold', e.target.checked)}
+                onItalicChange={(e) => updateFontStyle('holderBackYear', 'italic', e.target.checked)}
+                onUnderlineChange={(e) => updateFontStyle('holderBackYear', 'underline', e.target.checked)}
+                label="Font Style"
+                showGlobalLabel={true}
+              />
+              
+              <LineHeightLetterSpacingGrid
+                lineHeightValue={settings.design.lineHeights?.holderBackYear}
+                lineHeightOnChange={(e) => updateLineHeight('holderBackYear', e.target.value)}
+                lineHeightMin={0.8}
+                lineHeightMax={2}
+                letterSpacingValue={settings.design.letterSpacing?.holderBackYear}
+                letterSpacingOnChange={(e) => updateLetterSpacing('holderBackYear', e.target.value)}
+                letterSpacingMin={0}
+                letterSpacingMax={0.2}
+                showGlobalLabel={true}
+              />
+            </div>
+          </div>
+          
+          {/* 4. Track List (Track Names) */}
+          <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+            <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-3 flex items-center gap-2">
+              <span className="text-purple-600 dark:text-purple-400">4.</span> Track List (Track Names)
+            </h4>
+            
+            <div className="space-y-2">
+              <div>
+                <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                  Font Size: <strong>{customization.trackListFontSize}pt</strong>
+                </label>
+                <input
+                  type="range"
+                  min="3"
+                  max="10"
+                  step="0.5"
+                  value={customization.trackListFontSize}
+                  onChange={(e) => handleChange('trackListFontSize', parseFloat(e.target.value))}
+                  className="w-full"
+                />
+              </div>
+              
+              <FontFamilySelect
+                value={settings.design.fontFamilies?.trackList}
+                onChange={(e) => updateFontFamily('trackList', e.target.value)}
+                label="Font Family"
+                showGlobalLabel={true}
+                className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-xs"
+              />
+              
+              <FontStyleCheckboxes
+                bold={settings.design.fontStyles?.trackList?.bold}
+                italic={settings.design.fontStyles?.trackList?.italic}
+                underline={settings.design.fontStyles?.trackList?.underline}
+                onBoldChange={(e) => updateFontStyle('trackList', 'bold', e.target.checked)}
+                onItalicChange={(e) => updateFontStyle('trackList', 'italic', e.target.checked)}
+                onUnderlineChange={(e) => updateFontStyle('trackList', 'underline', e.target.checked)}
+                label="Font Style"
+                showGlobalLabel={true}
+              />
+              
+              <LineHeightLetterSpacingGrid
+                lineHeightValue={customization.lineHeight}
+                lineHeightOnChange={(e) => handleChange('lineHeight', parseFloat(e.target.value))}
+                lineHeightMin={1}
+                lineHeightMax={2.5}
+                letterSpacingValue={customization.letterSpacing}
+                letterSpacingOnChange={(e) => handleChange('letterSpacing', parseFloat(e.target.value))}
+                letterSpacingMin={0}
+                letterSpacingMax={0.15}
+              />
+              
+              {/* Track List Style Options */}
+              <div className="mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded border border-yellow-300 dark:border-yellow-700">
+                <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 block mb-2">
+                  🎵 Track Prefix Style <span className="text-xs opacity-60">(global)</span>
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  <label className="flex items-center cursor-pointer text-xs px-2 py-1 bg-white dark:bg-gray-800 rounded border">
+                    <input
+                      type="radio"
+                      name="trackListStyle"
+                      value="numbers"
+                      checked={settings.design.trackListStyle === 'numbers'}
+                      onChange={(e) => updateTrackListStyle(e.target.value)}
+                      className="mr-1"
+                    />
+                    <span>Numbers (1. 2.)</span>
+                  </label>
+                  <label className="flex items-center cursor-pointer text-xs px-2 py-1 bg-white dark:bg-gray-800 rounded border">
+                    <input
+                      type="radio"
+                      name="trackListStyle"
+                      value="dashes"
+                      checked={settings.design.trackListStyle === 'dashes'}
+                      onChange={(e) => updateTrackListStyle(e.target.value)}
+                      className="mr-1"
+                    />
+                    <span>Dashes (- -)</span>
+                  </label>
+                  <label className="flex items-center cursor-pointer text-xs px-2 py-1 bg-white dark:bg-gray-800 rounded border">
+                    <input
+                      type="radio"
+                      name="trackListStyle"
+                      value="bullets"
+                      checked={settings.design.trackListStyle === 'bullets'}
+                      onChange={(e) => updateTrackListStyle(e.target.value)}
+                      className="mr-1"
+                    />
+                    <span>Bullets (• •)</span>
+                  </label>
+                </div>
               </div>
             </div>
           </div>
           
-          {/* Track List Settings */}
-          <div className="space-y-3 pt-3 border-t dark:border-gray-600">
-            <h3 className="font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
-              <span className="text-lg">📃</span> Track List
-            </h3>
+          {/* 5. Track Duration */}
+          <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+            <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-3 flex items-center gap-2">
+              <span className="text-purple-600 dark:text-purple-400">5.</span> Track Duration
+            </h4>
             
-            <div>
-              <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
-                Font Family <span className="text-xs">(global)</span>
-              </label>
-              <select
-                value={settings.design.fontFamilies?.trackList || 'Arial'}
-                onChange={(e) => updateFontFamily('trackList', e.target.value)}
-                className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-sm"
-              >
-                <option value="Arial">Arial</option>
-                <option value="Helvetica">Helvetica</option>
-                <option value="Times New Roman">Times New Roman</option>
-                <option value="Courier New">Courier New</option>
-                <option value="Georgia">Georgia</option>
-                <option value="Verdana">Verdana</option>
-                <option value="Tahoma">Tahoma</option>
-                <option value="Trebuchet MS">Trebuchet MS</option>
-                <option value="Impact">Impact</option>
-                <option value="Comic Sans MS">Comic Sans MS</option>
-              </select>
-            </div>
-            
-            <div>
-              <label className="text-sm text-gray-600 dark:text-gray-400 block mb-2">
-                Font Style <span className="text-xs">(global)</span>
-              </label>
-              <div className="flex items-center space-x-4">
-                <label className="flex items-center cursor-pointer text-sm">
-                  <input
-                    type="checkbox"
-                    checked={settings.design.fontStyles?.trackList?.bold || false}
-                    onChange={(e) => updateFontStyle('trackList', 'bold', e.target.checked)}
-                    className="mr-1"
-                  />
-                  <span className="font-bold">Bold</span>
+            <div className="space-y-2">
+              <div>
+                <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                  Font Size: <strong>{customization.trackDurationFontSize || 6}pt</strong>
                 </label>
-                <label className="flex items-center cursor-pointer text-sm">
-                  <input
-                    type="checkbox"
-                    checked={settings.design.fontStyles?.trackList?.italic || false}
-                    onChange={(e) => updateFontStyle('trackList', 'italic', e.target.checked)}
-                    className="mr-1"
-                  />
-                  <span className="italic">Italic</span>
-                </label>
-                <label className="flex items-center cursor-pointer text-sm">
-                  <input
-                    type="checkbox"
-                    checked={settings.design.fontStyles?.trackList?.underline || false}
-                    onChange={(e) => updateFontStyle('trackList', 'underline', e.target.checked)}
-                    className="mr-1"
-                  />
-                  <span className="underline">Underline</span>
-                </label>
+                <input
+                  type="range"
+                  min="4"
+                  max="10"
+                  step="0.5"
+                  value={customization.trackDurationFontSize || 6}
+                  onChange={(e) => handleChange('trackDurationFontSize', parseFloat(e.target.value))}
+                  className="w-full"
+                />
               </div>
-            </div>
-            
-            <div>
-              <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
-                Track Font Size: <strong>{customization.trackListFontSize}pt</strong>
-              </label>
-              <input
-                type="range"
-                min="3"
-                max="8"
-                step="0.5"
-                value={customization.trackListFontSize}
-                onChange={(e) => handleChange('trackListFontSize', parseFloat(e.target.value))}
-                className="w-full"
+              
+              <FontFamilySelect
+                value={settings.design.fontFamilies?.trackDuration}
+                onChange={(e) => updateFontFamily('trackDuration', e.target.value)}
+                label="Font Family"
+                showGlobalLabel={true}
+                className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-xs"
               />
-              <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
-                <span>3pt</span>
-                <span>8pt</span>
-              </div>
-            </div>
-            
-            <div>
-              <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
-                Line Height: <strong>{customization.lineHeight}</strong>
-              </label>
-              <input
-                type="range"
-                min="1"
-                max="2"
-                step="0.1"
-                value={customization.lineHeight}
-                onChange={(e) => handleChange('lineHeight', parseFloat(e.target.value))}
-                className="w-full"
+              
+              <FontStyleCheckboxes
+                bold={settings.design.fontStyles?.trackDuration?.bold}
+                italic={settings.design.fontStyles?.trackDuration?.italic}
+                underline={settings.design.fontStyles?.trackDuration?.underline}
+                onBoldChange={(e) => updateFontStyle('trackDuration', 'bold', e.target.checked)}
+                onItalicChange={(e) => updateFontStyle('trackDuration', 'italic', e.target.checked)}
+                onUnderlineChange={(e) => updateFontStyle('trackDuration', 'underline', e.target.checked)}
+                label="Font Style"
+                showGlobalLabel={true}
               />
-              <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
-                <span>1.0</span>
-                <span>2.0</span>
-              </div>
-            </div>
-            
-            <div>
-              <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
-                Letter Spacing: <strong>{customization.letterSpacing}</strong>
-              </label>
-              <input
-                type="range"
-                min="0"
-                max="0.1"
-                step="0.01"
-                value={customization.letterSpacing}
-                onChange={(e) => handleChange('letterSpacing', parseFloat(e.target.value))}
-                className="w-full"
+              
+              <LineHeightLetterSpacingGrid
+                lineHeightValue={settings.design.lineHeights?.trackDuration}
+                lineHeightOnChange={(e) => updateLineHeight('trackDuration', e.target.value)}
+                lineHeightMin={0.8}
+                lineHeightMax={2}
+                letterSpacingValue={settings.design.letterSpacing?.trackDuration}
+                letterSpacingOnChange={(e) => updateLetterSpacing('trackDuration', e.target.value)}
+                letterSpacingMin={0}
+                letterSpacingMax={0.2}
+                showGlobalLabel={true}
               />
-              <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
-                <span>0</span>
-                <span>0.1</span>
-              </div>
             </div>
+          </div>
+          
+          {/* Success Summary */}
+          <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded border border-green-300 dark:border-green-700">
+            <p className="text-xs font-semibold text-green-700 dark:text-green-300 mb-1">
+              ✅ Complete Typography Control!
+            </p>
+            <p className="text-xs text-gray-600 dark:text-gray-400">
+              All 5 back cover elements have Font Size (per-album), Font Family, Font Style (Bold/Italic/Underline), Line Height & Letter Spacing (global). Plus Track List prefix options!
+            </p>
           </div>
         </div>
       );

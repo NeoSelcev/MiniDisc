@@ -68,7 +68,7 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
     const fontFamily = settings.design.fontFamilies?.spine || 'Arial';
     const lineHeight = customization.lineHeight || settings.design.lineHeights?.spine || 1.2;
     const fontSize = customization.fontSize || settings.design.fontSizes?.spine || 8;
-    const letterSpacing = customization.letterSpacing !== undefined ? customization.letterSpacing : 0;
+    const letterSpacing = customization.letterSpacing !== undefined ? customization.letterSpacing : (settings.design.letterSpacing?.spine || 0);
     
     return (
       <div
@@ -195,32 +195,79 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
   };
   
   const renderBack = () => {
+    // Track List
     const fontSize = customization.trackListFontSize || settings.design.fontSizes?.trackList || 8;
+    const trackFont = customization.trackListFontFamily || settings.design.fontFamilies?.trackList || 'Arial';
+    const trackStyle = {
+      bold: customization.trackListFontBold !== undefined ? customization.trackListFontBold : (settings.design.fontStyles?.trackList?.bold || false),
+      italic: customization.trackListFontItalic !== undefined ? customization.trackListFontItalic : (settings.design.fontStyles?.trackList?.italic || false),
+      underline: customization.trackListFontUnderline !== undefined ? customization.trackListFontUnderline : (settings.design.fontStyles?.trackList?.underline || false),
+    };
+    const lineHeight = customization.trackListLineHeight !== undefined ? customization.trackListLineHeight : (settings.design.lineHeights?.trackList || 1.2);
+    const letterSpacing = customization.trackListLetterSpacing !== undefined ? customization.trackListLetterSpacing : (settings.design.letterSpacing?.trackList || 0);
+    const trackListStyle = customization.trackListStyle || settings.design.trackListStyle || 'numbers';
+    
+    // Album Title
     const titleSize = customization.titleFontSize || settings.design.fontSizes?.holderBackTitle || 14;
+    const titleFont = customization.titleFontFamily || settings.design.fontFamilies?.holderBackTitle || 'Arial';
+    const titleStyle = {
+      bold: customization.titleFontBold !== undefined ? customization.titleFontBold : (settings.design.fontStyles?.holderBackTitle?.bold || false),
+      italic: customization.titleFontItalic !== undefined ? customization.titleFontItalic : (settings.design.fontStyles?.holderBackTitle?.italic || false),
+      underline: customization.titleFontUnderline !== undefined ? customization.titleFontUnderline : (settings.design.fontStyles?.holderBackTitle?.underline || false),
+    };
+    const titleLineHeight = customization.titleLineHeight !== undefined ? customization.titleLineHeight : (settings.design.lineHeights?.holderBackTitle || 1.2);
+    const titleLetterSpacing = customization.titleLetterSpacing !== undefined ? customization.titleLetterSpacing : (settings.design.letterSpacing?.holderBackTitle || 0);
+    
+    // Artist Name
     const artistSize = customization.artistFontSize || settings.design.fontSizes?.holderBackArtist || 10;
+    const artistFont = customization.artistFontFamily || settings.design.fontFamilies?.holderBackArtist || 'Arial';
+    const artistStyle = {
+      bold: customization.artistFontBold !== undefined ? customization.artistFontBold : (settings.design.fontStyles?.holderBackArtist?.bold || false),
+      italic: customization.artistFontItalic !== undefined ? customization.artistFontItalic : (settings.design.fontStyles?.holderBackArtist?.italic || false),
+      underline: customization.artistFontUnderline !== undefined ? customization.artistFontUnderline : (settings.design.fontStyles?.holderBackArtist?.underline || false),
+    };
+    const artistLineHeight = customization.artistLineHeight !== undefined ? customization.artistLineHeight : (settings.design.lineHeights?.holderBackArtist || 1.2);
+    const artistLetterSpacing = customization.artistLetterSpacing !== undefined ? customization.artistLetterSpacing : (settings.design.letterSpacing?.holderBackArtist || 0);
+    
+    // Year of Production
     const yearSize = customization.yearFontSize || settings.design.fontSizes?.holderBackYear || 9;
-    const lineHeight = customization.lineHeight || settings.design.lineHeights?.trackList || 1.2;
-    const letterSpacing = customization.letterSpacing !== undefined ? customization.letterSpacing : 0;
+    const yearFont = customization.yearFontFamily || settings.design.fontFamilies?.holderBackYear || 'Arial';
+    const yearStyle = {
+      bold: customization.yearFontBold !== undefined ? customization.yearFontBold : (settings.design.fontStyles?.holderBackYear?.bold || false),
+      italic: customization.yearFontItalic !== undefined ? customization.yearFontItalic : (settings.design.fontStyles?.holderBackYear?.italic || false),
+      underline: customization.yearFontUnderline !== undefined ? customization.yearFontUnderline : (settings.design.fontStyles?.holderBackYear?.underline || false),
+    };
+    const yearLineHeight = customization.yearLineHeight !== undefined ? customization.yearLineHeight : (settings.design.lineHeights?.holderBackYear || 1.2);
+    const yearLetterSpacing = customization.yearLetterSpacing !== undefined ? customization.yearLetterSpacing : (settings.design.letterSpacing?.holderBackYear || 0);
     
-    const titleStyle = settings.design.fontStyles?.holderBackTitle || {};
-    const artistStyle = settings.design.fontStyles?.holderBackArtist || {};
-    const yearStyle = settings.design.fontStyles?.holderBackYear || {};
-    const trackStyle = settings.design.fontStyles?.trackList || {};
-    
-    const titleFont = settings.design.fontFamilies?.holderBackTitle || 'Arial';
-    const artistFont = settings.design.fontFamilies?.holderBackArtist || 'Arial';
-    const yearFont = settings.design.fontFamilies?.holderBackYear || 'Arial';
-    const trackFont = settings.design.fontFamilies?.trackList || 'Arial';
-    
-    const titleLineHeight = settings.design.lineHeights?.holderBackTitle || 1.2;
-    const artistLineHeight = settings.design.lineHeights?.holderBackArtist || 1.2;
-    const yearLineHeight = settings.design.lineHeights?.holderBackYear || 1.2;
+    // Track Duration
+    const durationSize = customization.trackDurationFontSize || settings.design.fontSizes?.trackDuration || 4.5;
+    const durationFont = customization.trackDurationFontFamily || settings.design.fontFamilies?.trackDuration || 'Arial';
+    const durationStyle = {
+      bold: customization.trackDurationFontBold !== undefined ? customization.trackDurationFontBold : (settings.design.fontStyles?.trackDuration?.bold || false),
+      italic: customization.trackDurationFontItalic !== undefined ? customization.trackDurationFontItalic : (settings.design.fontStyles?.trackDuration?.italic || false),
+      underline: customization.trackDurationFontUnderline !== undefined ? customization.trackDurationFontUnderline : (settings.design.fontStyles?.trackDuration?.underline || false),
+    };
+    const durationLineHeight = customization.trackDurationLineHeight !== undefined ? customization.trackDurationLineHeight : (settings.design.lineHeights?.trackDuration || 1.2);
+    const durationLetterSpacing = customization.trackDurationLetterSpacing !== undefined ? customization.trackDurationLetterSpacing : (settings.design.letterSpacing?.trackDuration || 0);
     
     const getFontStyleCSS = (style) => ({
       fontWeight: style.bold ? 'bold' : 'normal',
       fontStyle: style.italic ? 'italic' : 'normal',
       textDecoration: style.underline ? 'underline' : 'none',
     });
+    
+    const getTrackPrefix = (trackNumber) => {
+      switch (trackListStyle) {
+        case 'dashes':
+          return '- ';
+        case 'bullets':
+          return '• ';
+        case 'numbers':
+        default:
+          return `${trackNumber}. `;
+      }
+    };
     
     return (
       <div className="w-full h-full bg-white p-1 overflow-hidden" style={{ fontSize: `${fontSize}pt` }}>
@@ -231,6 +278,7 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
             fontSize: `${titleSize}pt`,
             fontFamily: titleFont,
             lineHeight: titleLineHeight,
+            letterSpacing: `${titleLetterSpacing}em`,
             ...getFontStyleCSS(titleStyle),
           }}
         >
@@ -247,6 +295,7 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
             style={{
               fontFamily: artistFont,
               lineHeight: artistLineHeight,
+              letterSpacing: `${artistLetterSpacing}em`,
               ...getFontStyleCSS(artistStyle)
             }}
           >
@@ -258,6 +307,7 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
               fontSize: `${yearSize}pt`,
               fontFamily: yearFont,
               lineHeight: yearLineHeight,
+              letterSpacing: `${yearLetterSpacing}em`,
               ...getFontStyleCSS(yearStyle),
             }}
           >
@@ -273,13 +323,22 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
               className="flex justify-between truncate"
               style={{
                 fontFamily: trackFont,
+                fontSize: `${fontSize}pt`,
                 ...getFontStyleCSS(trackStyle)
               }}
             >
               <span className="truncate flex-1">
-                {track.number}. {track.name}
+                {getTrackPrefix(track.number)}{track.name}
               </span>
-              <span className="ml-2 text-gray-600">
+              <span 
+                className="ml-2 text-gray-600"
+                style={{
+                  fontSize: `${durationSize}pt`,
+                  fontFamily: durationFont,
+                  letterSpacing: `${durationLetterSpacing}em`,
+                  ...getFontStyleCSS(durationStyle),
+                }}
+              >
                 {formatDuration(track.duration)}
               </span>
             </div>

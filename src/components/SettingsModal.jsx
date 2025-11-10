@@ -3,6 +3,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faSpotify } from '@fortawesome/free-brands-svg-icons';
 import useAppStore from '../store/useAppStore';
+import { 
+  FontFamilySelect, 
+  FontStyleCheckboxes, 
+  FontSizeInput, 
+  LineHeightSlider 
+} from './TypographyControls';
 
 function SettingsModal({ isOpen, onClose }) {
   const { settings, updateSettings } = useAppStore();
@@ -176,6 +182,29 @@ function SettingsModal({ isOpen, onClose }) {
           ...settings.design.lineHeights,
           [field]: parseFloat(value) || 1.2,
         },
+      },
+    });
+  };
+  
+  const updateLetterSpacing = (field, value) => {
+    updateSettings({
+      ...settings,
+      design: {
+        ...settings.design,
+        letterSpacing: {
+          ...settings.design.letterSpacing,
+          [field]: parseFloat(value) || 0,
+        },
+      },
+    });
+  };
+  
+  const updateTrackListStyle = (value) => {
+    updateSettings({
+      ...settings,
+      design: {
+        ...settings.design,
+        trackListStyle: value,
       },
     });
   };
@@ -436,41 +465,26 @@ function SettingsModal({ isOpen, onClose }) {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {/* Font Family */}
-                    <label className="block text-sm">
-                      Font Family
-                      <select
-                        value={settings.design.fontFamilies?.[key] || 'Arial'}
+                    <div className="block text-sm">
+                      <FontFamilySelect
+                        value={settings.design.fontFamilies?.[key]}
                         onChange={(e) => updateFontFamily(key, e.target.value)}
                         className="mt-1 input-field w-full"
-                      >
-                        <option value="Arial">Arial</option>
-                        <option value="Helvetica">Helvetica</option>
-                        <option value="Times New Roman">Times New Roman</option>
-                        <option value="Courier New">Courier New</option>
-                        <option value="Georgia">Georgia</option>
-                        <option value="Verdana">Verdana</option>
-                        <option value="Tahoma">Tahoma</option>
-                        <option value="Trebuchet MS">Trebuchet MS</option>
-                        <option value="Impact">Impact</option>
-                        <option value="Comic Sans MS">Comic Sans MS</option>
-                      </select>
-                    </label>
+                      />
+                    </div>
                     
                     {/* Font Size */}
-                    <label className="block text-sm">
-                      Font Size (pt)
-                      <input
-                        type="number"
-                        value={settings.design.fontSizes?.[key] || 8}
+                    <div className="block text-sm">
+                      <FontSizeInput
+                        value={settings.design.fontSizes?.[key]}
                         onChange={(e) => updateFontSize(key, e.target.value)}
                         className="mt-1 input-field w-full"
-                        step="0.5"
                       />
-                    </label>
+                    </div>
                     
                     {/* Line Height */}
-                    <label className="block text-sm">
-                      Line Height
+                    <div className="block text-sm">
+                      <label className="block text-sm mb-1">Line Height</label>
                       <input
                         type="number"
                         value={settings.design.lineHeights?.[key] || 1.2}
@@ -480,42 +494,18 @@ function SettingsModal({ isOpen, onClose }) {
                         min="0.5"
                         max="3"
                       />
-                    </label>
+                    </div>
                     
                     {/* Font Styles */}
                     <div className="block text-sm">
-                      <div className="text-sm mb-1">Font Style</div>
-                      <div className="flex items-center space-x-3 mt-2">
-                        <label className="flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={settings.design.fontStyles?.[key]?.bold || false}
-                            onChange={(e) => updateFontStyle(key, 'bold', e.target.checked)}
-                            className="mr-1"
-                          />
-                          <span className="font-bold">B</span>
-                        </label>
-                        
-                        <label className="flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={settings.design.fontStyles?.[key]?.italic || false}
-                            onChange={(e) => updateFontStyle(key, 'italic', e.target.checked)}
-                            className="mr-1"
-                          />
-                          <span className="italic">I</span>
-                        </label>
-                        
-                        <label className="flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={settings.design.fontStyles?.[key]?.underline || false}
-                            onChange={(e) => updateFontStyle(key, 'underline', e.target.checked)}
-                            className="mr-1"
-                          />
-                          <span className="underline">U</span>
-                        </label>
-                      </div>
+                      <FontStyleCheckboxes
+                        bold={settings.design.fontStyles?.[key]?.bold}
+                        italic={settings.design.fontStyles?.[key]?.italic}
+                        underline={settings.design.fontStyles?.[key]?.underline}
+                        onBoldChange={(e) => updateFontStyle(key, 'bold', e.target.checked)}
+                        onItalicChange={(e) => updateFontStyle(key, 'italic', e.target.checked)}
+                        onUnderlineChange={(e) => updateFontStyle(key, 'underline', e.target.checked)}
+                      />
                     </div>
                   </div>
                 </div>
@@ -527,72 +517,33 @@ function SettingsModal({ isOpen, onClose }) {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {/* Font Family */}
-                  <label className="block text-sm">
-                    Font Family
-                    <select
-                      value={settings.design.fontFamilies?.spine || 'Arial'}
+                  <div className="block text-sm">
+                    <FontFamilySelect
+                      value={settings.design.fontFamilies?.spine}
                       onChange={(e) => updateFontFamily('spine', e.target.value)}
                       className="mt-1 input-field w-full"
-                    >
-                      <option value="Arial">Arial</option>
-                      <option value="Helvetica">Helvetica</option>
-                      <option value="Times New Roman">Times New Roman</option>
-                      <option value="Courier New">Courier New</option>
-                      <option value="Georgia">Georgia</option>
-                      <option value="Verdana">Verdana</option>
-                      <option value="Tahoma">Tahoma</option>
-                      <option value="Trebuchet MS">Trebuchet MS</option>
-                      <option value="Impact">Impact</option>
-                      <option value="Comic Sans MS">Comic Sans MS</option>
-                    </select>
-                  </label>
+                    />
+                  </div>
                   
                   {/* Font Size */}
-                  <label className="block text-sm">
-                    Font Size (pt)
-                    <input
-                      type="number"
-                      value={settings.design.fontSizes?.spine || 8}
+                  <div className="block text-sm">
+                    <FontSizeInput
+                      value={settings.design.fontSizes?.spine}
                       onChange={(e) => updateFontSize('spine', e.target.value)}
                       className="mt-1 input-field w-full"
-                      step="0.5"
                     />
-                  </label>
+                  </div>
                   
                   {/* Font Styles */}
                   <div className="block text-sm">
-                    <div className="text-sm mb-1">Font Style</div>
-                    <div className="flex items-center space-x-3 mt-2">
-                      <label className="flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={settings.design.fontStyles?.spine?.bold || false}
-                          onChange={(e) => updateFontStyle('spine', 'bold', e.target.checked)}
-                          className="mr-1"
-                        />
-                        <span className="font-bold">B</span>
-                      </label>
-                      
-                      <label className="flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={settings.design.fontStyles?.spine?.italic || false}
-                          onChange={(e) => updateFontStyle('spine', 'italic', e.target.checked)}
-                          className="mr-1"
-                        />
-                        <span className="italic">I</span>
-                      </label>
-                      
-                      <label className="flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={settings.design.fontStyles?.spine?.underline || false}
-                          onChange={(e) => updateFontStyle('spine', 'underline', e.target.checked)}
-                          className="mr-1"
-                        />
-                        <span className="underline">U</span>
-                      </label>
-                    </div>
+                    <FontStyleCheckboxes
+                      bold={settings.design.fontStyles?.spine?.bold}
+                      italic={settings.design.fontStyles?.spine?.italic}
+                      underline={settings.design.fontStyles?.spine?.underline}
+                      onBoldChange={(e) => updateFontStyle('spine', 'bold', e.target.checked)}
+                      onItalicChange={(e) => updateFontStyle('spine', 'italic', e.target.checked)}
+                      onUnderlineChange={(e) => updateFontStyle('spine', 'underline', e.target.checked)}
+                    />
                   </div>
                 </div>
                 <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">

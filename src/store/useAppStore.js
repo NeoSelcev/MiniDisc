@@ -99,6 +99,7 @@ const DEFAULT_SETTINGS = {
       holderBackArtist: 5, // pt - Back cover artist name
       holderBackYear: 5, // pt - Back cover year
       trackList: 4.5, // pt - Track names on back cover
+      trackDuration: 4.5, // pt - Track duration on back cover
     },
     fontStyles: {
       spine: { bold: false, italic: false, underline: false },
@@ -107,6 +108,7 @@ const DEFAULT_SETTINGS = {
       holderBackArtist: { bold: true, italic: false, underline: false },
       holderBackYear: { bold: false, italic: false, underline: false },
       trackList: { bold: true, italic: false, underline: false },
+      trackDuration: { bold: false, italic: false, underline: false },
     },
     fontFamilies: {
       spine: 'Arial',
@@ -115,6 +117,7 @@ const DEFAULT_SETTINGS = {
       holderBackArtist: 'Arial',
       holderBackYear: 'Arial',
       trackList: 'Arial',
+      trackDuration: 'Arial',
     },
     lineHeights: {
       spine: 1.2, // Line height multiplier
@@ -123,7 +126,18 @@ const DEFAULT_SETTINGS = {
       holderBackArtist: 1.2,
       holderBackYear: 1.2,
       trackList: 1.2,
+      trackDuration: 1.2,
     },
+    letterSpacing: {
+      spine: 0,
+      face: 0,
+      holderBackTitle: 0,
+      holderBackArtist: 0,
+      holderBackYear: 0,
+      trackList: 0,
+      trackDuration: 0,
+    },
+    trackListStyle: 'numbers', // 'numbers', 'dashes', 'bullets'
     fontSizeRange: { min: 6, max: 24 }, // Overall limits
   },
   layout: {
@@ -343,14 +357,51 @@ const useAppStore = create(
             lineHeight: settings.design?.lineHeights?.spine || 1.2,
           },
           back: {
-            // Album info
+            // Album Title
             titleFontSize: settings.design?.fontSizes?.holderBackTitle || 14,
+            titleFontFamily: settings.design?.fontFamilies?.holderBackTitle || 'Arial',
+            titleFontBold: settings.design?.fontStyles?.holderBackTitle?.bold || false,
+            titleFontItalic: settings.design?.fontStyles?.holderBackTitle?.italic || false,
+            titleFontUnderline: settings.design?.fontStyles?.holderBackTitle?.underline || false,
+            titleLineHeight: settings.design?.lineHeights?.holderBackTitle || 1.2,
+            titleLetterSpacing: settings.design?.letterSpacing?.holderBackTitle || 0,
+            
+            // Artist Name
             artistFontSize: settings.design?.fontSizes?.holderBackArtist || 10,
+            artistFontFamily: settings.design?.fontFamilies?.holderBackArtist || 'Arial',
+            artistFontBold: settings.design?.fontStyles?.holderBackArtist?.bold || false,
+            artistFontItalic: settings.design?.fontStyles?.holderBackArtist?.italic || false,
+            artistFontUnderline: settings.design?.fontStyles?.holderBackArtist?.underline || false,
+            artistLineHeight: settings.design?.lineHeights?.holderBackArtist || 1.2,
+            artistLetterSpacing: settings.design?.letterSpacing?.holderBackArtist || 0,
+            
+            // Year of Production
             yearFontSize: settings.design?.fontSizes?.holderBackYear || 9,
-            // Track list
+            yearFontFamily: settings.design?.fontFamilies?.holderBackYear || 'Arial',
+            yearFontBold: settings.design?.fontStyles?.holderBackYear?.bold || false,
+            yearFontItalic: settings.design?.fontStyles?.holderBackYear?.italic || false,
+            yearFontUnderline: settings.design?.fontStyles?.holderBackYear?.underline || false,
+            yearLineHeight: settings.design?.lineHeights?.holderBackYear || 1.2,
+            yearLetterSpacing: settings.design?.letterSpacing?.holderBackYear || 0,
+            
+            // Track List
             trackListFontSize: settings.design?.fontSizes?.trackList || 8,
-            letterSpacing: 0,
-            lineHeight: settings.design?.lineHeights?.trackList || 1.2,
+            trackListFontFamily: settings.design?.fontFamilies?.trackList || 'Arial',
+            trackListFontBold: settings.design?.fontStyles?.trackList?.bold || false,
+            trackListFontItalic: settings.design?.fontStyles?.trackList?.italic || false,
+            trackListFontUnderline: settings.design?.fontStyles?.trackList?.underline || false,
+            trackListLineHeight: settings.design?.lineHeights?.trackList || 1.2,
+            trackListLetterSpacing: settings.design?.letterSpacing?.trackList || 0,
+            trackListStyle: settings.design?.trackListStyle || 'numbers',
+            
+            // Track Duration
+            trackDurationFontSize: settings.design?.fontSizes?.trackDuration || 6,
+            trackDurationFontFamily: settings.design?.fontFamilies?.trackDuration || 'Arial',
+            trackDurationFontBold: settings.design?.fontStyles?.trackDuration?.bold || false,
+            trackDurationFontItalic: settings.design?.fontStyles?.trackDuration?.italic || false,
+            trackDurationFontUnderline: settings.design?.fontStyles?.trackDuration?.underline || false,
+            trackDurationLineHeight: settings.design?.lineHeights?.trackDuration || 1.2,
+            trackDurationLetterSpacing: settings.design?.letterSpacing?.trackDuration || 0,
           },
         };
         
