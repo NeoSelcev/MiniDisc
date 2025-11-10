@@ -972,8 +972,6 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
               </div>
             </div>
           </div>
-            </div>
-          </div>
           
           {/* Success Summary */}
           <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded border border-green-300 dark:border-green-700">
