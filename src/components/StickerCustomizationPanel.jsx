@@ -544,49 +544,74 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
               <span className="text-purple-600 dark:text-purple-400">1.</span> Album Title
             </h4>
             
-            <div className="space-y-2">
-              <div>
-                <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
-                  Font Size: <strong>{customization.titleFontSize}pt</strong>
-                </label>
-                <input
-                  type="range"
-                  min="8"
-                  max="20"
-                  step="0.5"
-                  value={customization.titleFontSize}
-                  onChange={(e) => handleChange('titleFontSize', parseFloat(e.target.value))}
-                  className="w-full"
+            <div className="space-y-3">
+              {/* Row 1: Font Family + Font Style */}
+              <div className="grid grid-cols-2 gap-3">
+                <FontFamilySelect
+                  value={customization.titleFontFamily}
+                  onChange={(e) => handleChange('titleFontFamily', e.target.value)}
+                  label="Font Family"
+                  className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-xs"
+                />
+                
+                <FontStyleCheckboxes
+                  bold={customization.titleFontBold}
+                  italic={customization.titleFontItalic}
+                  underline={customization.titleFontUnderline}
+                  onBoldChange={(e) => handleChange('titleFontBold', e.target.checked)}
+                  onItalicChange={(e) => handleChange('titleFontItalic', e.target.checked)}
+                  onUnderlineChange={(e) => handleChange('titleFontUnderline', e.target.checked)}
+                  label="Font Style"
                 />
               </div>
               
-              <FontFamilySelect
-                value={customization.titleFontFamily}
-                onChange={(e) => handleChange('titleFontFamily', e.target.value)}
-                label="Font Family"
-                className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-xs"
-              />
-              
-              <FontStyleCheckboxes
-                bold={customization.titleFontBold}
-                italic={customization.titleFontItalic}
-                underline={customization.titleFontUnderline}
-                onBoldChange={(e) => handleChange('titleFontBold', e.target.checked)}
-                onItalicChange={(e) => handleChange('titleFontItalic', e.target.checked)}
-                onUnderlineChange={(e) => handleChange('titleFontUnderline', e.target.checked)}
-                label="Font Style"
-              />
-              
-              <LineHeightLetterSpacingGrid
-                lineHeightValue={customization.titleLineHeight}
-                lineHeightOnChange={(e) => handleChange('titleLineHeight', parseFloat(e.target.value))}
-                lineHeightMin={0.8}
-                lineHeightMax={2}
-                letterSpacingValue={customization.titleLetterSpacing}
-                letterSpacingOnChange={(e) => handleChange('titleLetterSpacing', parseFloat(e.target.value))}
-                letterSpacingMin={0}
-                letterSpacingMax={0.2}
-              />
+              {/* Row 2: Font Size + Line Height + Letter Spacing */}
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                    Font Size: <strong>{customization.titleFontSize}pt</strong>
+                  </label>
+                  <input
+                    type="range"
+                    min="8"
+                    max="20"
+                    step="0.5"
+                    value={customization.titleFontSize}
+                    onChange={(e) => handleChange('titleFontSize', parseFloat(e.target.value))}
+                    className="w-full"
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                    Line Height: <strong>{customization.titleLineHeight}</strong>
+                  </label>
+                  <input
+                    type="range"
+                    min="0.8"
+                    max="2"
+                    step="0.1"
+                    value={customization.titleLineHeight}
+                    onChange={(e) => handleChange('titleLineHeight', parseFloat(e.target.value))}
+                    className="w-full"
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                    Letter Spacing: <strong>{customization.titleLetterSpacing}</strong>
+                  </label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="0.2"
+                    step="0.01"
+                    value={customization.titleLetterSpacing}
+                    onChange={(e) => handleChange('titleLetterSpacing', parseFloat(e.target.value))}
+                    className="w-full"
+                  />
+                </div>
+              </div>
             </div>
           </div>
           
@@ -596,52 +621,76 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
               <span className="text-purple-600 dark:text-purple-400">2.</span> Artist Name
             </h4>
             
-            <div className="space-y-2">
-              <div>
-                <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
-                  Font Size: <strong>{customization.artistFontSize}pt</strong>
-                </label>
-                <input
-                  type="range"
-                  min="6"
-                  max="16"
-                  step="0.5"
-                  value={customization.artistFontSize}
-                  onChange={(e) => handleChange('artistFontSize', parseFloat(e.target.value))}
-                  className="w-full"
+            <div className="space-y-3">
+              {/* Row 1: Font Family + Font Style */}
+              <div className="grid grid-cols-2 gap-3">
+                <FontFamilySelect
+                  value={settings.design.fontFamilies?.holderBackArtist}
+                  onChange={(e) => updateFontFamily('holderBackArtist', e.target.value)}
+                  label="Font Family"
+                  showGlobalLabel={true}
+                  className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-xs"
+                />
+                
+                <FontStyleCheckboxes
+                  bold={settings.design.fontStyles?.holderBackArtist?.bold}
+                  italic={settings.design.fontStyles?.holderBackArtist?.italic}
+                  underline={settings.design.fontStyles?.holderBackArtist?.underline}
+                  onBoldChange={(e) => updateFontStyle('holderBackArtist', 'bold', e.target.checked)}
+                  onItalicChange={(e) => updateFontStyle('holderBackArtist', 'italic', e.target.checked)}
+                  onUnderlineChange={(e) => updateFontStyle('holderBackArtist', 'underline', e.target.checked)}
+                  label="Font Style"
+                  showGlobalLabel={true}
                 />
               </div>
               
-              <FontFamilySelect
-                value={settings.design.fontFamilies?.holderBackArtist}
-                onChange={(e) => updateFontFamily('holderBackArtist', e.target.value)}
-                label="Font Family"
-                showGlobalLabel={true}
-                className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-xs"
-              />
-              
-              <FontStyleCheckboxes
-                bold={settings.design.fontStyles?.holderBackArtist?.bold}
-                italic={settings.design.fontStyles?.holderBackArtist?.italic}
-                underline={settings.design.fontStyles?.holderBackArtist?.underline}
-                onBoldChange={(e) => updateFontStyle('holderBackArtist', 'bold', e.target.checked)}
-                onItalicChange={(e) => updateFontStyle('holderBackArtist', 'italic', e.target.checked)}
-                onUnderlineChange={(e) => updateFontStyle('holderBackArtist', 'underline', e.target.checked)}
-                label="Font Style"
-                showGlobalLabel={true}
-              />
-              
-              <LineHeightLetterSpacingGrid
-                lineHeightValue={settings.design.lineHeights?.holderBackArtist}
-                lineHeightOnChange={(e) => updateLineHeight('holderBackArtist', e.target.value)}
-                lineHeightMin={0.8}
-                lineHeightMax={2}
-                letterSpacingValue={settings.design.letterSpacing?.holderBackArtist}
-                letterSpacingOnChange={(e) => updateLetterSpacing('holderBackArtist', e.target.value)}
-                letterSpacingMin={0}
-                letterSpacingMax={0.2}
-                showGlobalLabel={true}
-              />
+              {/* Row 2: Font Size + Line Height + Letter Spacing */}
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                    Font Size: <strong>{customization.artistFontSize}pt</strong>
+                  </label>
+                  <input
+                    type="range"
+                    min="6"
+                    max="16"
+                    step="0.5"
+                    value={customization.artistFontSize}
+                    onChange={(e) => handleChange('artistFontSize', parseFloat(e.target.value))}
+                    className="w-full"
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                    Line Height: <strong>{settings.design.lineHeights?.holderBackArtist}</strong> <span className="text-xs opacity-60">(global)</span>
+                  </label>
+                  <input
+                    type="range"
+                    min="0.8"
+                    max="2"
+                    step="0.1"
+                    value={settings.design.lineHeights?.holderBackArtist || 1.2}
+                    onChange={(e) => updateLineHeight('holderBackArtist', e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                    Letter Spacing: <strong>{settings.design.letterSpacing?.holderBackArtist}</strong> <span className="text-xs opacity-60">(global)</span>
+                  </label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="0.2"
+                    step="0.01"
+                    value={settings.design.letterSpacing?.holderBackArtist || 0}
+                    onChange={(e) => updateLetterSpacing('holderBackArtist', e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+              </div>
             </div>
           </div>
           
@@ -651,52 +700,76 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
               <span className="text-purple-600 dark:text-purple-400">3.</span> Year of Production
             </h4>
             
-            <div className="space-y-2">
-              <div>
-                <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
-                  Font Size: <strong>{customization.yearFontSize}pt</strong>
-                </label>
-                <input
-                  type="range"
-                  min="6"
-                  max="14"
-                  step="0.5"
-                  value={customization.yearFontSize}
-                  onChange={(e) => handleChange('yearFontSize', parseFloat(e.target.value))}
-                  className="w-full"
+            <div className="space-y-3">
+              {/* Row 1: Font Family + Font Style */}
+              <div className="grid grid-cols-2 gap-3">
+                <FontFamilySelect
+                  value={settings.design.fontFamilies?.holderBackYear}
+                  onChange={(e) => updateFontFamily('holderBackYear', e.target.value)}
+                  label="Font Family"
+                  showGlobalLabel={true}
+                  className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-xs"
+                />
+                
+                <FontStyleCheckboxes
+                  bold={settings.design.fontStyles?.holderBackYear?.bold}
+                  italic={settings.design.fontStyles?.holderBackYear?.italic}
+                  underline={settings.design.fontStyles?.holderBackYear?.underline}
+                  onBoldChange={(e) => updateFontStyle('holderBackYear', 'bold', e.target.checked)}
+                  onItalicChange={(e) => updateFontStyle('holderBackYear', 'italic', e.target.checked)}
+                  onUnderlineChange={(e) => updateFontStyle('holderBackYear', 'underline', e.target.checked)}
+                  label="Font Style"
+                  showGlobalLabel={true}
                 />
               </div>
               
-              <FontFamilySelect
-                value={settings.design.fontFamilies?.holderBackYear}
-                onChange={(e) => updateFontFamily('holderBackYear', e.target.value)}
-                label="Font Family"
-                showGlobalLabel={true}
-                className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-xs"
-              />
-              
-              <FontStyleCheckboxes
-                bold={settings.design.fontStyles?.holderBackYear?.bold}
-                italic={settings.design.fontStyles?.holderBackYear?.italic}
-                underline={settings.design.fontStyles?.holderBackYear?.underline}
-                onBoldChange={(e) => updateFontStyle('holderBackYear', 'bold', e.target.checked)}
-                onItalicChange={(e) => updateFontStyle('holderBackYear', 'italic', e.target.checked)}
-                onUnderlineChange={(e) => updateFontStyle('holderBackYear', 'underline', e.target.checked)}
-                label="Font Style"
-                showGlobalLabel={true}
-              />
-              
-              <LineHeightLetterSpacingGrid
-                lineHeightValue={settings.design.lineHeights?.holderBackYear}
-                lineHeightOnChange={(e) => updateLineHeight('holderBackYear', e.target.value)}
-                lineHeightMin={0.8}
-                lineHeightMax={2}
-                letterSpacingValue={settings.design.letterSpacing?.holderBackYear}
-                letterSpacingOnChange={(e) => updateLetterSpacing('holderBackYear', e.target.value)}
-                letterSpacingMin={0}
-                letterSpacingMax={0.2}
-                showGlobalLabel={true}
-              />
+              {/* Row 2: Font Size + Line Height + Letter Spacing */}
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                    Font Size: <strong>{customization.yearFontSize}pt</strong>
+                  </label>
+                  <input
+                    type="range"
+                    min="6"
+                    max="14"
+                    step="0.5"
+                    value={customization.yearFontSize}
+                    onChange={(e) => handleChange('yearFontSize', parseFloat(e.target.value))}
+                    className="w-full"
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                    Line Height: <strong>{settings.design.lineHeights?.holderBackYear}</strong> <span className="text-xs opacity-60">(global)</span>
+                  </label>
+                  <input
+                    type="range"
+                    min="0.8"
+                    max="2"
+                    step="0.1"
+                    value={settings.design.lineHeights?.holderBackYear || 1.2}
+                    onChange={(e) => updateLineHeight('holderBackYear', e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                    Letter Spacing: <strong>{settings.design.letterSpacing?.holderBackYear}</strong> <span className="text-xs opacity-60">(global)</span>
+                  </label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="0.2"
+                    step="0.01"
+                    value={settings.design.letterSpacing?.holderBackYear || 0}
+                    onChange={(e) => updateLetterSpacing('holderBackYear', e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+              </div>
             </div>
           </div>
           
@@ -706,51 +779,76 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
               <span className="text-purple-600 dark:text-purple-400">4.</span> Track List (Track Names)
             </h4>
             
-            <div className="space-y-2">
-              <div>
-                <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
-                  Font Size: <strong>{customization.trackListFontSize}pt</strong>
-                </label>
-                <input
-                  type="range"
-                  min="3"
-                  max="10"
-                  step="0.5"
-                  value={customization.trackListFontSize}
-                  onChange={(e) => handleChange('trackListFontSize', parseFloat(e.target.value))}
-                  className="w-full"
+            <div className="space-y-3">
+              {/* Row 1: Font Family + Font Style */}
+              <div className="grid grid-cols-2 gap-3">
+                <FontFamilySelect
+                  value={settings.design.fontFamilies?.trackList}
+                  onChange={(e) => updateFontFamily('trackList', e.target.value)}
+                  label="Font Family"
+                  showGlobalLabel={true}
+                  className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-xs"
+                />
+                
+                <FontStyleCheckboxes
+                  bold={settings.design.fontStyles?.trackList?.bold}
+                  italic={settings.design.fontStyles?.trackList?.italic}
+                  underline={settings.design.fontStyles?.trackList?.underline}
+                  onBoldChange={(e) => updateFontStyle('trackList', 'bold', e.target.checked)}
+                  onItalicChange={(e) => updateFontStyle('trackList', 'italic', e.target.checked)}
+                  onUnderlineChange={(e) => updateFontStyle('trackList', 'underline', e.target.checked)}
+                  label="Font Style"
+                  showGlobalLabel={true}
                 />
               </div>
               
-              <FontFamilySelect
-                value={settings.design.fontFamilies?.trackList}
-                onChange={(e) => updateFontFamily('trackList', e.target.value)}
-                label="Font Family"
-                showGlobalLabel={true}
-                className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-xs"
-              />
-              
-              <FontStyleCheckboxes
-                bold={settings.design.fontStyles?.trackList?.bold}
-                italic={settings.design.fontStyles?.trackList?.italic}
-                underline={settings.design.fontStyles?.trackList?.underline}
-                onBoldChange={(e) => updateFontStyle('trackList', 'bold', e.target.checked)}
-                onItalicChange={(e) => updateFontStyle('trackList', 'italic', e.target.checked)}
-                onUnderlineChange={(e) => updateFontStyle('trackList', 'underline', e.target.checked)}
-                label="Font Style"
-                showGlobalLabel={true}
-              />
-              
-              <LineHeightLetterSpacingGrid
-                lineHeightValue={customization.lineHeight}
-                lineHeightOnChange={(e) => handleChange('lineHeight', parseFloat(e.target.value))}
-                lineHeightMin={1}
-                lineHeightMax={2.5}
-                letterSpacingValue={customization.letterSpacing}
-                letterSpacingOnChange={(e) => handleChange('letterSpacing', parseFloat(e.target.value))}
-                letterSpacingMin={0}
-                letterSpacingMax={0.15}
-              />
+              {/* Row 2: Font Size + Line Height + Letter Spacing */}
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                    Font Size: <strong>{customization.trackListFontSize}pt</strong>
+                  </label>
+                  <input
+                    type="range"
+                    min="3"
+                    max="10"
+                    step="0.5"
+                    value={customization.trackListFontSize}
+                    onChange={(e) => handleChange('trackListFontSize', parseFloat(e.target.value))}
+                    className="w-full"
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                    Line Height: <strong>{customization.lineHeight}</strong>
+                  </label>
+                  <input
+                    type="range"
+                    min="1"
+                    max="2.5"
+                    step="0.1"
+                    value={customization.lineHeight}
+                    onChange={(e) => handleChange('lineHeight', parseFloat(e.target.value))}
+                    className="w-full"
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                    Letter Spacing: <strong>{customization.letterSpacing}</strong>
+                  </label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="0.15"
+                    step="0.01"
+                    value={customization.letterSpacing}
+                    onChange={(e) => handleChange('letterSpacing', parseFloat(e.target.value))}
+                    className="w-full"
+                  />
+                </div>
+              </div>
               
               {/* Track List Style Options */}
               <div className="mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded border border-yellow-300 dark:border-yellow-700">
@@ -802,52 +900,78 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
               <span className="text-purple-600 dark:text-purple-400">5.</span> Track Duration
             </h4>
             
-            <div className="space-y-2">
-              <div>
-                <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
-                  Font Size: <strong>{customization.trackDurationFontSize || 6}pt</strong>
-                </label>
-                <input
-                  type="range"
-                  min="4"
-                  max="10"
-                  step="0.5"
-                  value={customization.trackDurationFontSize || 6}
-                  onChange={(e) => handleChange('trackDurationFontSize', parseFloat(e.target.value))}
-                  className="w-full"
+            <div className="space-y-3">
+              {/* Row 1: Font Family + Font Style */}
+              <div className="grid grid-cols-2 gap-3">
+                <FontFamilySelect
+                  value={settings.design.fontFamilies?.trackDuration}
+                  onChange={(e) => updateFontFamily('trackDuration', e.target.value)}
+                  label="Font Family"
+                  showGlobalLabel={true}
+                  className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-xs"
+                />
+                
+                <FontStyleCheckboxes
+                  bold={settings.design.fontStyles?.trackDuration?.bold}
+                  italic={settings.design.fontStyles?.trackDuration?.italic}
+                  underline={settings.design.fontStyles?.trackDuration?.underline}
+                  onBoldChange={(e) => updateFontStyle('trackDuration', 'bold', e.target.checked)}
+                  onItalicChange={(e) => updateFontStyle('trackDuration', 'italic', e.target.checked)}
+                  onUnderlineChange={(e) => updateFontStyle('trackDuration', 'underline', e.target.checked)}
+                  label="Font Style"
+                  showGlobalLabel={true}
                 />
               </div>
               
-              <FontFamilySelect
-                value={settings.design.fontFamilies?.trackDuration}
-                onChange={(e) => updateFontFamily('trackDuration', e.target.value)}
-                label="Font Family"
-                showGlobalLabel={true}
-                className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-xs"
-              />
-              
-              <FontStyleCheckboxes
-                bold={settings.design.fontStyles?.trackDuration?.bold}
-                italic={settings.design.fontStyles?.trackDuration?.italic}
-                underline={settings.design.fontStyles?.trackDuration?.underline}
-                onBoldChange={(e) => updateFontStyle('trackDuration', 'bold', e.target.checked)}
-                onItalicChange={(e) => updateFontStyle('trackDuration', 'italic', e.target.checked)}
-                onUnderlineChange={(e) => updateFontStyle('trackDuration', 'underline', e.target.checked)}
-                label="Font Style"
-                showGlobalLabel={true}
-              />
-              
-              <LineHeightLetterSpacingGrid
-                lineHeightValue={settings.design.lineHeights?.trackDuration}
-                lineHeightOnChange={(e) => updateLineHeight('trackDuration', e.target.value)}
-                lineHeightMin={0.8}
-                lineHeightMax={2}
-                letterSpacingValue={settings.design.letterSpacing?.trackDuration}
-                letterSpacingOnChange={(e) => updateLetterSpacing('trackDuration', e.target.value)}
-                letterSpacingMin={0}
-                letterSpacingMax={0.2}
-                showGlobalLabel={true}
-              />
+              {/* Row 2: Font Size + Line Height + Letter Spacing */}
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                    Font Size: <strong>{customization.trackDurationFontSize || 6}pt</strong>
+                  </label>
+                  <input
+                    type="range"
+                    min="4"
+                    max="10"
+                    step="0.5"
+                    value={customization.trackDurationFontSize || 6}
+                    onChange={(e) => handleChange('trackDurationFontSize', parseFloat(e.target.value))}
+                    className="w-full"
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                    Line Height: <strong>{settings.design.lineHeights?.trackDuration}</strong> <span className="text-xs opacity-60">(global)</span>
+                  </label>
+                  <input
+                    type="range"
+                    min="0.8"
+                    max="2"
+                    step="0.1"
+                    value={settings.design.lineHeights?.trackDuration || 1.2}
+                    onChange={(e) => updateLineHeight('trackDuration', e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+                    Letter Spacing: <strong>{settings.design.letterSpacing?.trackDuration}</strong> <span className="text-xs opacity-60">(global)</span>
+                  </label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="0.2"
+                    step="0.01"
+                    value={settings.design.letterSpacing?.trackDuration || 0}
+                    onChange={(e) => updateLetterSpacing('trackDuration', e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
             </div>
           </div>
           
