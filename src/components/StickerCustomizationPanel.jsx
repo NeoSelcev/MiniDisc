@@ -560,62 +560,22 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
                 />
               </div>
               
-              <div>
-                <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
-                  Font Family
-                </label>
-                <select
-                  value={customization.titleFontFamily || 'Arial'}
-                  onChange={(e) => handleChange('titleFontFamily', e.target.value)}
-                  className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-xs"
-                >
-                  <option value="Arial">Arial</option>
-                  <option value="Helvetica">Helvetica</option>
-                  <option value="Times New Roman">Times New Roman</option>
-                  <option value="Courier New">Courier New</option>
-                  <option value="Georgia">Georgia</option>
-                  <option value="Verdana">Verdana</option>
-                  <option value="Tahoma">Tahoma</option>
-                  <option value="Trebuchet MS">Trebuchet MS</option>
-                  <option value="Impact">Impact</option>
-                  <option value="Comic Sans MS">Comic Sans MS</option>
-                </select>
-              </div>
+              <FontFamilySelect
+                value={customization.titleFontFamily}
+                onChange={(e) => handleChange('titleFontFamily', e.target.value)}
+                label="Font Family"
+                className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-xs"
+              />
               
-              <div>
-                <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
-                  Font Style
-                </label>
-                <div className="flex items-center gap-3">
-                  <label className="flex items-center cursor-pointer text-xs">
-                    <input
-                      type="checkbox"
-                      checked={customization.titleFontBold || false}
-                      onChange={(e) => handleChange('titleFontBold', e.target.checked)}
-                      className="mr-1"
-                    />
-                    <span className="font-bold">B</span>
-                  </label>
-                  <label className="flex items-center cursor-pointer text-xs">
-                    <input
-                      type="checkbox"
-                      checked={customization.titleFontItalic || false}
-                      onChange={(e) => handleChange('titleFontItalic', e.target.checked)}
-                      className="mr-1"
-                    />
-                    <span className="italic">I</span>
-                  </label>
-                  <label className="flex items-center cursor-pointer text-xs">
-                    <input
-                      type="checkbox"
-                      checked={customization.titleFontUnderline || false}
-                      onChange={(e) => handleChange('titleFontUnderline', e.target.checked)}
-                      className="mr-1"
-                    />
-                    <span className="underline">U</span>
-                  </label>
-                </div>
-              </div>
+              <FontStyleCheckboxes
+                bold={customization.titleFontBold}
+                italic={customization.titleFontItalic}
+                underline={customization.titleFontUnderline}
+                onBoldChange={(e) => handleChange('titleFontBold', e.target.checked)}
+                onItalicChange={(e) => handleChange('titleFontItalic', e.target.checked)}
+                onUnderlineChange={(e) => handleChange('titleFontUnderline', e.target.checked)}
+                label="Font Style"
+              />
               
               <LineHeightLetterSpacingGrid
                 lineHeightValue={customization.titleLineHeight}
