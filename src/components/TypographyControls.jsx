@@ -1,4 +1,6 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRotateRight } from '@fortawesome/free-solid-svg-icons';
 
 // Shared font family options
 export const FONT_OPTIONS = [
@@ -351,6 +353,159 @@ export const TypographyControlsGroup = ({
           showGlobalLabel={showGlobalLabels}
         />
       )}
+    </div>
+  );
+};
+
+/**
+ * Reset Button Component
+ * Small icon-only button to reset settings to defaults
+ * 
+ * @param {function} onReset - Callback when button is clicked
+ * @param {string} title - Tooltip text (default: "Reset to default settings")
+ */
+export const ResetButton = ({ onReset, title = "Reset to default settings" }) => {
+  if (!onReset) return null;
+  
+  return (
+    <button
+      onClick={onReset}
+      className="w-7 h-7 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-200 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700 rounded transition-colors"
+      title={title}
+    >
+      <FontAwesomeIcon icon={faRotateRight} className="w-3.5 h-3.5" />
+    </button>
+  );
+};
+
+/**
+ * Complete Typography Section Component
+ * Combines Font Family, Font Style, Font Size, Line Height, and Letter Spacing
+ * in a 2-row grid layout (matching the design in the image)
+ * 
+ * @param {object} values - Typography values
+ * @param {string} values.fontFamily - Font family
+ * @param {boolean} values.fontBold - Bold state
+ * @param {boolean} values.fontItalic - Italic state
+ * @param {boolean} values.fontUnderline - Underline state
+ * @param {number} values.fontSize - Font size in pt
+ * @param {number} values.lineHeight - Line height multiplier
+ * @param {number} values.letterSpacing - Letter spacing in em
+ * 
+ * @param {object} handlers - Change handlers
+ * @param {function} handlers.onFontFamilyChange - Font family change handler
+ * @param {function} handlers.onBoldChange - Bold change handler
+ * @param {function} handlers.onItalicChange - Italic change handler
+ * @param {function} handlers.onUnderlineChange - Underline change handler
+ * @param {function} handlers.onFontSizeChange - Font size change handler
+ * @param {function} handlers.onLineHeightChange - Line height change handler
+ * @param {function} handlers.onLetterSpacingChange - Letter spacing change handler
+ * @param {function} handlers.onReset - Optional reset handler to restore default values
+ * 
+ * @param {object} config - Configuration options
+ * @param {number} config.fontSizeMin - Min font size (default: 6)
+ * @param {number} config.fontSizeMax - Max font size (default: 20)
+ * @param {number} config.fontSizeStep - Font size step (default: 0.5)
+ * @param {boolean} config.showResetButton - Show reset button (default: true)
+ */
+export const TypographySection = ({ values, handlers, config = {} }) => {
+  const {
+    fontFamily,
+    fontBold,
+    fontItalic,
+    fontUnderline,
+    fontSize,
+    lineHeight,
+    letterSpacing
+  } = values;
+
+  const {
+    onFontFamilyChange,
+    onBoldChange,
+    onItalicChange,
+    onUnderlineChange,
+    onFontSizeChange,
+    onLineHeightChange,
+    onLetterSpacingChange,
+    onReset
+  } = handlers;
+
+  const {
+    fontSizeMin = 6,
+    fontSizeMax = 20,
+    fontSizeStep = 0.5,
+    showResetButton = true
+  } = config;
+
+  return (
+    <div className="space-y-3">
+      {/* Row 1: Font Family + Font Style */}
+      <div className="grid grid-cols-2 gap-3">
+        <FontFamilySelect
+          value={fontFamily}
+          onChange={onFontFamilyChange}
+          label="Font Family"
+          className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-xs"
+        />
+        
+        <FontStyleCheckboxes
+          bold={fontBold}
+          italic={fontItalic}
+          underline={fontUnderline}
+          onBoldChange={onBoldChange}
+          onItalicChange={onItalicChange}
+          onUnderlineChange={onUnderlineChange}
+          label="Font Style"
+        />
+      </div>
+      
+      {/* Row 2: Font Size + Line Height + Letter Spacing */}
+      <div className="grid grid-cols-3 gap-3">
+        <div>
+          <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+            Font Size: <strong>{fontSize}pt</strong>
+          </label>
+          <input
+            type="range"
+            min={fontSizeMin}
+            max={fontSizeMax}
+            step={fontSizeStep}
+            value={fontSize}
+            onChange={onFontSizeChange}
+            className="w-full"
+          />
+        </div>
+        
+        <div>
+          <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+            Line Height: <strong>{lineHeight}</strong>
+          </label>
+          <input
+            type="range"
+            min="0.8"
+            max="2"
+            step="0.1"
+            value={lineHeight || 1.2}
+            onChange={onLineHeightChange}
+            className="w-full"
+          />
+        </div>
+        
+        <div>
+          <label className="text-xs text-gray-600 dark:text-gray-400 block mb-1">
+            Letter Spacing: <strong>{letterSpacing}</strong>
+          </label>
+          <input
+            type="range"
+            min="0"
+            max="0.2"
+            step="0.01"
+            value={letterSpacing || 0}
+            onChange={onLetterSpacingChange}
+            className="w-full"
+          />
+        </div>
+      </div>
     </div>
   );
 };

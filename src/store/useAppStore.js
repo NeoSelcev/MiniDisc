@@ -336,9 +336,13 @@ const useAppStore = create(
         
         const defaults = {
           spine: {
-            fontSize: settings.design?.fontSizes?.spine || 8,
+            fontSize: 8,
+            spineFontFamily: 'Arial',
+            spineFontBold: false,
+            spineFontItalic: false,
+            spineFontUnderline: false,
             letterSpacing: 0,
-            lineHeight: settings.design?.lineHeights?.spine || 1.2,
+            lineHeight: 1.2,
           },
           face: {
             // Face is image-only, no text settings
@@ -352,60 +356,119 @@ const useAppStore = create(
             imageOffsetX: 0,
             imageOffsetY: 0,
             // Edge Part (Spine): Fold text settings
-            titleFontSize: settings.design?.fontSizes?.spine || 8,
+            titleFontSize: 8,
+            edgePartFontFamily: 'Arial',
+            edgePartFontBold: false,
+            edgePartFontItalic: false,
+            edgePartFontUnderline: false,
             letterSpacing: 0,
-            lineHeight: settings.design?.lineHeights?.spine || 1.2,
+            lineHeight: 1.2,
           },
           back: {
             // Album Title
-            titleFontSize: settings.design?.fontSizes?.holderBackTitle || 14,
-            titleFontFamily: settings.design?.fontFamilies?.holderBackTitle || 'Arial',
-            titleFontBold: settings.design?.fontStyles?.holderBackTitle?.bold || false,
-            titleFontItalic: settings.design?.fontStyles?.holderBackTitle?.italic || false,
-            titleFontUnderline: settings.design?.fontStyles?.holderBackTitle?.underline || false,
-            titleLineHeight: settings.design?.lineHeights?.holderBackTitle || 1.2,
-            titleLetterSpacing: settings.design?.letterSpacing?.holderBackTitle || 0,
+            titleFontSize: 14,
+            titleFontFamily: 'Arial',
+            titleFontBold: false,
+            titleFontItalic: false,
+            titleFontUnderline: false,
+            titleLineHeight: 1.2,
+            titleLetterSpacing: 0,
             
             // Artist Name
-            artistFontSize: settings.design?.fontSizes?.holderBackArtist || 10,
-            artistFontFamily: settings.design?.fontFamilies?.holderBackArtist || 'Arial',
-            artistFontBold: settings.design?.fontStyles?.holderBackArtist?.bold || false,
-            artistFontItalic: settings.design?.fontStyles?.holderBackArtist?.italic || false,
-            artistFontUnderline: settings.design?.fontStyles?.holderBackArtist?.underline || false,
-            artistLineHeight: settings.design?.lineHeights?.holderBackArtist || 1.2,
-            artistLetterSpacing: settings.design?.letterSpacing?.holderBackArtist || 0,
+            artistFontSize: 10,
+            artistFontFamily: 'Arial',
+            artistFontBold: false,
+            artistFontItalic: false,
+            artistFontUnderline: false,
+            artistLineHeight: 1.2,
+            artistLetterSpacing: 0,
             
             // Year of Production
-            yearFontSize: settings.design?.fontSizes?.holderBackYear || 9,
-            yearFontFamily: settings.design?.fontFamilies?.holderBackYear || 'Arial',
-            yearFontBold: settings.design?.fontStyles?.holderBackYear?.bold || false,
-            yearFontItalic: settings.design?.fontStyles?.holderBackYear?.italic || false,
-            yearFontUnderline: settings.design?.fontStyles?.holderBackYear?.underline || false,
-            yearLineHeight: settings.design?.lineHeights?.holderBackYear || 1.2,
-            yearLetterSpacing: settings.design?.letterSpacing?.holderBackYear || 0,
+            yearFontSize: 9,
+            yearFontFamily: 'Arial',
+            yearFontBold: false,
+            yearFontItalic: false,
+            yearFontUnderline: false,
+            yearLineHeight: 1.2,
+            yearLetterSpacing: 0,
             
             // Track List
-            trackListFontSize: settings.design?.fontSizes?.trackList || 8,
-            trackListFontFamily: settings.design?.fontFamilies?.trackList || 'Arial',
-            trackListFontBold: settings.design?.fontStyles?.trackList?.bold || false,
-            trackListFontItalic: settings.design?.fontStyles?.trackList?.italic || false,
-            trackListFontUnderline: settings.design?.fontStyles?.trackList?.underline || false,
-            trackListLineHeight: settings.design?.lineHeights?.trackList || 1.2,
-            trackListLetterSpacing: settings.design?.letterSpacing?.trackList || 0,
-            trackListStyle: settings.design?.trackListStyle || 'numbers',
+            trackListFontSize: 8,
+            trackListFontFamily: 'Arial',
+            trackListFontBold: false,
+            trackListFontItalic: false,
+            trackListFontUnderline: false,
+            trackListLineHeight: 1.2,
+            trackListLetterSpacing: 0,
+            trackListStyle: 'numbers',
             
             // Track Duration
-            trackDurationFontSize: settings.design?.fontSizes?.trackDuration || 6,
-            trackDurationFontFamily: settings.design?.fontFamilies?.trackDuration || 'Arial',
-            trackDurationFontBold: settings.design?.fontStyles?.trackDuration?.bold || false,
-            trackDurationFontItalic: settings.design?.fontStyles?.trackDuration?.italic || false,
-            trackDurationFontUnderline: settings.design?.fontStyles?.trackDuration?.underline || false,
-            trackDurationLineHeight: settings.design?.lineHeights?.trackDuration || 1.2,
-            trackDurationLetterSpacing: settings.design?.letterSpacing?.trackDuration || 0,
+            trackDurationFontSize: 6,
+            trackDurationFontFamily: 'Arial',
+            trackDurationFontBold: false,
+            trackDurationFontItalic: false,
+            trackDurationFontUnderline: false,
+            trackDurationLineHeight: 1.2,
+            trackDurationLetterSpacing: 0,
           },
         };
         
         return defaults[stickerType] || {};
+      },
+      
+      // Get default values for a specific typography section
+      getTypographyDefaults: (stickerType, section) => {
+        const defaults = {
+          back: {
+            title: {
+              fontFamily: 'Arial',
+              fontBold: false,
+              fontItalic: false,
+              fontUnderline: false,
+              fontSize: 14,
+              lineHeight: 1.2,
+              letterSpacing: 0
+            },
+            artist: {
+              fontFamily: 'Arial',
+              fontBold: false,
+              fontItalic: false,
+              fontUnderline: false,
+              fontSize: 10,
+              lineHeight: 1.2,
+              letterSpacing: 0
+            },
+            year: {
+              fontFamily: 'Arial',
+              fontBold: false,
+              fontItalic: false,
+              fontUnderline: false,
+              fontSize: 9,
+              lineHeight: 1.2,
+              letterSpacing: 0
+            },
+            trackList: {
+              fontFamily: 'Arial',
+              fontBold: false,
+              fontItalic: false,
+              fontUnderline: false,
+              fontSize: 8,
+              lineHeight: 1.2,
+              letterSpacing: 0
+            },
+            trackDuration: {
+              fontFamily: 'Arial',
+              fontBold: false,
+              fontItalic: false,
+              fontUnderline: false,
+              fontSize: 6,
+              lineHeight: 1.2,
+              letterSpacing: 0
+            }
+          }
+        };
+        
+        return defaults[stickerType]?.[section] || {};
       },
       
       undo: () => {
