@@ -14,7 +14,7 @@ import {
 } from './TypographyControls';
 
 const StickerCustomizationPanel = ({ album, stickerType, onClose, position: initialPosition, onPanelHover }) => {
-  const { getStickerCustomization, updateStickerCustomization, getTypographyDefaults, settings, updateSettings } = useAppStore();
+  const { getStickerCustomization, updateStickerCustomization, getTypographyDefaults } = useAppStore();
   
   // Get initial values (album-specific or defaults)
   const initialCustomization = getStickerCustomization(album, stickerType);
@@ -38,6 +38,20 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
     setCustomization(updated);
     // Live update in store
     updateStickerCustomization(album.id, stickerType, updated);
+    
+    // Force radio button visual update for trackListStyle
+    if (field === 'trackListStyle') {
+      setTimeout(() => {
+        const radioButtons = document.querySelectorAll(`input[name="trackListStyle-${album.id}"]`);
+        radioButtons.forEach(radio => {
+          // Force browser reflow by temporarily hiding and showing
+          radio.style.display = 'none';
+          radio.offsetHeight; // Trigger reflow
+          radio.style.display = '';
+          radio.checked = radio.value === value;
+        });
+      }, 0);
+    }
   };
   
   // Reset to defaults
@@ -93,7 +107,10 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
   
   // Reset track prefix style to default
   const handleResetTrackPrefix = () => {
-    handleChange('trackListStyle', 'numbers'); // Default style
+    // Ensure the trackListStyle is explicitly set to 'numbers' in the state
+    const updated = { ...customization, trackListStyle: 'numbers' };
+    setCustomization(updated);
+    updateStickerCustomization(album.id, stickerType, updated);
   };
   
   const handleResetDuration = createSectionReset('trackDuration', [
@@ -130,6 +147,20 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [onClose]);
+
+  // Force radio button re-render when trackListStyle changes
+  useEffect(() => {
+    // This effect ensures radio buttons update their visual state immediately
+    // when trackListStyle changes, without waiting for hover state changes
+    if (customization.trackListStyle !== undefined) {
+      // Force a micro re-render by updating a non-visual state momentarily
+      const radioButtons = document.querySelectorAll(`input[name="trackListStyle-${album.id}"]`);
+      radioButtons.forEach(radio => {
+        // Force the browser to recalculate the checked state
+        radio.checked = radio.value === (customization.trackListStyle || 'numbers');
+      });
+    }
+  }, [customization.trackListStyle, album.id]);
   
   // Handle dragging
   useEffect(() => {
@@ -222,85 +253,31 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
                 <span className="text-lg">🅰️</span> Text Settings
               </h3>
               
-              <div>
-                <FontFamilySelect
-                  value={settings.design.fontFamilies?.spine}
-                  onChange={(e) => updateFontFamily('spine', e.target.value)}
-                  label="Font Family"
-                  showGlobalLabel={true}
-                  className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-sm"
-                />
-              </div>
-              
-              <div>
-                <FontStyleCheckboxes
-                  bold={settings.design.fontStyles?.spine?.bold}
-                  italic={settings.design.fontStyles?.spine?.italic}
-                  underline={settings.design.fontStyles?.spine?.underline}
-                  onBoldChange={(e) => updateFontStyle('spine', 'bold', e.target.checked)}
-                  onItalicChange={(e) => updateFontStyle('spine', 'italic', e.target.checked)}
-                  onUnderlineChange={(e) => updateFontStyle('spine', 'underline', e.target.checked)}
-                  label="Font Style"
-                  showGlobalLabel={true}
-                />
-              </div>
-              
-              <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
-                  Font Size: <strong>{customization.fontSize}pt</strong>
-                </label>
-                <input
-                  type="range"
-                  min="6"
-                  max="12"
-                  step="0.5"
-                  value={customization.fontSize}
-                  onChange={(e) => handleChange('fontSize', parseFloat(e.target.value))}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
-                  <span>6pt</span>
-                  <span>12pt</span>
-                </div>
-              </div>
-              
-              <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
-                  Letter Spacing: <strong>{customization.letterSpacing}</strong>
-                </label>
-                <input
-                  type="range"
-                  min="0"
-                  max="0.2"
-                  step="0.01"
-                  value={customization.letterSpacing}
-                  onChange={(e) => handleChange('letterSpacing', parseFloat(e.target.value))}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
-                  <span>0</span>
-                  <span>0.2</span>
-                </div>
-              </div>
-              
-              <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
-                  Line Height: <strong>{customization.lineHeight}</strong>
-                </label>
-                <input
-                  type="range"
-                  min="1"
-                  max="2"
-                  step="0.1"
-                  value={customization.lineHeight}
-                  onChange={(e) => handleChange('lineHeight', parseFloat(e.target.value))}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
-                  <span>1.0</span>
-                  <span>2.0</span>
-                </div>
-              </div>
+              <TypographySection
+                values={{
+                  fontFamily: customization.spineFontFamily,
+                  fontBold: customization.spineFontBold,
+                  fontItalic: customization.spineFontItalic,
+                  fontUnderline: customization.spineFontUnderline,
+                  fontSize: customization.fontSize,
+                  lineHeight: customization.lineHeight,
+                  letterSpacing: customization.letterSpacing
+                }}
+                handlers={{
+                  onFontFamilyChange: (e) => handleChange('spineFontFamily', e.target.value),
+                  onBoldChange: (e) => handleChange('spineFontBold', e.target.checked),
+                  onItalicChange: (e) => handleChange('spineFontItalic', e.target.checked),
+                  onUnderlineChange: (e) => handleChange('spineFontUnderline', e.target.checked),
+                  onFontSizeChange: (e) => handleChange('fontSize', parseFloat(e.target.value)),
+                  onLineHeightChange: (e) => handleChange('lineHeight', parseFloat(e.target.value)),
+                  onLetterSpacingChange: (e) => handleChange('letterSpacing', parseFloat(e.target.value))
+                }}
+                config={{
+                  fontSizeMin: 6,
+                  fontSizeMax: 12,
+                  fontSizeStep: 0.5
+                }}
+              />
             </div>
           </div>
         );
@@ -463,47 +440,31 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
                 <span className="text-lg">🅰️</span> Edge Part (Spine) - Text Settings
               </h3>
               
-              <div>
-                <FontFamilySelect
-                  value={settings.design.fontFamilies?.spine}
-                  onChange={(e) => updateFontFamily('spine', e.target.value)}
-                  label="Font Family"
-                  showGlobalLabel={true}
-                  className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-sm"
-                />
-              </div>
-              
-              <div>
-                <FontStyleCheckboxes
-                  bold={settings.design.fontStyles?.spine?.bold}
-                  italic={settings.design.fontStyles?.spine?.italic}
-                  underline={settings.design.fontStyles?.spine?.underline}
-                  onBoldChange={(e) => updateFontStyle('spine', 'bold', e.target.checked)}
-                  onItalicChange={(e) => updateFontStyle('spine', 'italic', e.target.checked)}
-                  onUnderlineChange={(e) => updateFontStyle('spine', 'underline', e.target.checked)}
-                  label="Font Style"
-                  showGlobalLabel={true}
-                />
-              </div>
-              
-              <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
-                  Font Size: <strong>{customization.titleFontSize}pt</strong>
-                </label>
-                <input
-                  type="range"
-                  min="4"
-                  max="8"
-                  step="0.5"
-                  value={customization.titleFontSize}
-                  onChange={(e) => handleChange('titleFontSize', parseFloat(e.target.value))}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
-                  <span>4pt</span>
-                  <span>8pt</span>
-                </div>
-              </div>
+              <TypographySection
+                values={{
+                  fontFamily: customization.edgePartFontFamily,
+                  fontBold: customization.edgePartFontBold,
+                  fontItalic: customization.edgePartFontItalic,
+                  fontUnderline: customization.edgePartFontUnderline,
+                  fontSize: customization.titleFontSize,
+                  lineHeight: customization.lineHeight,
+                  letterSpacing: customization.letterSpacing
+                }}
+                handlers={{
+                  onFontFamilyChange: (e) => handleChange('edgePartFontFamily', e.target.value),
+                  onBoldChange: (e) => handleChange('edgePartFontBold', e.target.checked),
+                  onItalicChange: (e) => handleChange('edgePartFontItalic', e.target.checked),
+                  onUnderlineChange: (e) => handleChange('edgePartFontUnderline', e.target.checked),
+                  onFontSizeChange: (e) => handleChange('titleFontSize', parseFloat(e.target.value)),
+                  onLineHeightChange: (e) => handleChange('lineHeight', parseFloat(e.target.value)),
+                  onLetterSpacingChange: (e) => handleChange('letterSpacing', parseFloat(e.target.value))
+                }}
+                config={{
+                  fontSizeMin: 4,
+                  fontSizeMax: 8,
+                  fontSizeStep: 0.5
+                }}
+              />
             </div>
           </div>
         );
@@ -640,37 +601,79 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
             
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
-                <label className="flex items-center cursor-pointer text-xs px-3 py-2 bg-white dark:bg-gray-800 rounded border border-gray-300 dark:border-gray-600 hover:border-purple-400 dark:hover:border-purple-500 transition-colors">
+                <label className={`flex items-center cursor-pointer text-xs px-3 py-2 rounded border transition-colors ${
+                  (customization.trackListStyle || 'numbers') === 'numbers' 
+                    ? 'bg-purple-100 border-purple-400 dark:bg-purple-900/30 dark:border-purple-500' 
+                    : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-purple-400 dark:hover:border-purple-500'
+                }`}>
                   <input
+                    key={`numbers-${customization.trackListStyle}`}
                     type="radio"
                     name={`trackListStyle-${album.id}`}
                     value="numbers"
                     checked={(customization.trackListStyle || 'numbers') === 'numbers'}
                     onChange={(e) => handleChange('trackListStyle', e.target.value)}
-                    className="mr-2"
+                    className="sr-only"
                   />
+                  <div className={`w-4 h-4 rounded-full border-2 mr-2 flex items-center justify-center ${
+                    (customization.trackListStyle || 'numbers') === 'numbers' 
+                      ? 'border-purple-500 bg-purple-500' 
+                      : 'border-gray-400'
+                  }`}>
+                    {(customization.trackListStyle || 'numbers') === 'numbers' && (
+                      <div className="w-2 h-2 rounded-full bg-white"></div>
+                    )}
+                  </div>
                   <span>Numbers (1. 2.)</span>
                 </label>
-                <label className="flex items-center cursor-pointer text-xs px-3 py-2 bg-white dark:bg-gray-800 rounded border border-gray-300 dark:border-gray-600 hover:border-purple-400 dark:hover:border-purple-500 transition-colors">
+                <label className={`flex items-center cursor-pointer text-xs px-3 py-2 rounded border transition-colors ${
+                  (customization.trackListStyle || 'numbers') === 'dashes' 
+                    ? 'bg-purple-100 border-purple-400 dark:bg-purple-900/30 dark:border-purple-500' 
+                    : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-purple-400 dark:hover:border-purple-500'
+                }`}>
                   <input
+                    key={`dashes-${customization.trackListStyle}`}
                     type="radio"
                     name={`trackListStyle-${album.id}`}
                     value="dashes"
                     checked={(customization.trackListStyle || 'numbers') === 'dashes'}
                     onChange={(e) => handleChange('trackListStyle', e.target.value)}
-                    className="mr-2"
+                    className="sr-only"
                   />
+                  <div className={`w-4 h-4 rounded-full border-2 mr-2 flex items-center justify-center ${
+                    (customization.trackListStyle || 'numbers') === 'dashes' 
+                      ? 'border-purple-500 bg-purple-500' 
+                      : 'border-gray-400'
+                  }`}>
+                    {(customization.trackListStyle || 'numbers') === 'dashes' && (
+                      <div className="w-2 h-2 rounded-full bg-white"></div>
+                    )}
+                  </div>
                   <span>Dashes (- -)</span>
                 </label>
-                <label className="flex items-center cursor-pointer text-xs px-3 py-2 bg-white dark:bg-gray-800 rounded border border-gray-300 dark:border-gray-600 hover:border-purple-400 dark:hover:border-purple-500 transition-colors">
+                <label className={`flex items-center cursor-pointer text-xs px-3 py-2 rounded border transition-colors ${
+                  (customization.trackListStyle || 'numbers') === 'bullets' 
+                    ? 'bg-purple-100 border-purple-400 dark:bg-purple-900/30 dark:border-purple-500' 
+                    : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-purple-400 dark:hover:border-purple-500'
+                }`}>
                   <input
+                    key={`bullets-${customization.trackListStyle}`}
                     type="radio"
                     name={`trackListStyle-${album.id}`}
                     value="bullets"
                     checked={(customization.trackListStyle || 'numbers') === 'bullets'}
                     onChange={(e) => handleChange('trackListStyle', e.target.value)}
-                    className="mr-2"
+                    className="sr-only"
                   />
+                  <div className={`w-4 h-4 rounded-full border-2 mr-2 flex items-center justify-center ${
+                    (customization.trackListStyle || 'numbers') === 'bullets' 
+                      ? 'border-purple-500 bg-purple-500' 
+                      : 'border-gray-400'
+                  }`}>
+                    {(customization.trackListStyle || 'numbers') === 'bullets' && (
+                      <div className="w-2 h-2 rounded-full bg-white"></div>
+                    )}
+                  </div>
                   <span>Bullets (• •)</span>
                 </label>
               </div>
