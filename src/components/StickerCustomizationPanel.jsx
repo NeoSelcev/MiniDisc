@@ -107,6 +107,17 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
     'trackDurationFontSize', 'trackDurationLineHeight', 'trackDurationLetterSpacing'
   ]);
   
+  // Reset handlers for spine and front edge part
+  const handleResetSpine = createSectionReset('spine', [
+    'spineFontFamily', 'spineFontBold', 'spineFontItalic', 'spineFontUnderline',
+    'fontSize', 'lineHeight', 'letterSpacing'
+  ]);
+  
+  const handleResetEdgePart = createSectionReset('edgePart', [
+    'edgePartFontFamily', 'edgePartFontBold', 'edgePartFontItalic', 'edgePartFontUnderline',
+    'titleFontSize', 'lineHeight', 'letterSpacing'
+  ]);
+  
   // Close on Escape key
   useEffect(() => {
     const handleEscape = (e) => {
@@ -223,37 +234,34 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
               </p>
             </div>
             
-            <div className="space-y-3">
-              <h3 className="font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                <span className="text-lg">🅰️</span> Text Settings
-              </h3>
-              
-              <TypographySection
-                values={{
-                  fontFamily: customization.spineFontFamily,
-                  fontBold: customization.spineFontBold,
-                  fontItalic: customization.spineFontItalic,
-                  fontUnderline: customization.spineFontUnderline,
-                  fontSize: customization.fontSize,
-                  lineHeight: customization.lineHeight,
-                  letterSpacing: customization.letterSpacing
-                }}
-                handlers={{
-                  onFontFamilyChange: (e) => handleChange('spineFontFamily', e.target.value),
-                  onBoldChange: (e) => handleChange('spineFontBold', e.target.checked),
-                  onItalicChange: (e) => handleChange('spineFontItalic', e.target.checked),
-                  onUnderlineChange: (e) => handleChange('spineFontUnderline', e.target.checked),
-                  onFontSizeChange: (e) => handleChange('fontSize', parseFloat(e.target.value)),
-                  onLineHeightChange: (e) => handleChange('lineHeight', parseFloat(e.target.value)),
-                  onLetterSpacingChange: (e) => handleChange('letterSpacing', parseFloat(e.target.value))
-                }}
-                config={{
-                  fontSizeMin: 6,
-                  fontSizeMax: 12,
-                  fontSizeStep: 0.5
-                }}
-              />
-            </div>
+            <TypographySectionWithHeader
+              sectionNumber="🅰️"
+              title="Text Settings"
+              values={{
+                fontFamily: customization.spineFontFamily,
+                fontBold: customization.spineFontBold,
+                fontItalic: customization.spineFontItalic,
+                fontUnderline: customization.spineFontUnderline,
+                fontSize: customization.fontSize,
+                lineHeight: customization.lineHeight,
+                letterSpacing: customization.letterSpacing
+              }}
+              handlers={{
+                onFontFamilyChange: (e) => handleChange('spineFontFamily', e.target.value),
+                onBoldChange: (e) => handleChange('spineFontBold', e.target.checked),
+                onItalicChange: (e) => handleChange('spineFontItalic', e.target.checked),
+                onUnderlineChange: (e) => handleChange('spineFontUnderline', e.target.checked),
+                onFontSizeChange: (e) => handleChange('fontSize', parseFloat(e.target.value)),
+                onLineHeightChange: (e) => handleChange('lineHeight', parseFloat(e.target.value)),
+                onLetterSpacingChange: (e) => handleChange('letterSpacing', parseFloat(e.target.value))
+              }}
+              onReset={handleResetSpine}
+              config={{
+                fontSizeMin: 6,
+                fontSizeMax: 12,
+                fontSizeStep: 0.5
+              }}
+            />
           </div>
         );
       
@@ -410,12 +418,10 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
             </div>
             
             {/* Edge Part - Text Settings for Folded Spine */}
-            <div className="space-y-3 pt-3 border-t dark:border-gray-600">
-              <h3 className="font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                <span className="text-lg">🅰️</span> Edge Part (Spine) - Text Settings
-              </h3>
-              
-              <TypographySection
+            <div className="pt-3 border-t dark:border-gray-600">
+              <TypographySectionWithHeader
+                sectionNumber="🅰️"
+                title="Edge Part (Spine) - Text Settings"
                 values={{
                   fontFamily: customization.edgePartFontFamily,
                   fontBold: customization.edgePartFontBold,
@@ -434,6 +440,7 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
                   onLineHeightChange: (e) => handleChange('lineHeight', parseFloat(e.target.value)),
                   onLetterSpacingChange: (e) => handleChange('letterSpacing', parseFloat(e.target.value))
                 }}
+                onReset={handleResetEdgePart}
                 config={{
                   fontSizeMin: 4,
                   fontSizeMax: 8,
