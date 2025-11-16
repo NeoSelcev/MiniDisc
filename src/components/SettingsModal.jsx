@@ -216,16 +216,6 @@ function SettingsModal({ isOpen, onClose }) {
     console.log('Reset section:', sectionKey);
   };
   
-  const updateTrackListStyle = (value) => {
-    updateSettings({
-      ...settings,
-      design: {
-        ...settings.design,
-        trackListStyle: value,
-      },
-    });
-  };
-  
   const updatePrintSetting = (field, value) => {
     if (field.includes('.')) {
       const [parent, child] = field.split('.');
