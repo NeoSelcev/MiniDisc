@@ -31,6 +31,7 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0 });
   
   const panelRef = useRef(null);
+  const scrollContainerRef = useRef(null);
   
   // Update customization when slider changes (LIVE)
   const handleChange = (field, value) => {
@@ -38,20 +39,6 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
     setCustomization(updated);
     // Live update in store
     updateStickerCustomization(album.id, stickerType, updated);
-    
-    // Force radio button visual update for trackListStyle
-    if (field === 'trackListStyle') {
-      setTimeout(() => {
-        const radioButtons = document.querySelectorAll(`input[name="trackListStyle-${album.id}"]`);
-        radioButtons.forEach(radio => {
-          // Force browser reflow by temporarily hiding and showing
-          radio.style.display = 'none';
-          radio.offsetHeight; // Trigger reflow
-          radio.style.display = '';
-          radio.checked = radio.value === value;
-        });
-      }, 0);
-    }
   };
   
   // Reset to defaults
@@ -147,20 +134,6 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [onClose]);
-
-  // Force radio button re-render when trackListStyle changes
-  useEffect(() => {
-    // This effect ensures radio buttons update their visual state immediately
-    // when trackListStyle changes, without waiting for hover state changes
-    if (customization.trackListStyle !== undefined) {
-      // Force a micro re-render by updating a non-visual state momentarily
-      const radioButtons = document.querySelectorAll(`input[name="trackListStyle-${album.id}"]`);
-      radioButtons.forEach(radio => {
-        // Force the browser to recalculate the checked state
-        radio.checked = radio.value === (customization.trackListStyle || 'numbers');
-      });
-    }
-  }, [customization.trackListStyle, album.id]);
   
   // Handle dragging
   useEffect(() => {
@@ -601,18 +574,22 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
             
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
-                <label className={`flex items-center cursor-pointer text-xs px-3 py-2 rounded border transition-colors ${
+                <label 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleChange('trackListStyle', 'numbers');
+                  }}
+                  className={`flex items-center cursor-pointer text-xs px-3 py-2 rounded border transition-colors ${
                   (customization.trackListStyle || 'numbers') === 'numbers' 
                     ? 'bg-purple-100 border-purple-400 dark:bg-purple-900/30 dark:border-purple-500' 
                     : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-purple-400 dark:hover:border-purple-500'
                 }`}>
                   <input
-                    key={`numbers-${customization.trackListStyle}`}
                     type="radio"
                     name={`trackListStyle-${album.id}`}
                     value="numbers"
                     checked={(customization.trackListStyle || 'numbers') === 'numbers'}
-                    onChange={(e) => handleChange('trackListStyle', e.target.value)}
+                    readOnly
                     className="sr-only"
                   />
                   <div className={`w-4 h-4 rounded-full border-2 mr-2 flex items-center justify-center ${
@@ -626,18 +603,22 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
                   </div>
                   <span>Numbers (1. 2.)</span>
                 </label>
-                <label className={`flex items-center cursor-pointer text-xs px-3 py-2 rounded border transition-colors ${
+                <label 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleChange('trackListStyle', 'dashes');
+                  }}
+                  className={`flex items-center cursor-pointer text-xs px-3 py-2 rounded border transition-colors ${
                   (customization.trackListStyle || 'numbers') === 'dashes' 
                     ? 'bg-purple-100 border-purple-400 dark:bg-purple-900/30 dark:border-purple-500' 
                     : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-purple-400 dark:hover:border-purple-500'
                 }`}>
                   <input
-                    key={`dashes-${customization.trackListStyle}`}
                     type="radio"
                     name={`trackListStyle-${album.id}`}
                     value="dashes"
                     checked={(customization.trackListStyle || 'numbers') === 'dashes'}
-                    onChange={(e) => handleChange('trackListStyle', e.target.value)}
+                    readOnly
                     className="sr-only"
                   />
                   <div className={`w-4 h-4 rounded-full border-2 mr-2 flex items-center justify-center ${
@@ -651,18 +632,22 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
                   </div>
                   <span>Dashes (- -)</span>
                 </label>
-                <label className={`flex items-center cursor-pointer text-xs px-3 py-2 rounded border transition-colors ${
+                <label 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleChange('trackListStyle', 'bullets');
+                  }}
+                  className={`flex items-center cursor-pointer text-xs px-3 py-2 rounded border transition-colors ${
                   (customization.trackListStyle || 'numbers') === 'bullets' 
                     ? 'bg-purple-100 border-purple-400 dark:bg-purple-900/30 dark:border-purple-500' 
                     : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-purple-400 dark:hover:border-purple-500'
                 }`}>
                   <input
-                    key={`bullets-${customization.trackListStyle}`}
                     type="radio"
                     name={`trackListStyle-${album.id}`}
                     value="bullets"
                     checked={(customization.trackListStyle || 'numbers') === 'bullets'}
-                    onChange={(e) => handleChange('trackListStyle', e.target.value)}
+                    readOnly
                     className="sr-only"
                   />
                   <div className={`w-4 h-4 rounded-full border-2 mr-2 flex items-center justify-center ${
@@ -808,7 +793,7 @@ return (
     </div>
     
     {/* Content - Scrollable */}
-    <div className="p-4 overflow-y-auto bg-white dark:bg-gray-800" style={{ height: 'calc(100% - 60px)' }}>
+    <div ref={scrollContainerRef} className="p-4 overflow-y-auto bg-white dark:bg-gray-800" style={{ height: 'calc(100% - 60px)' }}>
       {renderFields()}
     </div>
     
