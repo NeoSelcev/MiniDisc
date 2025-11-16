@@ -7,7 +7,9 @@ import {
   FontFamilySelect, 
   FontStyleCheckboxes, 
   FontSizeInput, 
-  LineHeightSlider 
+  LineHeightSlider,
+  TypographySectionWithHeader,
+  TrackPrefixStyleSelector
 } from './TypographyControls';
 
 function SettingsModal({ isOpen, onClose }) {
@@ -197,6 +199,21 @@ function SettingsModal({ isOpen, onClose }) {
         },
       },
     });
+  };
+  
+  const updateTrackListStyle = (value) => {
+    updateSettings({
+      ...settings,
+      design: {
+        ...settings.design,
+        trackListStyle: value,
+      },
+    });
+  };
+  
+  const handleResetSection = (sectionKey) => {
+    // This would reset individual section - implement if needed
+    console.log('Reset section:', sectionKey);
   };
   
   const updateTrackListStyle = (value) => {
@@ -452,103 +469,201 @@ function SettingsModal({ isOpen, onClose }) {
             <section>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Typography Settings</h3>
               
-              {/* Typography rows for stickers with Line Height */}
-              {[
-                { key: 'spine', label: 'MiniDisc Edge Sticker (Spine)' },
-                { key: 'holderBackTitle', label: 'Holder Back - Album Title' },
-                { key: 'holderBackArtist', label: 'Holder Back - Artist' },
-                { key: 'holderBackYear', label: 'Holder Back - Year' },
-                { key: 'trackList', label: 'Holder Back - Track List' },
-              ].map(({ key, label }) => (
-                <div key={key} className="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-3">{label}</h4>
+              <div className="space-y-4">
+                {/* 1. MiniDisc Edge Sticker (Spine) */}
+                <TypographySectionWithHeader
+                  sectionNumber="1"
+                  title="MiniDisc Edge Sticker (Spine)"
+                  values={{
+                    fontFamily: settings.design.fontFamilies?.spine,
+                    fontBold: settings.design.fontStyles?.spine?.bold,
+                    fontItalic: settings.design.fontStyles?.spine?.italic,
+                    fontUnderline: settings.design.fontStyles?.spine?.underline,
+                    fontSize: settings.design.fontSizes?.spine,
+                    lineHeight: settings.design.lineHeights?.spine,
+                    letterSpacing: settings.design.letterSpacing?.spine || 0
+                  }}
+                  handlers={{
+                    onFontFamilyChange: (e) => updateFontFamily('spine', e.target.value),
+                    onBoldChange: (e) => updateFontStyle('spine', 'bold', e.target.checked),
+                    onItalicChange: (e) => updateFontStyle('spine', 'italic', e.target.checked),
+                    onUnderlineChange: (e) => updateFontStyle('spine', 'underline', e.target.checked),
+                    onFontSizeChange: (e) => updateFontSize('spine', e.target.value),
+                    onLineHeightChange: (e) => updateLineHeight('spine', e.target.value),
+                    onLetterSpacingChange: (e) => updateLetterSpacing('spine', e.target.value)
+                  }}
+                  onReset={() => handleResetSection('spine')}
+                  config={{
+                    fontSizeMin: 6,
+                    fontSizeMax: 12,
+                    fontSizeStep: 0.5
+                  }}
+                />
+
+                {/* 2. Holder Back - Album Title */}
+                <TypographySectionWithHeader
+                  sectionNumber="2"
+                  title="Holder Back - Album Title"
+                  values={{
+                    fontFamily: settings.design.fontFamilies?.holderBackTitle,
+                    fontBold: settings.design.fontStyles?.holderBackTitle?.bold,
+                    fontItalic: settings.design.fontStyles?.holderBackTitle?.italic,
+                    fontUnderline: settings.design.fontStyles?.holderBackTitle?.underline,
+                    fontSize: settings.design.fontSizes?.holderBackTitle,
+                    lineHeight: settings.design.lineHeights?.holderBackTitle,
+                    letterSpacing: settings.design.letterSpacing?.holderBackTitle || 0
+                  }}
+                  handlers={{
+                    onFontFamilyChange: (e) => updateFontFamily('holderBackTitle', e.target.value),
+                    onBoldChange: (e) => updateFontStyle('holderBackTitle', 'bold', e.target.checked),
+                    onItalicChange: (e) => updateFontStyle('holderBackTitle', 'italic', e.target.checked),
+                    onUnderlineChange: (e) => updateFontStyle('holderBackTitle', 'underline', e.target.checked),
+                    onFontSizeChange: (e) => updateFontSize('holderBackTitle', e.target.value),
+                    onLineHeightChange: (e) => updateLineHeight('holderBackTitle', e.target.value),
+                    onLetterSpacingChange: (e) => updateLetterSpacing('holderBackTitle', e.target.value)
+                  }}
+                  onReset={() => handleResetSection('holderBackTitle')}
+                  config={{
+                    fontSizeMin: 8,
+                    fontSizeMax: 20,
+                    fontSizeStep: 0.5
+                  }}
+                />
+
+                {/* 3. Holder Back - Artist */}
+                <TypographySectionWithHeader
+                  sectionNumber="3"
+                  title="Holder Back - Artist"
+                  values={{
+                    fontFamily: settings.design.fontFamilies?.holderBackArtist,
+                    fontBold: settings.design.fontStyles?.holderBackArtist?.bold,
+                    fontItalic: settings.design.fontStyles?.holderBackArtist?.italic,
+                    fontUnderline: settings.design.fontStyles?.holderBackArtist?.underline,
+                    fontSize: settings.design.fontSizes?.holderBackArtist,
+                    lineHeight: settings.design.lineHeights?.holderBackArtist,
+                    letterSpacing: settings.design.letterSpacing?.holderBackArtist || 0
+                  }}
+                  handlers={{
+                    onFontFamilyChange: (e) => updateFontFamily('holderBackArtist', e.target.value),
+                    onBoldChange: (e) => updateFontStyle('holderBackArtist', 'bold', e.target.checked),
+                    onItalicChange: (e) => updateFontStyle('holderBackArtist', 'italic', e.target.checked),
+                    onUnderlineChange: (e) => updateFontStyle('holderBackArtist', 'underline', e.target.checked),
+                    onFontSizeChange: (e) => updateFontSize('holderBackArtist', e.target.value),
+                    onLineHeightChange: (e) => updateLineHeight('holderBackArtist', e.target.value),
+                    onLetterSpacingChange: (e) => updateLetterSpacing('holderBackArtist', e.target.value)
+                  }}
+                  onReset={() => handleResetSection('holderBackArtist')}
+                  config={{
+                    fontSizeMin: 6,
+                    fontSizeMax: 16,
+                    fontSizeStep: 0.5
+                  }}
+                />
+
+                {/* 4. Holder Back - Year */}
+                <TypographySectionWithHeader
+                  sectionNumber="4"
+                  title="Holder Back - Year"
+                  values={{
+                    fontFamily: settings.design.fontFamilies?.holderBackYear,
+                    fontBold: settings.design.fontStyles?.holderBackYear?.bold,
+                    fontItalic: settings.design.fontStyles?.holderBackYear?.italic,
+                    fontUnderline: settings.design.fontStyles?.holderBackYear?.underline,
+                    fontSize: settings.design.fontSizes?.holderBackYear,
+                    lineHeight: settings.design.lineHeights?.holderBackYear,
+                    letterSpacing: settings.design.letterSpacing?.holderBackYear || 0
+                  }}
+                  handlers={{
+                    onFontFamilyChange: (e) => updateFontFamily('holderBackYear', e.target.value),
+                    onBoldChange: (e) => updateFontStyle('holderBackYear', 'bold', e.target.checked),
+                    onItalicChange: (e) => updateFontStyle('holderBackYear', 'italic', e.target.checked),
+                    onUnderlineChange: (e) => updateFontStyle('holderBackYear', 'underline', e.target.checked),
+                    onFontSizeChange: (e) => updateFontSize('holderBackYear', e.target.value),
+                    onLineHeightChange: (e) => updateLineHeight('holderBackYear', e.target.value),
+                    onLetterSpacingChange: (e) => updateLetterSpacing('holderBackYear', e.target.value)
+                  }}
+                  onReset={() => handleResetSection('holderBackYear')}
+                  config={{
+                    fontSizeMin: 6,
+                    fontSizeMax: 14,
+                    fontSizeStep: 0.5
+                  }}
+                />
+
+                {/* 5. Track List Style */}
+                <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-3 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-purple-600 dark:text-purple-400">5.</span> Track Prefix Style
+                    </div>
+                  </h4>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {/* Font Family */}
-                    <div className="block text-sm">
-                      <FontFamilySelect
-                        value={settings.design.fontFamilies?.[key]}
-                        onChange={(e) => updateFontFamily(key, e.target.value)}
-                        className="mt-1 input-field w-full"
-                      />
-                    </div>
-                    
-                    {/* Font Size */}
-                    <div className="block text-sm">
-                      <FontSizeInput
-                        value={settings.design.fontSizes?.[key]}
-                        onChange={(e) => updateFontSize(key, e.target.value)}
-                        className="mt-1 input-field w-full"
-                      />
-                    </div>
-                    
-                    {/* Line Height */}
-                    <div className="block text-sm">
-                      <label className="block text-sm mb-1">Line Height</label>
-                      <input
-                        type="number"
-                        value={settings.design.lineHeights?.[key] || 1.2}
-                        onChange={(e) => updateLineHeight(key, e.target.value)}
-                        className="mt-1 input-field w-full"
-                        step="0.1"
-                        min="0.5"
-                        max="3"
-                      />
-                    </div>
-                    
-                    {/* Font Styles */}
-                    <div className="block text-sm">
-                      <FontStyleCheckboxes
-                        bold={settings.design.fontStyles?.[key]?.bold}
-                        italic={settings.design.fontStyles?.[key]?.italic}
-                        underline={settings.design.fontStyles?.[key]?.underline}
-                        onBoldChange={(e) => updateFontStyle(key, 'bold', e.target.checked)}
-                        onItalicChange={(e) => updateFontStyle(key, 'italic', e.target.checked)}
-                        onUnderlineChange={(e) => updateFontStyle(key, 'underline', e.target.checked)}
-                      />
-                    </div>
-                  </div>
+                  <TrackPrefixStyleSelector
+                    value={settings.design.trackListStyle || 'numbers'}
+                    onChange={updateTrackListStyle}
+                    name="defaultTrackListStyle"
+                  />
                 </div>
-              ))}
-              
-              {/* Special row for Holder Front Edge Part - WITHOUT Line Height */}
-              <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Holder Front - Edge Part (Spine)</h4>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {/* Font Family */}
-                  <div className="block text-sm">
-                    <FontFamilySelect
-                      value={settings.design.fontFamilies?.spine}
-                      onChange={(e) => updateFontFamily('spine', e.target.value)}
-                      className="mt-1 input-field w-full"
-                    />
-                  </div>
-                  
-                  {/* Font Size */}
-                  <div className="block text-sm">
-                    <FontSizeInput
-                      value={settings.design.fontSizes?.spine}
-                      onChange={(e) => updateFontSize('spine', e.target.value)}
-                      className="mt-1 input-field w-full"
-                    />
-                  </div>
-                  
-                  {/* Font Styles */}
-                  <div className="block text-sm">
-                    <FontStyleCheckboxes
-                      bold={settings.design.fontStyles?.spine?.bold}
-                      italic={settings.design.fontStyles?.spine?.italic}
-                      underline={settings.design.fontStyles?.spine?.underline}
-                      onBoldChange={(e) => updateFontStyle('spine', 'bold', e.target.checked)}
-                      onItalicChange={(e) => updateFontStyle('spine', 'italic', e.target.checked)}
-                      onUnderlineChange={(e) => updateFontStyle('spine', 'underline', e.target.checked)}
-                    />
-                  </div>
-                </div>
-                <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
-                  <strong>Note:</strong> Front edge part uses the same font settings as the MiniDisc Edge Sticker. Line height doesn't apply to single-line text (~3mm).
-                </p>
+
+                {/* 6. Holder Back - Track List */}
+                <TypographySectionWithHeader
+                  sectionNumber="6"
+                  title="Holder Back - Track List"
+                  values={{
+                    fontFamily: settings.design.fontFamilies?.trackList,
+                    fontBold: settings.design.fontStyles?.trackList?.bold,
+                    fontItalic: settings.design.fontStyles?.trackList?.italic,
+                    fontUnderline: settings.design.fontStyles?.trackList?.underline,
+                    fontSize: settings.design.fontSizes?.trackList,
+                    lineHeight: settings.design.lineHeights?.trackList,
+                    letterSpacing: settings.design.letterSpacing?.trackList || 0
+                  }}
+                  handlers={{
+                    onFontFamilyChange: (e) => updateFontFamily('trackList', e.target.value),
+                    onBoldChange: (e) => updateFontStyle('trackList', 'bold', e.target.checked),
+                    onItalicChange: (e) => updateFontStyle('trackList', 'italic', e.target.checked),
+                    onUnderlineChange: (e) => updateFontStyle('trackList', 'underline', e.target.checked),
+                    onFontSizeChange: (e) => updateFontSize('trackList', e.target.value),
+                    onLineHeightChange: (e) => updateLineHeight('trackList', e.target.value),
+                    onLetterSpacingChange: (e) => updateLetterSpacing('trackList', e.target.value)
+                  }}
+                  onReset={() => handleResetSection('trackList')}
+                  config={{
+                    fontSizeMin: 3,
+                    fontSizeMax: 10,
+                    fontSizeStep: 0.5
+                  }}
+                />
+
+                {/* 7. Holder Back - Track Duration */}
+                <TypographySectionWithHeader
+                  sectionNumber="7"
+                  title="Holder Back - Track Duration"
+                  values={{
+                    fontFamily: settings.design.fontFamilies?.trackDuration,
+                    fontBold: settings.design.fontStyles?.trackDuration?.bold,
+                    fontItalic: settings.design.fontStyles?.trackDuration?.italic,
+                    fontUnderline: settings.design.fontStyles?.trackDuration?.underline,
+                    fontSize: settings.design.fontSizes?.trackDuration || 6,
+                    lineHeight: settings.design.lineHeights?.trackDuration,
+                    letterSpacing: settings.design.letterSpacing?.trackDuration || 0
+                  }}
+                  handlers={{
+                    onFontFamilyChange: (e) => updateFontFamily('trackDuration', e.target.value),
+                    onBoldChange: (e) => updateFontStyle('trackDuration', 'bold', e.target.checked),
+                    onItalicChange: (e) => updateFontStyle('trackDuration', 'italic', e.target.checked),
+                    onUnderlineChange: (e) => updateFontStyle('trackDuration', 'underline', e.target.checked),
+                    onFontSizeChange: (e) => updateFontSize('trackDuration', e.target.value),
+                    onLineHeightChange: (e) => updateLineHeight('trackDuration', e.target.value),
+                    onLetterSpacingChange: (e) => updateLetterSpacing('trackDuration', e.target.value)
+                  }}
+                  onReset={() => handleResetSection('trackDuration')}
+                  config={{
+                    fontSizeMin: 4,
+                    fontSizeMax: 10,
+                    fontSizeStep: 0.5
+                  }}
+                />
               </div>
               
               <p className="text-xs text-gray-600 dark:text-gray-400 mt-4">
