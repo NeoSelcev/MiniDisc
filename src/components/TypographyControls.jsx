@@ -112,6 +112,104 @@ export const FontStyleCheckboxes = ({
 };
 
 /**
+ * Track Prefix Style Selector Component
+ * Provides radio buttons to select track list prefix style (numbers, dashes, bullets)
+ * 
+ * @param {string} value - Current selected style ('numbers', 'dashes', or 'bullets')
+ * @param {function} onChange - Callback when style changes, receives new value
+ * @param {string} name - Unique name for radio button group (e.g., album.id)
+ * @param {string} className - Additional CSS classes for container
+ */
+export const TrackPrefixStyleSelector = ({ 
+  value = 'numbers', 
+  onChange, 
+  name = 'trackListStyle',
+  className = '' 
+}) => {
+  const styles = [
+    { value: 'numbers', label: 'Numbers (1. 2.)' },
+    { value: 'dashes', label: 'Dashes (- -)' },
+    { value: 'bullets', label: 'Bullets (• •)' }
+  ];
+
+  return (
+    <div className={`flex flex-wrap gap-2 ${className}`}>
+      {styles.map(style => (
+        <label 
+          key={style.value}
+          onClick={(e) => {
+            e.preventDefault();
+            onChange(style.value);
+          }}
+          className={`flex items-center cursor-pointer text-xs px-3 py-2 rounded border transition-colors ${
+            value === style.value
+              ? 'bg-purple-100 border-purple-400 dark:bg-purple-900/30 dark:border-purple-500' 
+              : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-purple-400 dark:hover:border-purple-500'
+          }`}
+        >
+          <input
+            type="radio"
+            name={name}
+            value={style.value}
+            checked={value === style.value}
+            readOnly
+            className="sr-only"
+          />
+          <div className={`w-4 h-4 rounded-full border-2 mr-2 flex items-center justify-center ${
+            value === style.value
+              ? 'border-purple-500 bg-purple-500' 
+              : 'border-gray-400'
+          }`}>
+            {value === style.value && (
+              <div className="w-2 h-2 rounded-full bg-white"></div>
+            )}
+          </div>
+          <span>{style.label}</span>
+        </label>
+      ))}
+    </div>
+  );
+};
+
+/**
+ * Typography Section with Header Component
+ * Universal component for all typography sections (Album Title, Artist, Year, Track List, Duration)
+ * Includes section header with number, title, and reset button
+ * 
+ * @param {string} sectionNumber - Section number to display (e.g., "1", "2", "5")
+ * @param {string} title - Section title (e.g., "Album Title", "Artist Name")
+ * @param {object} values - Typography values (fontFamily, fontBold, fontItalic, etc.)
+ * @param {object} handlers - Event handlers for all typography controls
+ * @param {function} onReset - Callback when reset button is clicked
+ * @param {object} config - Configuration for min/max/step values
+ */
+export const TypographySectionWithHeader = ({ 
+  sectionNumber,
+  title,
+  values,
+  handlers,
+  onReset,
+  config = {}
+}) => {
+  return (
+    <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+      <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="text-purple-600 dark:text-purple-400">{sectionNumber}.</span> {title}
+        </div>
+        <ResetButton onReset={onReset} title={`Reset ${title} style`} />
+      </h4>
+      
+      <TypographySection
+        values={values}
+        handlers={handlers}
+        config={config}
+      />
+    </div>
+  );
+};
+
+/**
  * Font Size Input Component
  * @param {number} value - Current font size value
  * @param {function} onChange - Callback when font size changes
