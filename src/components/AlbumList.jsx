@@ -13,6 +13,8 @@ function AlbumList() {
   const [editingAlbum, setEditingAlbum] = useState(null);
   
   const canAdd = canAddAlbum(albums, settings);
+  const rawSpotifyToken = settings?.integrations?.spotify?.token;
+  const hasSpotifyToken = typeof rawSpotifyToken === 'string' && rawSpotifyToken.trim().length > 0;
   
   const handleManualAdd = (e) => {
     e.preventDefault();
@@ -42,9 +44,13 @@ function AlbumList() {
         <div className="flex space-x-2">
           <button
             onClick={() => setShowSearch(!showSearch)}
-            disabled={!canAdd}
+            disabled={!canAdd || !hasSpotifyToken}
             className="px-3 py-1.5 text-sm bg-primary-600 text-white rounded hover:bg-primary-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-            title={canAdd ? 'Search Spotify' : 'Maximum capacity reached'}
+            title={!canAdd
+              ? 'Maximum capacity reached'
+              : hasSpotifyToken
+                ? 'Search Spotify'
+                : 'Add your Spotify token in Settings to enable search'}
           >
             <FontAwesomeIcon icon={faSearch} className="mr-1 w-3 h-3" /> Spotify
           </button>

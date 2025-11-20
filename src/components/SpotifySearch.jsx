@@ -3,33 +3,25 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faSpotify } from '@fortawesome/free-brands-svg-icons';
 import useAppStore from '../store/useAppStore';
-import { searchAlbums, getAlbumDetails, makeSpotifyRequest, getAuthUrl, downloadImageAsBase64 } from '../utils/spotifyAPI';
+import { searchAlbums, getAlbumDetails, downloadImageAsBase64 } from '../utils/spotifyAPI';
 import { extractColors } from '../utils/colorExtraction';
 
 function SpotifySearch({ onClose }) {
-  const { spotifyAuth, setSpotifyAuth, addAlbum } = useAppStore();
+  const { settings, addAlbum } = useAppStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const searchTimeoutRef = useRef(null);
-  
-  const isAuthenticated = spotifyAuth.accessToken && spotifyAuth.expiresAt > Date.now();
-  
-  // Debug logging
-  console.log('🔍 SpotifySearch render:', {
-    hasAccessToken: !!spotifyAuth?.accessToken,
-    expiresAt: spotifyAuth?.expiresAt ? new Date(spotifyAuth.expiresAt).toLocaleString() : 'none',
-    isExpired: spotifyAuth?.expiresAt ? spotifyAuth.expiresAt <= Date.now() : 'no expiry',
-    isAuthenticated
-  });
+  const spotifyToken = settings?.integrations?.spotify?.token?.trim() || '';
+  const hasToken = spotifyToken.length > 0;
   
   // Define handleSearch before using it in useEffect
   const handleSearch = useCallback(async () => {
     if (!searchQuery.trim()) return;
     
-    if (!isAuthenticated) {
-      setError('Please connect to Spotify first');
+    if (!hasToken) {
+      setError('Add your Spotify token in Settings to enable search.');
       return;
     }
     
@@ -37,23 +29,18 @@ function SpotifySearch({ onClose }) {
     setError(null);
     
     try {
-      const results = await makeSpotifyRequest(
-        (token) => searchAlbums(searchQuery, token),
-        spotifyAuth,
-        setSpotifyAuth
-      );
+      const results = await searchAlbums(searchQuery, spotifyToken);
       setSearchResults(results);
     } catch (err) {
-      if (err.message === 'SPOTIFY_REAUTH_REQUIRED') {
-        setError('Session expired. Please reconnect to Spotify.');
-        setSpotifyAuth({ accessToken: null, refreshToken: null, expiresAt: null });
+      if (err.message === 'SPOTIFY_AUTH_EXPIRED') {
+        setError('Your Spotify token has expired or is invalid. Generate a new token in Settings.');
       } else {
-        setError(err.message);
+        setError(err.message || 'Failed to search albums');
       }
     } finally {
       setLoading(false);
     }
-  }, [searchQuery, isAuthenticated, spotifyAuth, setSpotifyAuth]);
+  }, [searchQuery, hasToken, spotifyToken]);
   
   // Auto-search as user types (debounced)
   useEffect(() => {
@@ -62,8 +49,9 @@ function SpotifySearch({ onClose }) {
       clearTimeout(searchTimeoutRef.current);
     }
     
-    // Only search if query has 2+ characters
-    if (searchQuery.trim().length >= 2 && isAuthenticated) {
+    if (!hasToken) {
+      setSearchResults([]);
+    } else if (searchQuery.trim().length >= 2) {
       searchTimeoutRef.current = setTimeout(() => {
         handleSearch();
       }, 500); // 500ms debounce
@@ -78,7 +66,7 @@ function SpotifySearch({ onClose }) {
         clearTimeout(searchTimeoutRef.current);
       }
     };
-  }, [searchQuery, isAuthenticated, handleSearch]);
+  }, [searchQuery, hasToken, handleSearch]);
   
   const handleSelectAlbum = async (spotifyAlbum) => {
     setLoading(true);
@@ -86,11 +74,11 @@ function SpotifySearch({ onClose }) {
     
     try {
       // Get full album details with tracks
-      const albumDetails = await makeSpotifyRequest(
-        (token) => getAlbumDetails(spotifyAlbum.id, token),
-        spotifyAuth,
-        setSpotifyAuth
-      );
+      if (!hasToken) {
+        setError('Spotify token is missing. Add it in Settings and try again.');
+        return;
+      }
+      const albumDetails = await getAlbumDetails(spotifyAlbum.id, spotifyToken);
       
       // Download cover image as base64
       const coverBase64 = await downloadImageAsBase64(albumDetails.imageUrl);
@@ -126,14 +114,14 @@ function SpotifySearch({ onClose }) {
       // setSearchQuery('');
       // onClose();
     } catch (err) {
-      setError(err.message);
+      if (err.message === 'SPOTIFY_AUTH_EXPIRED') {
+        setError('Your Spotify token has expired or is invalid. Generate a new token in Settings.');
+      } else {
+        setError(err.message || 'Failed to fetch album details');
+      }
     } finally {
       setLoading(false);
     }
-  };
-  
-  const handleConnect = () => {
-    window.location.href = getAuthUrl();
   };
   
   return (
@@ -148,15 +136,17 @@ function SpotifySearch({ onClose }) {
         </button>
       </div>
       
-      {!isAuthenticated ? (
-        <div className="text-center py-6">
-          <p className="mb-4 text-gray-600 dark:text-gray-400">Connect to Spotify to search albums</p>
-          <button
-            onClick={handleConnect}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-          >
-            <FontAwesomeIcon icon={faSpotify} className="mr-1 w-4 h-4" /> Connect Spotify
-          </button>
+      {!hasToken ? (
+        <div className="text-center py-6 space-y-3">
+          <div className="text-3xl text-green-600 dark:text-green-400">
+            <FontAwesomeIcon icon={faSpotify} />
+          </div>
+          <p className="text-gray-700 dark:text-gray-300">
+            Add your Spotify access token in Settings to enable album search.
+          </p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Open the Settings popup, paste a valid token, then reopen this dialog.
+          </p>
         </div>
       ) : (
         <>

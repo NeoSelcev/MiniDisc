@@ -23,6 +23,10 @@ function SettingsModal({ isOpen, onClose }) {
   const [isResizing, setIsResizing] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const modalRef = useRef(null);
+  const spotifyToken = settings.integrations?.spotify?.token || '';
+  const hasSpotifyToken = spotifyToken.trim().length > 0;
+  const prevHasSpotifyToken = useRef(hasSpotifyToken);
+  const [showSpotifyHelp, setShowSpotifyHelp] = useState(!hasSpotifyToken);
   
   // Close modal on Escape key
   useEffect(() => {
@@ -100,6 +104,15 @@ function SettingsModal({ isOpen, onClose }) {
       document.removeEventListener('mouseup', handleMouseUp);
     };
   }, [isResizing, position]);
+
+  useEffect(() => {
+    if (!hasSpotifyToken) {
+      setShowSpotifyHelp(true);
+    } else if (!prevHasSpotifyToken.current && hasSpotifyToken) {
+      setShowSpotifyHelp(false);
+    }
+    prevHasSpotifyToken.current = hasSpotifyToken;
+  }, [hasSpotifyToken]);
   
   const handleDragStart = (e) => {
     if (e.target.closest('.modal-content')) return; // Don't drag if clicking content
@@ -121,6 +134,19 @@ function SettingsModal({ isOpen, onClose }) {
     if (confirm('Reset all settings to defaults? This will reload the page.')) {
       window.location.reload();
     }
+  };
+  
+  const updateSpotifyToken = (value) => {
+    updateSettings({
+      ...settings,
+      integrations: {
+        ...settings.integrations,
+        spotify: {
+          ...settings.integrations?.spotify,
+          token: value,
+        },
+      },
+    });
   };
   
   const updateDimension = (category, field, value) => {
@@ -291,23 +317,53 @@ function SettingsModal({ isOpen, onClose }) {
         <div className="modal-content overflow-y-auto px-6 py-4 space-y-8 bg-white dark:bg-gray-800" style={{ height: 'calc(100% - 140px)' }}>
             {/* Spotify Setup Help */}
             <section className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3 flex items-center">
-                <FontAwesomeIcon icon={faSpotify} className="mr-2 w-5 h-5" />
-                Spotify Integration Setup
-              </h3>
-              <div className="space-y-3 text-sm text-blue-800 dark:text-blue-200">
-                <p>
-                  <strong>How to get your Spotify token:</strong> The app will automatically generate one when you click "Connect Spotify".
-                </p>
-                <div className="bg-white dark:bg-gray-800 rounded p-3 space-y-2">
-                  <p className="font-medium text-blue-900 dark:text-blue-300">Quick Setup (3 steps):</p>
-                  <ol className="list-decimal list-inside space-y-1 ml-2">
-                    <li>Create a Spotify app at <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline break-all">developer.spotify.com/dashboard</a></li>
-                    <li>Set redirect URI to: <code className="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded text-xs break-all">http://127.0.0.1:5173/callback</code></li>
-                    <li>Copy Client ID & Secret to the <code className="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded text-xs">.env</code> file</li>
-                  </ol>
-                </div>
+              <div className="flex items-start justify-between gap-2">
+                <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 flex items-center">
+                  <FontAwesomeIcon icon={faSpotify} className="mr-2 w-5 h-5" />
+                  Spotify Integration
+                </h3>
+                {hasSpotifyToken && (
+                  <button
+                    type="button"
+                    onClick={() => setShowSpotifyHelp((prev) => !prev)}
+                    className="text-xs text-blue-700 dark:text-blue-200 hover:underline"
+                  >
+                    {showSpotifyHelp ? 'Hide instructions' : 'Show instructions'}
+                  </button>
+                )}
               </div>
+              <p className="mt-2 text-sm text-blue-800 dark:text-blue-200">
+                Paste a valid Spotify access token to enable album search. Tokens are stored locally in your browser.
+              </p>
+              <div className="mt-3">
+                <label className="block text-sm font-medium text-blue-900 dark:text-blue-200 mb-1">
+                  Spotify Access Token
+                </label>
+                <input
+                  type="text"
+                  value={spotifyToken}
+                  onChange={(e) => updateSpotifyToken(e.target.value)}
+                  placeholder="Paste your token here"
+                  className="w-full px-3 py-2 border border-blue-200 dark:border-blue-500 rounded bg-white dark:bg-gray-800 text-blue-900 dark:text-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <p className="mt-1 text-xs text-blue-700 dark:text-blue-300">
+                  Tip: Generate a token from the Spotify Developer dashboard. It may expire after a short time depending on your account type.
+                </p>
+              </div>
+              {showSpotifyHelp && (
+                <div className="mt-4 space-y-3 text-sm text-blue-800 dark:text-blue-200">
+                  <p className="font-medium text-blue-900 dark:text-blue-300">How to get a token:</p>
+                  <ol className="list-decimal list-inside space-y-2 ml-2">
+                    <li>Create (or open) an app in the <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline break-all">Spotify Developer Dashboard</a>.</li>
+                    <li>Inside your app, open <strong>Settings</strong> and add a redirect URI (any valid URL is fine for generating tokens).</li>
+                    <li>Click <strong>Users and Access &gt; Access Token</strong>, then generate a token with the <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">user-read-private</code> scope.</li>
+                    <li>Copy the generated token and paste it into the field above. Refresh the token whenever it expires.</li>
+                  </ol>
+                  <p className="text-xs">
+                    Need a detailed guide? See <code className="bg-gray-100 dark:bg-gray-700 px-1 py-0.5 rounded">HOW_TO_GET_SPOTIFY_TOKEN.md</code> in the project folder.
+                  </p>
+                </div>
+              )}
             </section>
             
             {/* Sticker Dimensions */}

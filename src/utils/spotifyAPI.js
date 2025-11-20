@@ -141,29 +141,6 @@ export function isTokenExpired(expiresAt) {
 }
 
 /**
- * Handle API errors with token refresh
- */
-export async function makeSpotifyRequest(requestFn, spotifyAuth, onAuthUpdate) {
-  try {
-    return await requestFn(spotifyAuth.accessToken);
-  } catch (error) {
-    if (error.message === 'SPOTIFY_AUTH_EXPIRED') {
-      // Try to refresh token
-      try {
-        const newAuth = await refreshAccessToken(spotifyAuth.refreshToken);
-        onAuthUpdate(newAuth);
-        // Retry request with new token
-        return await requestFn(newAuth.accessToken);
-      } catch (refreshError) {
-        // Refresh failed, user needs to re-authenticate
-        throw new Error('SPOTIFY_REAUTH_REQUIRED');
-      }
-    }
-    throw error;
-  }
-}
-
-/**
  * Generate random string for OAuth state
  */
 function generateRandomString(length) {
@@ -203,6 +180,5 @@ export default {
   searchAlbums,
   getAlbumDetails,
   isTokenExpired,
-  makeSpotifyRequest,
   downloadImageAsBase64,
 };

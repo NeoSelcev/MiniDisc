@@ -7,6 +7,13 @@ function migrateSettings(settings) {
   
   // Check if new structure exists (with fontStyles and renamed keys)
   if (settings.design?.fontStyles && settings.design?.fontSizes?.holderBackTitle) {
+    if (!settings.integrations) {
+      settings.integrations = { spotify: { token: '' } };
+    } else if (!settings.integrations.spotify) {
+      settings.integrations.spotify = { token: '' };
+    } else if (typeof settings.integrations.spotify.token !== 'string') {
+      settings.integrations.spotify.token = settings.integrations.spotify.token || '';
+    }
     // Remove obsolete disc face font settings if they exist
     if (settings.design.fontSizes.discFaceTitle) {
       delete settings.design.fontSizes.discFaceTitle;
@@ -62,6 +69,7 @@ function migrateSettings(settings) {
       trackFontSize: undefined,
       trackLineHeight: undefined,
     },
+      integrations: settings.integrations || { spotify: { token: '' } },
   };
 }
 
@@ -139,6 +147,11 @@ const DEFAULT_SETTINGS = {
     },
     trackListStyle: 'numbers', // 'numbers', 'dashes', 'bullets'
     fontSizeRange: { min: 6, max: 24 }, // Overall limits
+  },
+  integrations: {
+    spotify: {
+      token: '',
+    },
   },
   layout: {
     elementSpacing: 2, // mm
@@ -531,7 +544,27 @@ const useAppStore = create(
       
       // Spotify auth
       setSpotifyAuth: (auth) => {
-        set({ spotifyAuth: auth });
+        set((state) => {
+          const token = auth?.accessToken || '';
+          const updatedSettings = {
+            ...state.settings,
+            integrations: {
+              ...state.settings.integrations,
+              spotify: {
+                ...state.settings.integrations?.spotify,
+                token,
+              },
+            },
+          };
+          return {
+            spotifyAuth: auth,
+            settings: updatedSettings,
+            projectMetadata: {
+              ...state.projectMetadata,
+              modified: new Date().toISOString(),
+            },
+          };
+        });
       },
       
       // Project management
