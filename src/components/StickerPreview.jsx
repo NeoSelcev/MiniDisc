@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import useAppStore from '../store/useAppStore';
@@ -8,6 +8,8 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
   const { x, y, width, height, type: stickerType, data } = sticker;
   const [isHovered, setIsHovered] = useState(false);
   const [isPanelHovered, setIsPanelHovered] = useState(false);
+  const [panelPosition, setPanelPosition] = useState(null);
+  const wrapperRef = useRef(null);
   
   const activeCustomizationPanel = useAppStore((state) => state.activeCustomizationPanel);
   const openCustomizationPanel = useAppStore((state) => state.openCustomizationPanel);
@@ -63,6 +65,72 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
     }
   };
   
+  const calculatePanelPosition = useCallback(() => {
+    if (!wrapperRef.current || typeof window === 'undefined') {
+      return null;
+    }
+    const rect = wrapperRef.current.getBoundingClientRect();
+    const scrollX = window.scrollX || window.pageXOffset;
+    const scrollY = window.scrollY || window.pageYOffset;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const padding = 16;
+    const panelWidth = 480;
+    const panelHeight = 600;
+
+    const albumListEl = document.getElementById('album-list-panel-anchor');
+    if (albumListEl) {
+      // Prefer docking the panel to the album list column when the anchor exists
+      const listRect = albumListEl.getBoundingClientRect();
+      let xPosition = listRect.left + scrollX;
+      let yPosition = listRect.top + scrollY - padding;
+
+      if (xPosition + panelWidth > scrollX + viewportWidth - padding) {
+        xPosition = scrollX + viewportWidth - padding - panelWidth;
+      }
+
+      xPosition = Math.max(scrollX + padding, xPosition);
+
+      const maxY = scrollY + viewportHeight - panelHeight - padding;
+      yPosition = Math.min(maxY, Math.max(scrollY + padding, yPosition));
+
+      return { x: xPosition, y: yPosition };
+    }
+
+    let xPosition = rect.left + scrollX - panelWidth - padding;
+    let yPosition = rect.top + scrollY;
+
+    if (xPosition < scrollX + padding) {
+      xPosition = rect.right + scrollX + padding;
+    }
+
+    xPosition = Math.min(xPosition, scrollX + viewportWidth - padding - panelWidth);
+
+    const maxY = scrollY + viewportHeight - panelHeight - padding;
+    yPosition = Math.max(scrollY + padding, Math.min(yPosition, maxY));
+
+    return { x: xPosition, y: yPosition };
+  }, []);
+
+  const handleOpenPanel = () => {
+    const position = calculatePanelPosition();
+    setPanelPosition(position);
+    openCustomizationPanel(data.id, stickerType);
+  };
+
+  const handleClosePanel = () => {
+    setPanelPosition(null);
+    closeCustomizationPanel();
+  };
+
+  useEffect(() => {
+    if (isThisPanelOpen) {
+      setPanelPosition(calculatePanelPosition());
+    } else {
+      setPanelPosition(null);
+    }
+  }, [isThisPanelOpen, calculatePanelPosition]);
+
   const renderSpine = () => {
     const fontFamily = customization.spineFontFamily || 'Arial';
     const spineStyle = {
@@ -76,7 +144,7 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
     
     return (
       <div
-        className="flex items-center justify-center text-xs overflow-hidden border-2 border-blue-500"
+        className={`flex items-center justify-center text-xs overflow-hidden ${showCutLines ? 'border border-dashed border-gray-400' : 'border border-transparent'}`}
         style={{
           backgroundColor: data.colors?.dominant || '#e0e0e0',
           color: data.colors?.fontColor || '#000',
@@ -401,6 +469,7 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
   
   return (
     <div
+      ref={wrapperRef}
       className="absolute sticker-preview group"
       style={{
         left: `${pixelX}px`,
@@ -416,9 +485,9 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={(e) => {
-        if (isHovered && !isPanelHovered && !isThisPanelOpen) {
+        if (!isPanelHovered && !isThisPanelOpen) {
           e.stopPropagation();
-          openCustomizationPanel(data.id, stickerType);
+          handleOpenPanel();
         }
       }}
     >
@@ -459,7 +528,8 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
         <StickerCustomizationPanel
           album={currentAlbum}
           stickerType={stickerType}
-          onClose={closeCustomizationPanel}
+          position={panelPosition || undefined}
+          onClose={handleClosePanel}
           onPanelHover={(hovered) => setIsPanelHovered(hovered)}
         />
       )}

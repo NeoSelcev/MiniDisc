@@ -57,11 +57,10 @@ function ThemeToggle() {
   return (
     <button
       onClick={cycleTheme}
-      className="flex items-center space-x-2 px-3 py-1.5 text-sm rounded transition text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+      className="flex items-center px-3 py-1.5 text-sm rounded transition text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
       title={`Theme: ${getLabel()} (click to cycle)`}
     >
       <FontAwesomeIcon icon={getIcon()} className="w-4 h-4" />
-      <span className="hidden sm:inline">{getLabel()}</span>
     </button>
   );
 }

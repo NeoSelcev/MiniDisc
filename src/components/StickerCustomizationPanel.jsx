@@ -32,9 +32,21 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
   const [isResizing, setIsResizing] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0 });
+  const [isVisible, setIsVisible] = useState(false);
   
   const panelRef = useRef(null);
   const scrollContainerRef = useRef(null);
+
+  useEffect(() => {
+    if (initialPosition) {
+      setPosition(initialPosition);
+    }
+  }, [initialPosition]);
+
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setIsVisible(true));
+    return () => cancelAnimationFrame(raf);
+  }, []);
   
   // Update customization when slider changes (LIVE)
   const handleChange = (field, value) => {
@@ -258,7 +270,7 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
             </div>
             
             <TypographySectionWithHeader
-              sectionNumber="🅰️"
+              sectionNumber="1"
               title="Text Settings"
               values={{
                 fontFamily: customization.spineFontFamily,
@@ -308,7 +320,7 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
             </div>
             
             <ImageSettingsSection
-              sectionNumber="🔍"
+              sectionNumber="1"
               title="Image Settings"
               values={{
                 imageZoom: customization.imageZoom,
@@ -354,7 +366,7 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
             
             {/* Image Part - Image Settings */}
             <ImageSettingsSection
-              sectionNumber="🖼️"
+              sectionNumber="1"
               title="Image Part - Image Settings"
               values={{
                 imageZoom: customization.imageZoom,
@@ -378,9 +390,9 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
             />
             
             {/* Edge Part - Text Settings for Folded Spine */}
-            <div className="pt-3 border-t dark:border-gray-600">
+            <div className="pt-3">
               <TypographySectionWithHeader
-                sectionNumber="🅰️"
+                sectionNumber="2"
                 title="Edge Part (Spine) - Text Settings"
                 values={{
                   fontFamily: customization.edgePartFontFamily,
@@ -611,20 +623,30 @@ const stickerTitles = {
 };
 
 return (
-  <div
-    ref={panelRef}
-    className="fixed bg-white dark:bg-gray-800 rounded-lg border-2 border-gray-300 dark:border-gray-600 overflow-hidden z-50"
-    style={{
-      left: `${position.x}px`,
-      top: `${position.y}px`,
-      width: `${size.width}px`,
-      height: `${size.height}px`,
-      boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.08)',
-    }}
-    onMouseEnter={() => onPanelHover?.(true)}
-    onMouseLeave={() => onPanelHover?.(false)}
-    onMouseDown={(e) => e.stopPropagation()}  // Stop mousedown from reaching document listener
-  >
+  <>
+    <div
+      className={`fixed inset-0 z-40 bg-black bg-opacity-40 transition-opacity duration-300 ease-out ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
+    />
+    <div
+      ref={panelRef}
+      className={`fixed bg-white dark:bg-gray-800 rounded-lg border-2 border-gray-300 dark:border-gray-600 overflow-hidden z-50 transform transition-all duration-300 ease-out ${isVisible ? 'opacity-100 translate-x-0 scale-100' : 'opacity-0 translate-x-6 scale-95'}`}
+      style={{
+        left: `${position.x}px`,
+        top: `${position.y}px`,
+        width: `${size.width}px`,
+        height: `${size.height}px`,
+        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.08)',
+      }}
+      onMouseEnter={() => onPanelHover?.(true)}
+      onMouseLeave={() => onPanelHover?.(false)}
+      onMouseDown={(e) => e.stopPropagation()}  // Stop mousedown from reaching document listener
+      onClick={(e) => e.stopPropagation()}
+    >
     {/* Header - Draggable */}
     <div
       className="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-4 py-3 cursor-move flex justify-between items-center select-none border-b dark:border-gray-600"
@@ -664,7 +686,8 @@ return (
         background: 'linear-gradient(135deg, transparent 0%, transparent 50%, #9ca3af 50%, #9ca3af 100%)',
       }}
     />
-  </div>
+    </div>
+  </>
 );
 };
 

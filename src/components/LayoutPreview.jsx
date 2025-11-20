@@ -10,8 +10,22 @@ function LayoutPreview() {
   const { albums, settings } = useAppStore();
   const [layout, setLayout] = useState(null);
   const [stats, setStats] = useState(null);
+  const [isHydrated, setIsHydrated] = useState(() => useAppStore.persist?.hasHydrated?.() ?? false);
+  const [isCalculating, setIsCalculating] = useState(false);
+  const [hasStableLayout, setHasStableLayout] = useState(false);
+
+  useEffect(() => {
+    if (useAppStore.persist?.hasHydrated?.()) {
+      setIsHydrated(true);
+    }
+    const unsub = useAppStore.persist?.onFinishHydration?.(() => setIsHydrated(true));
+    return () => unsub?.();
+  }, []);
   
   useEffect(() => {
+    if (!isHydrated) return;
+    setHasStableLayout(false);
+    setIsCalculating(true);
     if (albums.length > 0) {
       const newLayout = calculateLayout(albums, settings);
       const newStats = getLayoutStats(albums, settings);
@@ -21,7 +35,22 @@ function LayoutPreview() {
       setLayout(null);
       setStats(null);
     }
-  }, [albums, settings]);
+    const animation = requestAnimationFrame(() => setIsCalculating(false));
+    return () => cancelAnimationFrame(animation);
+  }, [albums, settings, isHydrated]);
+
+  useEffect(() => {
+    if (!isHydrated || isCalculating) {
+      setHasStableLayout(false);
+      return;
+    }
+    if (!layout) {
+      setHasStableLayout(false);
+      return;
+    }
+    const timer = setTimeout(() => setHasStableLayout(true), 180);
+    return () => clearTimeout(timer);
+  }, [layout, isCalculating, isHydrated]);
   
   const handlePrint = () => {
     if (!layout || !layout.fits) {
@@ -37,7 +66,14 @@ function LayoutPreview() {
   
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 h-full flex flex-col relative">
-      {albums.length === 0 ? (
+      {!isHydrated ? (
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center text-gray-500 animate-pulse">
+            <p className="text-lg font-medium">Loading layout…</p>
+            <p className="text-sm">Please wait while your project data loads.</p>
+          </div>
+        </div>
+      ) : albums.length === 0 ? (
         <div className="flex items-center justify-center h-full bg-gray-50 rounded border-2 border-dashed border-gray-300">
           <div className="text-center text-gray-500">
             <p className="text-lg mb-2">No albums to preview</p>
@@ -61,7 +97,7 @@ function LayoutPreview() {
                 <StickerPreview key={sticker.id} sticker={sticker} scale={previewScale} showCutLines={settings.print.cutLines.enabled} showLabels={settings.print.showLabels} settings={settings} />
               ))}
               
-              {!layout?.fits && (
+              {!layout?.fits && hasStableLayout && (
                 <div className="absolute inset-0 flex items-center justify-center bg-red-500 bg-opacity-20">
                   <div className="bg-red-600 text-white px-4 py-2 rounded shadow-lg">
                     Layout overflow - reduce albums or adjust dimensions

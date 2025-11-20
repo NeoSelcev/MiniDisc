@@ -27,6 +27,7 @@ function SettingsModal({ isOpen, onClose }) {
   const hasSpotifyToken = spotifyToken.trim().length > 0;
   const prevHasSpotifyToken = useRef(hasSpotifyToken);
   const [showSpotifyHelp, setShowSpotifyHelp] = useState(!hasSpotifyToken);
+  const [isVisible, setIsVisible] = useState(false);
   
   // Close modal on Escape key
   useEffect(() => {
@@ -113,6 +114,15 @@ function SettingsModal({ isOpen, onClose }) {
     }
     prevHasSpotifyToken.current = hasSpotifyToken;
   }, [hasSpotifyToken]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setIsVisible(false);
+      return;
+    }
+    const raf = requestAnimationFrame(() => setIsVisible(true));
+    return () => cancelAnimationFrame(raf);
+  }, [isOpen]);
   
   const handleDragStart = (e) => {
     if (e.target.closest('.modal-content')) return; // Don't drag if clicking content
@@ -280,11 +290,19 @@ function SettingsModal({ isOpen, onClose }) {
   };
   
   return (
-    <div className="fixed inset-0 z-50 pointer-events-none">
+    <div className="fixed inset-0 z-50">
+      <div
+        className={`absolute inset-0 z-40 bg-black bg-opacity-40 transition-opacity duration-300 ease-out ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            onClose();
+          }
+        }}
+      />
       {/* Modal */}
       <div 
         ref={modalRef}
-        className="absolute bg-white rounded-lg border-2 border-gray-300 overflow-hidden pointer-events-auto"
+        className={`absolute z-50 bg-white dark:bg-gray-800 rounded-lg border-2 border-gray-300 dark:border-gray-600 overflow-hidden pointer-events-auto transform transition-all duration-300 ease-out ${isVisible ? 'opacity-100 translate-x-0 scale-100' : 'opacity-0 -translate-x-6 scale-95'}`}
         style={{
           left: `${position.x}px`,
           top: `${position.y}px`,
@@ -296,6 +314,7 @@ function SettingsModal({ isOpen, onClose }) {
           maxHeight: '90vh',
           boxShadow: '0 20px 60px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.2)',
         }}
+        onMouseDown={(e) => e.stopPropagation()}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header - Draggable */}

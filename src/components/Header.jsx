@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCompactDisc, faCheck, faCog } from '@fortawesome/free-solid-svg-icons';
+import { faCompactDisc, faCheck, faCog, faFileCirclePlus, faFolderOpen, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 import useAppStore from '../store/useAppStore';
 import ThemeToggle from './ThemeToggle';
 
@@ -50,7 +50,7 @@ function Header({ onOpenSettings }) {
         {/* Mobile: Stacked layout */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between py-2 md:h-16">
           {/* Top row: Logo + Navigation */}
-          <div className="flex items-center justify-between mb-2 md:mb-0">
+          <div className="flex items-center justify-between gap-2 md:gap-3 flex-wrap mb-2 md:mb-0">
             {/* Logo/Title - Clickable to go home */}
             <a 
               href="#main"
@@ -61,12 +61,6 @@ function Header({ onOpenSettings }) {
               <span className="whitespace-nowrap">MiniDisc Sticker Printer</span>
             </a>
             
-            {/* Auto-save indicator (Word style) - Desktop only */}
-            <div className="hidden lg:flex items-center ml-4 px-3 py-1 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded-md text-xs text-green-700 dark:text-green-300">
-              <FontAwesomeIcon icon={faCheck} className="mr-1 w-3 h-3" />
-              <span className="whitespace-nowrap">Auto-saved • Last modified: {new Date(projectMetadata.modified).toLocaleString()}</span>
-            </div>
-            
             {/* Mobile Navigation */}
             <div className="flex items-center space-x-1 md:hidden">
               <button
@@ -74,73 +68,80 @@ function Header({ onOpenSettings }) {
                 className="px-2 py-1 text-xs rounded transition text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                 title="Settings (Ctrl+,)"
               >
-                <FontAwesomeIcon icon={faCog} className="mr-1 w-3 h-3" /> Settings
+                <FontAwesomeIcon icon={faCog} className="w-3 h-3" />
               </button>
             </div>
           </div>
           
           {/* Bottom row: Project name + Actions */}
-          <div className="flex items-center justify-between space-x-2">
-            {/* Mobile auto-save indicator */}
-            <div className="md:hidden flex-1 text-xs text-green-700 dark:text-green-300 text-center bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded border border-green-200 dark:border-green-700">
-              <FontAwesomeIcon icon={faCheck} className="mr-1 w-3 h-3" /> Auto-saved • {new Date(projectMetadata.modified).toLocaleTimeString()}
-            </div>
-            
-            <input
-              type="text"
-              value={projectMetadata.name}
-              onChange={(e) => updateProjectMetadata({ name: e.target.value })}
-              className="hidden md:block flex-1 md:flex-none md:w-40 lg:w-48 px-2 py-1 text-xs md:text-sm border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-primary-500 min-w-0 dark:bg-gray-700 dark:text-gray-100"
-              placeholder="Project name"
-            />
-            
-            {/* Actions */}
-            <div className="flex items-center space-x-1 md:space-x-2">
-              <button
-                onClick={handleNewProject}
-                className="px-2 md:px-3 py-1 md:py-1.5 text-xs md:text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition whitespace-nowrap"
-                title="New Project"
-              >
-                New
-              </button>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-center gap-2 md:gap-4 w-full relative">
+            <div className="flex flex-col md:flex-row items-center gap-2 md:gap-2.5 w-full md:w-auto md:mx-auto">
+              {/* Mobile auto-save indicator */}
+              <div className="md:hidden flex-1 text-xs text-green-700 dark:text-green-300 text-center bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded border border-green-200 dark:border-green-700">
+                <FontAwesomeIcon icon={faCheck} className="mr-1 w-3 h-3" title="Auto-saved" />
+                {new Date(projectMetadata.modified).toLocaleTimeString()}
+              </div>
               
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                className="px-2 md:px-3 py-1 md:py-1.5 text-xs md:text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition whitespace-nowrap"
-                title="Load Project (Ctrl+O)"
-              >
-                Load
-              </button>
               <input
-                ref={fileInputRef}
-                type="file"
-                accept=".json"
-                onChange={handleImport}
-                className="hidden"
+                type="text"
+                value={projectMetadata.name}
+                onChange={(e) => updateProjectMetadata({ name: e.target.value })}
+                className="hidden md:block md:w-48 lg:w-56 px-2 py-1 text-xs md:text-sm border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-gray-100"
+                placeholder="Project name"
               />
               
-              <button
-                onClick={handleExport}
-                className="px-2 md:px-3 py-1 md:py-1.5 text-xs md:text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition whitespace-nowrap"
-                title="Save Project (Ctrl+S)"
-              >
-                Save
-              </button>
-              
-              {/* Desktop Navigation */}
-              <div className="hidden md:flex items-center space-x-2">
-                <div className="h-6 w-px bg-gray-300 dark:bg-gray-600" />
-                
-                <ThemeToggle />
+              {/* Actions */}
+              <div className="flex items-center space-x-1 md:space-x-1.5">
+                <button
+                  onClick={handleNewProject}
+                  className="px-2 md:px-3 py-1 md:py-1.5 text-xs md:text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition whitespace-nowrap"
+                  title="New Project"
+                >
+                  <FontAwesomeIcon icon={faFileCirclePlus} className="w-4 h-4" />
+                </button>
                 
                 <button
-                  onClick={onOpenSettings}
-                  className="px-3 py-1.5 text-sm rounded transition whitespace-nowrap text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                  title="Settings (Ctrl+,)"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="px-2 md:px-3 py-1 md:py-1.5 text-xs md:text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition whitespace-nowrap"
+                  title="Load Project (Ctrl+O)"
                 >
-                  <FontAwesomeIcon icon={faCog} className="mr-1 w-4 h-4" /> Settings
+                  <FontAwesomeIcon icon={faFolderOpen} className="w-4 h-4" />
                 </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".json"
+                  onChange={handleImport}
+                  className="hidden"
+                />
+                
+                <button
+                  onClick={handleExport}
+                  className="px-2 md:px-3 py-1 md:py-1.5 text-xs md:text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition whitespace-nowrap"
+                  title="Save Project (Ctrl+S)"
+                >
+                  <FontAwesomeIcon icon={faFloppyDisk} className="w-4 h-4" />
+                </button>
+
+                <div className="hidden md:flex items-center px-3 py-1 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded-md text-xs text-green-700 dark:text-green-300 ml-2">
+                  <FontAwesomeIcon icon={faCheck} className="mr-1 w-3 h-3" />
+                  <span className="whitespace-nowrap" title={`Auto-saved ${new Date(projectMetadata.modified).toLocaleString()}`}>
+                    {new Date(projectMetadata.modified).toLocaleTimeString()}
+                  </span>
+                </div>
               </div>
+            </div>
+
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-2 md:absolute md:right-0 md:top-1/2 md:-translate-y-1/2">
+              <ThemeToggle />
+              <button
+                onClick={onOpenSettings}
+                className="px-3 py-1.5 text-sm rounded transition whitespace-nowrap text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                title="Settings (Ctrl+,)"
+              >
+                <FontAwesomeIcon icon={faCog} className="w-4 h-4" />
+              </button>
             </div>
           </div>
         </div>
