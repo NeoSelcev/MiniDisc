@@ -164,7 +164,7 @@ export const TrackPrefixStyleSelector = ({
               <div className="w-2 h-2 rounded-full bg-white"></div>
             )}
           </div>
-          <span>{style.label}</span>
+          <span className="text-gray-900 dark:text-gray-100">{style.label}</span>
         </label>
       ))}
     </div>
