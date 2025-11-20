@@ -12,6 +12,7 @@ import {
   TrackPrefixStyleSelector
 } from './TypographyControls';
 import DimensionCard from './DimensionCard';
+import PrintSettingField from './PrintSettingField';
 
 function SettingsModal({ isOpen, onClose }) {
   const { settings, updateSettings } = useAppStore();
@@ -578,49 +579,59 @@ function SettingsModal({ isOpen, onClose }) {
               <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Print Settings</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <label className="block text-sm text-gray-700 dark:text-gray-300">
-                  DPI (Print Resolution)
-                  <input
-                    type="number"
-                    value={settings.print.dpi}
-                    onChange={(e) => updatePrintSetting('dpi', parseInt(e.target.value))}
-                    className="mt-1 input-field w-full"
-                    min="72"
-                    max="600"
-                  />
-                </label>
+                <PrintSettingField
+                  label="DPI (Print Resolution)"
+                  value={settings.print.dpi}
+                  onChange={(e) => updatePrintSetting('dpi', parseInt(e.target.value))}
+                  min={72}
+                  max={600}
+                />
                 
-                <label className="block text-sm text-gray-700 dark:text-gray-300">
-                  Element Spacing (mm)
-                  <input
-                    type="number"
-                    value={settings.layout.elementSpacing}
-                    onChange={(e) => updateLayoutSetting('elementSpacing', parseFloat(e.target.value) || 0)}
-                    className="mt-1 input-field w-full"
-                    min="0"
-                    max="10"
-                    step="0.5"
-                  />
-                </label>
+                <PrintSettingField
+                  label="Element Spacing (mm)"
+                  value={settings.layout.elementSpacing}
+                  onChange={(e) => updateLayoutSetting('elementSpacing', parseFloat(e.target.value) || 0)}
+                  min={0}
+                  max={10}
+                  step={0.5}
+                />
               </div>
               
               <div className="mt-4">
                 <h4 className="font-medium mb-2 text-gray-900 dark:text-gray-100">Printer Margins (mm)</h4>
                 <div className="grid grid-cols-2 gap-4">
-                  {['top', 'bottom', 'left', 'right'].map((side) => (
-                    <label key={side} className="block text-sm capitalize text-gray-700 dark:text-gray-300">
-                      {side}
-                      <input
-                        type="number"
-                        value={settings.print.margins[side]}
-                        onChange={(e) => updatePrintSetting(`margins.${side}`, parseFloat(e.target.value))}
-                        className="mt-1 input-field w-full"
-                        min="0"
-                        max="20"
-                        step="0.5"
-                      />
-                    </label>
-                  ))}
+                  <PrintSettingField
+                    label="Top"
+                    value={settings.print.margins.top}
+                    onChange={(e) => updatePrintSetting('margins.top', parseFloat(e.target.value))}
+                    min={0}
+                    max={20}
+                    step={0.5}
+                  />
+                  <PrintSettingField
+                    label="Bottom"
+                    value={settings.print.margins.bottom}
+                    onChange={(e) => updatePrintSetting('margins.bottom', parseFloat(e.target.value))}
+                    min={0}
+                    max={20}
+                    step={0.5}
+                  />
+                  <PrintSettingField
+                    label="Left"
+                    value={settings.print.margins.left}
+                    onChange={(e) => updatePrintSetting('margins.left', parseFloat(e.target.value))}
+                    min={0}
+                    max={20}
+                    step={0.5}
+                  />
+                  <PrintSettingField
+                    label="Right"
+                    value={settings.print.margins.right}
+                    onChange={(e) => updatePrintSetting('margins.right', parseFloat(e.target.value))}
+                    min={0}
+                    max={20}
+                    step={0.5}
+                  />
                 </div>
               </div>
               
