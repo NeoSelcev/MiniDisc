@@ -13,6 +13,7 @@ import {
 } from './TypographyControls';
 import DimensionCard from './DimensionCard';
 import PrintSettingField from './PrintSettingField';
+import Checkbox from './Checkbox';
 
 function SettingsModal({ isOpen, onClose }) {
   const { settings, updateSettings } = useAppStore();
@@ -636,45 +637,29 @@ function SettingsModal({ isOpen, onClose }) {
               </div>
               
               <div className="mt-4 flex items-center space-x-4">
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={settings.print.cutLines.enabled}
-                    onChange={(e) => updatePrintSetting('cutLines.enabled', e.target.checked)}
-                    className="mr-2"
-                  />
-                  <span className="text-sm text-gray-700 dark:text-gray-300">Enable cut lines</span>
-                </label>
+                <Checkbox
+                  checked={settings.print.cutLines.enabled}
+                  onChange={(e) => updatePrintSetting('cutLines.enabled', e.target.checked)}
+                  label="Enable cut lines"
+                />
                 
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={settings.print.showLabels}
-                    onChange={(e) => updatePrintSetting('showLabels', e.target.checked)}
-                    className="mr-2"
-                  />
-                  <span className="text-sm text-gray-700 dark:text-gray-300">Show labels</span>
-                </label>
+                <Checkbox
+                  checked={settings.print.showLabels}
+                  onChange={(e) => updatePrintSetting('showLabels', e.target.checked)}
+                  label="Show labels"
+                />
                 
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={settings.print.bleedMarks}
-                    onChange={(e) => updatePrintSetting('bleedMarks', e.target.checked)}
-                    className="mr-2"
-                  />
-                  <span className="text-sm text-gray-700 dark:text-gray-300">Show margin guides</span>
-                </label>
+                <Checkbox
+                  checked={settings.print.bleedMarks}
+                  onChange={(e) => updatePrintSetting('bleedMarks', e.target.checked)}
+                  label="Show margin guides"
+                />
                 
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={settings.layout.allowRotation}
-                    onChange={(e) => updateLayoutSetting('allowRotation', e.target.checked)}
-                    className="mr-2"
-                  />
-                  <span className="text-sm text-gray-700 dark:text-gray-300">Allow rotation</span>
-                </label>
+                <Checkbox
+                  checked={settings.layout.allowRotation}
+                  onChange={(e) => updateLayoutSetting('allowRotation', e.target.checked)}
+                  label="Allow rotation"
+                />
               </div>
             </section>
           </div>

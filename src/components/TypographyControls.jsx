@@ -1,6 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import Checkbox from './Checkbox';
 
 // Shared font family options
 export const FONT_OPTIONS = [
@@ -79,33 +80,27 @@ export const FontStyleCheckboxes = ({
         {label} {showGlobalLabel && <span className="text-xs opacity-60">(global)</span>}
       </label>
       <div className="flex items-center gap-3">
-        <label className="flex items-center cursor-pointer text-xs">
-          <input
-            type="checkbox"
-            checked={bold || false}
-            onChange={onBoldChange}
-            className="mr-1"
-          />
-          <span className="font-bold">B</span>
-        </label>
-        <label className="flex items-center cursor-pointer text-xs">
-          <input
-            type="checkbox"
-            checked={italic || false}
-            onChange={onItalicChange}
-            className="mr-1"
-          />
-          <span className="italic">I</span>
-        </label>
-        <label className="flex items-center cursor-pointer text-xs">
-          <input
-            type="checkbox"
-            checked={underline || false}
-            onChange={onUnderlineChange}
-            className="mr-1"
-          />
-          <span className="underline">U</span>
-        </label>
+        <Checkbox
+          checked={bold || false}
+          onChange={onBoldChange}
+          label="B"
+          bold={true}
+          className="text-xs"
+        />
+        <Checkbox
+          checked={italic || false}
+          onChange={onItalicChange}
+          label="I"
+          italic={true}
+          className="text-xs"
+        />
+        <Checkbox
+          checked={underline || false}
+          onChange={onUnderlineChange}
+          label="U"
+          underline={true}
+          className="text-xs"
+        />
       </div>
     </div>
   );
