@@ -11,6 +11,7 @@ import {
   TypographySectionWithHeader,
   TrackPrefixStyleSelector
 } from './TypographyControls';
+import DimensionCard from './DimensionCard';
 
 function SettingsModal({ isOpen, onClose }) {
   const { settings, updateSettings } = useAppStore();
@@ -271,10 +272,10 @@ function SettingsModal({ isOpen, onClose }) {
       >
         {/* Header - Draggable */}
         <div 
-          className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between cursor-move select-none"
+          className="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-600 px-6 py-4 flex items-center justify-between cursor-move select-none"
           onMouseDown={handleDragStart}
         >
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Settings</h2>
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Settings</h2>
           <button
             onClick={onClose}
             className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition"
@@ -285,7 +286,7 @@ function SettingsModal({ isOpen, onClose }) {
         </div>
         
         {/* Content - Scrollable */}
-        <div className="modal-content overflow-y-auto px-6 py-4 space-y-8 bg-white dark:bg-gray-800" style={{ height: 'calc(100% - 120px)' }}>
+        <div className="modal-content overflow-y-auto px-6 py-4 space-y-8 bg-white dark:bg-gray-800" style={{ height: 'calc(100% - 140px)' }}>
             {/* Spotify Setup Help */}
             <section className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
               <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3 flex items-center">
@@ -309,149 +310,59 @@ function SettingsModal({ isOpen, onClose }) {
             
             {/* Sticker Dimensions */}
             <section>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Sticker Dimensions (mm)</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Sticker Dimensions (mm)</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Edge Sticker */}
-                <div className="border border-gray-200 rounded p-4">
-                  <h4 className="font-medium mb-2">MiniDisc Edge (Spine)</h4>
-                  <div className="space-y-2">
-                    <label className="block text-sm">
-                      Width (mm)
-                      <input
-                        type="number"
-                        value={settings.dimensions.edgeSticker.width}
-                        onChange={(e) => updateDimension('edgeSticker', 'width', e.target.value)}
-                        className="mt-1 input-field w-full"
-                        step="0.1"
-                      />
-                    </label>
-                    <label className="block text-sm">
-                      Height (mm)
-                      <input
-                        type="number"
-                        value={settings.dimensions.edgeSticker.height}
-                        onChange={(e) => updateDimension('edgeSticker', 'height', e.target.value)}
-                        className="mt-1 input-field w-full"
-                        step="0.1"
-                      />
-                    </label>
-                  </div>
-                </div>
+                <DimensionCard
+                  title="MiniDisc Edge (Spine)"
+                  widthValue={settings.dimensions.edgeSticker.width}
+                  heightValue={settings.dimensions.edgeSticker.height}
+                  onWidthChange={(e) => updateDimension('edgeSticker', 'width', e.target.value)}
+                  onHeightChange={(e) => updateDimension('edgeSticker', 'height', e.target.value)}
+                  step="0.1"
+                />
                 
                 {/* Disc Face */}
-                <div className="border border-gray-200 rounded p-4">
-                  <h4 className="font-medium mb-2">MiniDisc Face</h4>
-                  <div className="space-y-2">
-                    <label className="block text-sm">
-                      Width (mm)
-                      <input
-                        type="number"
-                        value={settings.dimensions.discFace.width}
-                        onChange={(e) => updateDimension('discFace', 'width', e.target.value)}
-                        className="mt-1 input-field w-full"
-                        min="5"
-                        max="200"
-                      />
-                    </label>
-                    <label className="block text-sm">
-                      Height (mm)
-                      <input
-                        type="number"
-                        value={settings.dimensions.discFace.height}
-                        onChange={(e) => updateDimension('discFace', 'height', e.target.value)}
-                        className="mt-1 input-field w-full"
-                        min="5"
-                        max="200"
-                      />
-                    </label>
-                  </div>
-                </div>
+                <DimensionCard
+                  title="MiniDisc Face"
+                  widthValue={settings.dimensions.discFace.width}
+                  heightValue={settings.dimensions.discFace.height}
+                  onWidthChange={(e) => updateDimension('discFace', 'width', e.target.value)}
+                  onHeightChange={(e) => updateDimension('discFace', 'height', e.target.value)}
+                />
                 
                 {/* Holder Front Image Part */}
-                <div className="border border-gray-200 rounded p-4">
-                  <h4 className="font-medium mb-2">Holder Front - Image Part</h4>
-                  <div className="space-y-2">
-                    <label className="block text-sm">
-                      Width (mm)
-                      <input
-                        type="number"
-                        value={settings.dimensions.holderFrontPartA.width}
-                        onChange={(e) => updateDimension('holderFrontPartA', 'width', e.target.value)}
-                        className="mt-1 input-field w-full"
-                        min="5"
-                        max="200"
-                      />
-                    </label>
-                    <label className="block text-sm">
-                      Height (mm)
-                      <input
-                        type="number"
-                        value={settings.dimensions.holderFrontPartA.height}
-                        onChange={(e) => updateDimension('holderFrontPartA', 'height', e.target.value)}
-                        className="mt-1 input-field w-full"
-                        min="5"
-                        max="200"
-                      />
-                    </label>
-                  </div>
-                </div>
+                <DimensionCard
+                  title="Holder Front - Image Part"
+                  widthValue={settings.dimensions.holderFrontPartA.width}
+                  heightValue={settings.dimensions.holderFrontPartA.height}
+                  onWidthChange={(e) => updateDimension('holderFrontPartA', 'width', e.target.value)}
+                  onHeightChange={(e) => updateDimension('holderFrontPartA', 'height', e.target.value)}
+                />
                 
                 {/* Holder Front Edge Part */}
-                <div className="border border-gray-200 rounded p-4">
-                  <h4 className="font-medium mb-2">Holder Front - Edge Part (Spine)</h4>
-                  <div className="space-y-2">
-                    <label className="block text-sm">
-                      Width (mm) <span className="text-gray-500 text-xs">(Auto: matches Image Part)</span>
-                      <input
-                        type="number"
-                        value={settings.dimensions.holderFrontPartA.width}
-                        disabled
-                        className="mt-1 input-field w-full bg-gray-100 text-gray-600 cursor-not-allowed"
-                      />
-                    </label>
-                    <label className="block text-sm">
-                      Height (mm) <span className="text-gray-500 text-xs">(Fold strip)</span>
-                      <input
-                        type="number"
-                        value={settings.dimensions.holderFrontPartB.height}
-                        onChange={(e) => updateDimension('holderFrontPartB', 'height', e.target.value)}
-                        className="mt-1 input-field w-full"
-                        min="1"
-                        max="10"
-                      />
-                    </label>
-                  </div>
-                </div>
+                <DimensionCard
+                  title="Holder Front - Edge Part (Spine)"
+                  widthValue={settings.dimensions.holderFrontPartA.width}
+                  heightValue={settings.dimensions.holderFrontPartB.height}
+                  onWidthChange={(e) => updateDimension('holderFrontPartA', 'width', e.target.value)}
+                  onHeightChange={(e) => updateDimension('holderFrontPartB', 'height', e.target.value)}
+                  widthDisabled={true}
+                  widthHint="(Auto: matches Image Part)"
+                  heightHint="(Fold strip)"
+                  min={1}
+                  max={10}
+                />
                 
                 {/* Holder Back */}
-                <div className="border border-gray-200 rounded p-4">
-                  <h4 className="font-medium mb-2">Holder Back (Track List)</h4>
-                  <div className="space-y-2">
-                    <label className="block text-sm">
-                      Width (mm)
-                      <input
-                        type="number"
-                        value={settings.dimensions.holderBack.width}
-                        onChange={(e) => updateDimension('holderBack', 'width', e.target.value)}
-                        className="mt-1 input-field w-full"
-                        min="5"
-                        max="200"
-                      />
-                    </label>
-                    <label className="block text-sm">
-                      Height (mm)
-                      <input
-                        type="number"
-                        value={settings.dimensions.holderBack.height}
-                        onChange={(e) => updateDimension('holderBack', 'height', e.target.value)}
-                        className="mt-1 input-field w-full"
-                        min="5"
-                        max="200"
-                      />
-                    </label>
-                  </div>
-                </div>
+                <DimensionCard
+                  title="Holder Back (Track List)"
+                  widthValue={settings.dimensions.holderBack.width}
+                  heightValue={settings.dimensions.holderBack.height}
+                  onWidthChange={(e) => updateDimension('holderBack', 'width', e.target.value)}
+                  onHeightChange={(e) => updateDimension('holderBack', 'height', e.target.value)}
+                />
               </div>
             </section>
             
@@ -664,10 +575,10 @@ function SettingsModal({ isOpen, onClose }) {
             
             {/* Print Settings */}
             <section>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Print Settings</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Print Settings</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <label className="block text-sm">
+                <label className="block text-sm text-gray-700 dark:text-gray-300">
                   DPI (Print Resolution)
                   <input
                     type="number"
@@ -679,7 +590,7 @@ function SettingsModal({ isOpen, onClose }) {
                   />
                 </label>
                 
-                <label className="block text-sm">
+                <label className="block text-sm text-gray-700 dark:text-gray-300">
                   Element Spacing (mm)
                   <input
                     type="number"
@@ -694,10 +605,10 @@ function SettingsModal({ isOpen, onClose }) {
               </div>
               
               <div className="mt-4">
-                <h4 className="font-medium mb-2">Printer Margins (mm)</h4>
+                <h4 className="font-medium mb-2 text-gray-900 dark:text-gray-100">Printer Margins (mm)</h4>
                 <div className="grid grid-cols-2 gap-4">
                   {['top', 'bottom', 'left', 'right'].map((side) => (
-                    <label key={side} className="block text-sm capitalize">
+                    <label key={side} className="block text-sm capitalize text-gray-700 dark:text-gray-300">
                       {side}
                       <input
                         type="number"
@@ -721,7 +632,7 @@ function SettingsModal({ isOpen, onClose }) {
                     onChange={(e) => updatePrintSetting('cutLines.enabled', e.target.checked)}
                     className="mr-2"
                   />
-                  <span className="text-sm">Enable cut lines</span>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">Enable cut lines</span>
                 </label>
                 
                 <label className="flex items-center">
@@ -731,7 +642,7 @@ function SettingsModal({ isOpen, onClose }) {
                     onChange={(e) => updatePrintSetting('showLabels', e.target.checked)}
                     className="mr-2"
                   />
-                  <span className="text-sm">Show labels</span>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">Show labels</span>
                 </label>
                 
                 <label className="flex items-center">
@@ -741,7 +652,7 @@ function SettingsModal({ isOpen, onClose }) {
                     onChange={(e) => updatePrintSetting('bleedMarks', e.target.checked)}
                     className="mr-2"
                   />
-                  <span className="text-sm">Show margin guides</span>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">Show margin guides</span>
                 </label>
                 
                 <label className="flex items-center">
@@ -751,14 +662,14 @@ function SettingsModal({ isOpen, onClose }) {
                     onChange={(e) => updateLayoutSetting('allowRotation', e.target.checked)}
                     className="mr-2"
                   />
-                  <span className="text-sm">Allow rotation</span>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">Allow rotation</span>
                 </label>
               </div>
             </section>
           </div>
           
           {/* Footer */}
-          <div className="bg-gray-50 border-t border-gray-200 px-6 py-4 flex justify-between">
+          <div className="bg-gray-100 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600 px-6 py-4 flex justify-between">
             <button
               onClick={handleReset}
               className="px-4 py-2 text-red-600 border border-red-600 rounded hover:bg-red-50 transition"
