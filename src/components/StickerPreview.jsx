@@ -110,23 +110,30 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
     const offsetY = customization.imageOffsetY || 0;
     
     return (
-      <div className="w-full h-full overflow-hidden" style={{ backgroundColor: data.colors?.dominant || '#e0e0e0' }}>
-        <img
-          src={data.coverImage}
-          alt={data.albumName}
+      <div className="w-full h-full overflow-hidden flex items-center justify-center" style={{ backgroundColor: data.colors?.dominant || '#e0e0e0' }}>
+        <div
           style={{
-            width: `${zoom}%`,
-            height: `${zoom}%`,
-            objectFit: 'cover',
-            objectPosition: 'center',
-            display: 'block',
-            margin: 0,
-            padding: 0,
-            minWidth: `${zoom}%`,
-            minHeight: `${zoom}%`,
-            transform: `translate(${offsetX}px, ${offsetY}px)`,
+            position: 'relative',
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
-        />
+        >
+          <img
+            src={data.coverImage}
+            alt={data.albumName}
+            style={{
+              width: 'auto',
+              height: '100%',
+              maxWidth: 'none',
+              objectFit: 'contain',
+              display: 'block',
+              transform: `scale(${zoom / 100}) translate(${offsetX}px, ${offsetY}px)`,
+            }}
+          />
+        </div>
       </div>
     );
   };
@@ -155,18 +162,18 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
     return (
       <div className="w-full h-full flex flex-col">
         {/* Image Part - Main cover image */}
-        <div className="w-full overflow-hidden" style={{ height: `${partAHeightPercent}%`, backgroundColor: data.colors?.dominant || '#e0e0e0' }}>
+        <div className="w-full overflow-hidden flex items-center justify-center" style={{ height: `${partAHeightPercent}%`, backgroundColor: data.colors?.dominant || '#e0e0e0' }}>
           {data.coverImage ? (
             <img
               src={data.coverImage}
               alt={data.albumName}
               style={{ 
-                width: `${zoom}%`,
-                height: `${zoom}%`,
+                width: '100%',
+                height: '100%',
                 objectFit: 'cover',
                 objectPosition: 'center',
                 display: 'block',
-                transform: `translate(${offsetX}px, ${offsetY}px)`,
+                transform: `scale(${zoom / 100}) translate(${offsetX}px, ${offsetY}px)`,
               }}
             />
           ) : (

@@ -607,3 +607,119 @@ export const TypographySection = ({ values, handlers, config = {} }) => {
     </div>
   );
 };
+
+/**
+ * Image Settings Section Component
+ * Controls for image zoom and position with section header and reset button
+ * 
+ * @param {string} sectionNumber - Section number or icon to display (e.g., "🔍", "1")
+ * @param {string} title - Section title (default: "Image Settings")
+ * @param {object} values - Image values (imageZoom, imageOffsetX, imageOffsetY)
+ * @param {object} handlers - Event handlers for zoom and position controls
+ * @param {function} onReset - Callback when reset button is clicked
+ * @param {object} config - Configuration for min/max/step values
+ */
+export const ImageSettingsSection = ({ 
+  sectionNumber = "🔍",
+  title = "Image Settings",
+  values,
+  handlers,
+  onReset,
+  config = {}
+}) => {
+  const {
+    imageZoom = 100,
+    imageOffsetX = 0,
+    imageOffsetY = 0
+  } = values;
+
+  const {
+    onZoomChange,
+    onOffsetXChange,
+    onOffsetYChange
+  } = handlers;
+
+  const {
+    zoomMin = 50,
+    zoomMax = 200,
+    zoomStep = 5,
+    offsetMin = -50,
+    offsetMax = 50,
+    offsetStep = 1
+  } = config;
+
+  return (
+    <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+      <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="text-purple-600 dark:text-purple-400">{sectionNumber}</span> {title}
+        </div>
+        <ResetButton onReset={onReset} title={`Reset ${title}`} />
+      </h4>
+      
+      <div className="space-y-3">
+        {/* Zoom Slider */}
+        <div>
+          <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
+            Zoom: <strong>{imageZoom}%</strong>
+          </label>
+          <input
+            type="range"
+            min={zoomMin}
+            max={zoomMax}
+            step={zoomStep}
+            value={imageZoom}
+            onChange={onZoomChange}
+            className="w-full"
+          />
+          <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
+            <span>{zoomMin}%</span>
+            <span>{zoomMax}%</span>
+          </div>
+        </div>
+
+        {/* Position X and Y in one row */}
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
+              Position X: <strong>{imageOffsetX}px</strong>
+            </label>
+            <input
+              type="range"
+              min={offsetMin}
+              max={offsetMax}
+              step={offsetStep}
+              value={imageOffsetX}
+              onChange={onOffsetXChange}
+              className="w-full"
+            />
+            <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
+              <span>{offsetMin}px</span>
+              <span>{offsetMax}px</span>
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
+              Position Y: <strong>{imageOffsetY}px</strong>
+            </label>
+            <input
+              type="range"
+              min={offsetMin}
+              max={offsetMax}
+              step={offsetStep}
+              value={imageOffsetY}
+              onChange={onOffsetYChange}
+              className="w-full"
+            />
+            <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
+              <span>{offsetMin}px</span>
+              <span>{offsetMax}px</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+

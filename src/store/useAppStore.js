@@ -346,6 +346,7 @@ const useAppStore = create(
           },
           face: {
             // Face is image-only, no text settings
+            // At 100% zoom, square image fits the height of the sticker
             imageZoom: 100,
             imageOffsetX: 0,
             imageOffsetY: 0,

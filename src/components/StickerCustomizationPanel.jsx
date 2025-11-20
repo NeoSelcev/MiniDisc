@@ -12,7 +12,8 @@ import {
   TypographySection,
   ResetButton,
   TrackPrefixStyleSelector,
-  TypographySectionWithHeader
+  TypographySectionWithHeader,
+  ImageSettingsSection
 } from './TypographyControls';
 
 const StickerCustomizationPanel = ({ album, stickerType, onClose, position: initialPosition, onPanelHover }) => {
@@ -117,6 +118,19 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
     'edgePartFontFamily', 'edgePartFontBold', 'edgePartFontItalic', 'edgePartFontUnderline',
     'titleFontSize', 'lineHeight', 'letterSpacing'
   ]);
+  
+  // Reset handlers for image settings
+  const handleResetImageSettings = () => {
+    const defaults = getTypographyDefaults(stickerType);
+    const updated = { 
+      ...customization, 
+      imageZoom: defaults.imageZoom || 100,
+      imageOffsetX: defaults.imageOffsetX || 0,
+      imageOffsetY: defaults.imageOffsetY || 0
+    };
+    setCustomization(updated);
+    updateStickerCustomization(album.id, stickerType, updated);
+  };
   
   // Close on Escape key
   useEffect(() => {
@@ -276,68 +290,29 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
               </p>
             </div>
             
-            <div className="space-y-3">
-              <h3 className="font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                <FontAwesomeIcon icon={faMagnifyingGlass} className="w-4 h-4" /> Image Settings
-              </h3>
-              
-              <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
-                  Zoom: <strong>{customization.imageZoom}%</strong>
-                </label>
-                <input
-                  type="range"
-                  min="50"
-                  max="200"
-                  step="5"
-                  value={customization.imageZoom}
-                  onChange={(e) => handleChange('imageZoom', parseInt(e.target.value))}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
-                  <span>50%</span>
-                  <span>200%</span>
-                </div>
-              </div>
-              
-              <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
-                  Position X: <strong>{customization.imageOffsetX}px</strong>
-                </label>
-                <input
-                  type="range"
-                  min="-50"
-                  max="50"
-                  step="1"
-                  value={customization.imageOffsetX}
-                  onChange={(e) => handleChange('imageOffsetX', parseInt(e.target.value))}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
-                  <span>-50px</span>
-                  <span>+50px</span>
-                </div>
-              </div>
-              
-              <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
-                  Position Y: <strong>{customization.imageOffsetY}px</strong>
-                </label>
-                <input
-                  type="range"
-                  min="-50"
-                  max="50"
-                  step="1"
-                  value={customization.imageOffsetY}
-                  onChange={(e) => handleChange('imageOffsetY', parseInt(e.target.value))}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
-                  <span>-50px</span>
-                  <span>+50px</span>
-                </div>
-              </div>
-            </div>
+            <ImageSettingsSection
+              sectionNumber="🔍"
+              title="Image Settings"
+              values={{
+                imageZoom: customization.imageZoom,
+                imageOffsetX: customization.imageOffsetX,
+                imageOffsetY: customization.imageOffsetY
+              }}
+              handlers={{
+                onZoomChange: (e) => handleChange('imageZoom', parseInt(e.target.value)),
+                onOffsetXChange: (e) => handleChange('imageOffsetX', parseInt(e.target.value)),
+                onOffsetYChange: (e) => handleChange('imageOffsetY', parseInt(e.target.value))
+              }}
+              onReset={handleResetImageSettings}
+              config={{
+                zoomMin: 50,
+                zoomMax: 300,
+                zoomStep: 5,
+                offsetMin: -50,
+                offsetMax: 50,
+                offsetStep: 1
+              }}
+            />
           </div>
         );
       
@@ -354,68 +329,29 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
             </div>
             
             {/* Image Part - Image Settings */}
-            <div className="space-y-3">
-              <h3 className="font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2 border-b pb-2 dark:border-gray-600">
-                <FontAwesomeIcon icon={faMagnifyingGlass} className="w-4 h-4" /> Image Part - Image Settings
-              </h3>
-              
-              <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
-                  Zoom: <strong>{customization.imageZoom}%</strong>
-                </label>
-                <input
-                  type="range"
-                  min="50"
-                  max="200"
-                  step="5"
-                  value={customization.imageZoom}
-                  onChange={(e) => handleChange('imageZoom', parseInt(e.target.value))}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
-                  <span>50%</span>
-                  <span>200%</span>
-                </div>
-              </div>
-              
-              <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
-                  Position X: <strong>{customization.imageOffsetX}px</strong>
-                </label>
-                <input
-                  type="range"
-                  min="-50"
-                  max="50"
-                  step="1"
-                  value={customization.imageOffsetX}
-                  onChange={(e) => handleChange('imageOffsetX', parseInt(e.target.value))}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
-                  <span>-50px</span>
-                  <span>+50px</span>
-                </div>
-              </div>
-              
-              <div>
-                <label className="text-sm text-gray-600 dark:text-gray-400 block mb-1">
-                  Position Y: <strong>{customization.imageOffsetY}px</strong>
-                </label>
-                <input
-                  type="range"
-                  min="-50"
-                  max="50"
-                  step="1"
-                  value={customization.imageOffsetY}
-                  onChange={(e) => handleChange('imageOffsetY', parseInt(e.target.value))}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-500 mt-1">
-                  <span>-50px</span>
-                  <span>+50px</span>
-                </div>
-              </div>
-            </div>
+            <ImageSettingsSection
+              sectionNumber="🖼️"
+              title="Image Part - Image Settings"
+              values={{
+                imageZoom: customization.imageZoom,
+                imageOffsetX: customization.imageOffsetX,
+                imageOffsetY: customization.imageOffsetY
+              }}
+              handlers={{
+                onZoomChange: (e) => handleChange('imageZoom', parseInt(e.target.value)),
+                onOffsetXChange: (e) => handleChange('imageOffsetX', parseInt(e.target.value)),
+                onOffsetYChange: (e) => handleChange('imageOffsetY', parseInt(e.target.value))
+              }}
+              onReset={handleResetImageSettings}
+              config={{
+                zoomMin: 50,
+                zoomMax: 300,
+                zoomStep: 5,
+                offsetMin: -50,
+                offsetMax: 50,
+                offsetStep: 1
+              }}
+            />
             
             {/* Edge Part - Text Settings for Folded Spine */}
             <div className="pt-3 border-t dark:border-gray-600">
