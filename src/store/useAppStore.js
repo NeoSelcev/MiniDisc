@@ -362,6 +362,8 @@ const useAppStore = create(
             edgePartFontBold: false,
             edgePartFontItalic: false,
             edgePartFontUnderline: false,
+            edgePartLetterSpacing: 0,
+            edgePartLineHeight: 1.2,
             letterSpacing: 0,
             lineHeight: 1.2,
           },
@@ -420,6 +422,17 @@ const useAppStore = create(
       // Get default values for a specific typography section
       getTypographyDefaults: (stickerType, section) => {
         const defaults = {
+          front: {
+            edgePart: {
+              fontFamily: 'Arial',
+              fontBold: false,
+              fontItalic: false,
+              fontUnderline: false,
+              fontSize: 8,
+              lineHeight: 1.2,
+              letterSpacing: 0
+            }
+          },
           back: {
             title: {
               fontFamily: 'Arial',

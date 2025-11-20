@@ -62,7 +62,8 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
       
       // Apply default values for all properties in this section
       properties.forEach(prop => {
-        const defaultKey = prop.replace(/^(title|artist|year|trackList|trackDuration)/, '');
+        // Remove the section prefix to get the base property name
+        const defaultKey = prop.replace(/^(title|artist|year|trackList|trackDuration|edgePart)/, '');
         const key = defaultKey.charAt(0).toLowerCase() + defaultKey.slice(1);
         if (defaults[key] !== undefined) {
           updated[prop] = defaults[key];
@@ -116,7 +117,7 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
   
   const handleResetEdgePart = createSectionReset('edgePart', [
     'edgePartFontFamily', 'edgePartFontBold', 'edgePartFontItalic', 'edgePartFontUnderline',
-    'titleFontSize', 'lineHeight', 'letterSpacing'
+    'titleFontSize', 'edgePartLineHeight', 'edgePartLetterSpacing'
   ]);
   
   // Reset handlers for image settings
@@ -241,9 +242,9 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
         // Spine sticker shows only album name text
         return (
           <div className="space-y-4">
-            <div className="text-sm text-gray-800 dark:text-gray-200">
+            <div className="text-lg text-gray-800 dark:text-gray-200">
               <div className="font-semibold">{album.albumName}</div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">{album.artistName} • {album.year}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">{album.artistName} • {album.year}</div>
             </div>
             
             <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded border border-blue-200 dark:border-blue-800">
@@ -291,9 +292,9 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
         // Face sticker shows only the disc cover image
         return (
           <div className="space-y-4">
-            <div className="text-sm text-gray-800 dark:text-gray-200">
+            <div className="text-lg text-gray-800 dark:text-gray-200">
               <div className="font-semibold">{album.albumName}</div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">{album.artistName} • {album.year}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">{album.artistName} • {album.year}</div>
             </div>
             
             <div className="bg-purple-50 dark:bg-purple-900/20 p-3 rounded border border-purple-200 dark:border-purple-800">
@@ -336,9 +337,9 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
         // Front sticker has Image Part (cover image) and Edge Part (folded spine text)
         return (
           <div className="space-y-4">
-            <div className="text-sm text-gray-800 dark:text-gray-200">
+            <div className="text-lg text-gray-800 dark:text-gray-200">
               <div className="font-semibold">{album.albumName}</div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">{album.artistName} • {album.year}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">{album.artistName} • {album.year}</div>
             </div>
             
             <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded border border-green-200 dark:border-green-800">
@@ -387,8 +388,8 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
                   fontItalic: customization.edgePartFontItalic,
                   fontUnderline: customization.edgePartFontUnderline,
                   fontSize: customization.titleFontSize,
-                  lineHeight: customization.lineHeight,
-                  letterSpacing: customization.letterSpacing
+                  lineHeight: customization.edgePartLineHeight,
+                  letterSpacing: customization.edgePartLetterSpacing
                 }}
                 handlers={{
                   onFontFamilyChange: (e) => handleChange('edgePartFontFamily', e.target.value),
@@ -396,8 +397,8 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
                   onItalicChange: (e) => handleChange('edgePartFontItalic', e.target.checked),
                   onUnderlineChange: (e) => handleChange('edgePartFontUnderline', e.target.checked),
                   onFontSizeChange: (e) => handleChange('titleFontSize', parseFloat(e.target.value)),
-                  onLineHeightChange: (e) => handleChange('lineHeight', parseFloat(e.target.value)),
-                  onLetterSpacingChange: (e) => handleChange('letterSpacing', parseFloat(e.target.value))
+                  onLineHeightChange: (e) => handleChange('edgePartLineHeight', parseFloat(e.target.value)),
+                  onLetterSpacingChange: (e) => handleChange('edgePartLetterSpacing', parseFloat(e.target.value))
                 }}
                 onReset={handleResetEdgePart}
                 config={{
@@ -414,9 +415,9 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
       // Back sticker shows album title, artist, year, and track list
       return (
         <div className="space-y-4">
-          <div className="text-sm text-gray-800 dark:text-gray-200">
+          <div className="text-lg text-gray-800 dark:text-gray-200">
             <div className="font-semibold">{album.albumName}</div>
-            <div className="text-xs text-gray-600 dark:text-gray-400">{album.artistName} • {album.year}</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">{album.artistName} • {album.year}</div>
           </div>
           
           <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 p-3 rounded border-2 border-purple-300 dark:border-purple-700">

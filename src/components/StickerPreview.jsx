@@ -153,6 +153,8 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
     
     // Get font family and styles for Edge Part (uses per-album settings)
     const fontFamily = customization.edgePartFontFamily || 'Arial';
+    const edgePartLineHeight = customization.edgePartLineHeight || 1.2;
+    const edgePartLetterSpacing = customization.edgePartLetterSpacing !== undefined ? customization.edgePartLetterSpacing : 0;
     const spineStyle = {
       bold: customization.edgePartFontBold || false,
       italic: customization.edgePartFontItalic || false,
@@ -196,6 +198,8 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
             padding: '1px',
             fontSize: `${titleSize}pt`,
             fontFamily: fontFamily,
+            lineHeight: edgePartLineHeight,
+            letterSpacing: `${edgePartLetterSpacing}em`,
             fontWeight: spineStyle.bold ? 'bold' : 'normal',
             fontStyle: spineStyle.italic ? 'italic' : 'normal',
             textDecoration: spineStyle.underline ? 'underline' : 'none',
