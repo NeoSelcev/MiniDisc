@@ -291,8 +291,6 @@ function AlbumEditModal({ album, isOpen, onClose }) {
               value={formData.year}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-gray-100"
-              min="1900"
-              max="2100"
             />
           </div>
 

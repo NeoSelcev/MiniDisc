@@ -94,8 +94,6 @@ function AlbumList() {
             type="number"
             name="year"
             placeholder="Year"
-            min="1900"
-            max="2100"
             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:text-gray-100"
           />
           <div className="flex space-x-2">
