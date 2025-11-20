@@ -241,11 +241,19 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
         // Spine sticker shows only album name text
         return (
           <div className="space-y-4">
+            <div className="text-sm text-gray-800 dark:text-gray-200">
+              <div className="font-semibold">{album.albumName}</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400">{album.artistName} • {album.year}</div>
+            </div>
+            
             <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded border border-blue-200 dark:border-blue-800">
-              <p className="text-xs text-blue-800 dark:text-blue-300">
-                <strong>MiniDisc Edge (Spine)</strong><br/>
-                Displays album name as vertical text on the edge
+              <p className="text-xs font-semibold text-blue-800 dark:text-blue-300 mb-1">
+                Sticker Dimensions
               </p>
+              <ul className="text-xs text-gray-700 dark:text-gray-400 space-y-0.5">
+                <li>• Vertical text on disc edge</li>
+                <li>• <strong>58×3 mm</strong></li>
+              </ul>
             </div>
             
             <TypographySectionWithHeader
@@ -283,11 +291,19 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
         // Face sticker shows only the disc cover image
         return (
           <div className="space-y-4">
+            <div className="text-sm text-gray-800 dark:text-gray-200">
+              <div className="font-semibold">{album.albumName}</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400">{album.artistName} • {album.year}</div>
+            </div>
+            
             <div className="bg-purple-50 dark:bg-purple-900/20 p-3 rounded border border-purple-200 dark:border-purple-800">
-              <p className="text-xs text-purple-800 dark:text-purple-300">
-                <strong>Disc Face (On Disc Edge)</strong><br/>
-                Displays album cover image on the visible disc edge
+              <p className="text-xs font-semibold text-purple-800 dark:text-purple-300 mb-1">
+                Sticker Dimensions
               </p>
+              <ul className="text-xs text-gray-700 dark:text-gray-400 space-y-0.5">
+                <li>• Album cover image on disc surface</li>
+                <li>• <strong>36×53 mm</strong></li>
+              </ul>
             </div>
             
             <ImageSettingsSection
@@ -320,12 +336,19 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
         // Front sticker has Image Part (cover image) and Edge Part (folded spine text)
         return (
           <div className="space-y-4">
+            <div className="text-sm text-gray-800 dark:text-gray-200">
+              <div className="font-semibold">{album.albumName}</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400">{album.artistName} • {album.year}</div>
+            </div>
+            
             <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded border border-green-200 dark:border-green-800">
-              <p className="text-xs text-green-800 dark:text-green-300">
-                <strong>Holder Front</strong><br/>
-                <strong>Image Part:</strong> Cover image (main area)<br/>
-                <strong>Edge Part (Spine):</strong> Album info text (folded spine, ~3mm)
+              <p className="text-xs font-semibold text-green-800 dark:text-green-300 mb-1">
+                Sticker Dimensions
               </p>
+              <ul className="text-xs text-gray-700 dark:text-gray-400 space-y-0.5">
+                <li>• <strong>Image Part:</strong> Cover image — <strong>68×65 mm</strong></li>
+                <li>• <strong>Edge Part:</strong> Folded spine text — <strong>68×3 mm</strong></li>
+              </ul>
             </div>
             
             {/* Image Part - Image Settings */}
@@ -391,13 +414,19 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
       // Back sticker shows album title, artist, year, and track list
       return (
         <div className="space-y-4">
+          <div className="text-sm text-gray-800 dark:text-gray-200">
+            <div className="font-semibold">{album.albumName}</div>
+            <div className="text-xs text-gray-600 dark:text-gray-400">{album.artistName} • {album.year}</div>
+          </div>
+          
           <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 p-3 rounded border-2 border-purple-300 dark:border-purple-700">
-            <p className="text-sm font-semibold text-purple-800 dark:text-purple-300 mb-1">
-              📄 Holder Back Cover Typography
+            <p className="text-xs font-semibold text-purple-800 dark:text-purple-300 mb-1">
+              Sticker Dimensions
             </p>
-            <p className="text-xs text-gray-700 dark:text-gray-400">
-              Complete typography control for all back cover text elements
-            </p>
+            <ul className="text-xs text-gray-700 dark:text-gray-400 space-y-0.5">
+              <li>• Track list with album info</li>
+              <li>• <strong>68×58 mm</strong></li>
+            </ul>
           </div>
           
           {/* 1. Album Title */}
@@ -574,10 +603,10 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
 };
 
 const stickerTitles = {
-  spine: 'Spine Sticker',
-  face: 'Face Sticker',
-  front: 'Front Sticker',
-  back: 'Back Sticker',
+  spine: 'Disc Edge (Spine) Sticker',
+  face: 'Disc Face Sticker',
+  front: 'Holder Front Cover Sticker',
+  back: 'Holder Back Cover Sticker',
 };
 
 return (
