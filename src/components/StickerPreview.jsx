@@ -132,15 +132,15 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
   }, [isThisPanelOpen, calculatePanelPosition]);
 
   const renderSpine = () => {
-    const fontFamily = customization.spineFontFamily || 'Arial';
+    const fontFamily = customization.spineFontFamily || settings.design.fontFamilies.spine;
     const spineStyle = {
-      bold: customization.spineFontBold || false,
-      italic: customization.spineFontItalic || false,
-      underline: customization.spineFontUnderline || false,
+      bold: customization.spineFontBold !== undefined ? customization.spineFontBold : settings.design.fontStyles.spine.bold,
+      italic: customization.spineFontItalic !== undefined ? customization.spineFontItalic : settings.design.fontStyles.spine.italic,
+      underline: customization.spineFontUnderline !== undefined ? customization.spineFontUnderline : settings.design.fontStyles.spine.underline,
     };
-    const lineHeight = customization.lineHeight || 1.2;
-    const fontSize = customization.fontSize || 8;
-    const letterSpacing = customization.letterSpacing !== undefined ? customization.letterSpacing : 0;
+    const lineHeight = customization.lineHeight || settings.design.lineHeights.spine;
+    const fontSize = customization.fontSize || settings.design.fontSizes.spine;
+    const letterSpacing = customization.letterSpacing !== undefined ? customization.letterSpacing : (settings.design.letterSpacing.spine || 0);
     
     return (
       <div
@@ -217,16 +217,16 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
     const zoom = customization.imageZoom || 100;
     const offsetX = customization.imageOffsetX || 0;
     const offsetY = customization.imageOffsetY || 0;
-    const titleSize = customization.titleFontSize || 8;
+    const titleSize = customization.titleFontSize || settings.design.fontSizes.spine;
     
     // Get font family and styles for Edge Part (uses per-album settings)
-    const fontFamily = customization.edgePartFontFamily || 'Arial';
-    const edgePartLineHeight = customization.edgePartLineHeight || 1.2;
-    const edgePartLetterSpacing = customization.edgePartLetterSpacing !== undefined ? customization.edgePartLetterSpacing : 0;
+    const fontFamily = customization.edgePartFontFamily || settings.design.fontFamilies.spine;
+    const edgePartLineHeight = customization.edgePartLineHeight || settings.design.lineHeights.spine;
+    const edgePartLetterSpacing = customization.edgePartLetterSpacing !== undefined ? customization.edgePartLetterSpacing : (settings.design.letterSpacing.spine || 0);
     const spineStyle = {
-      bold: customization.edgePartFontBold || false,
-      italic: customization.edgePartFontItalic || false,
-      underline: customization.edgePartFontUnderline || false,
+      bold: customization.edgePartFontBold !== undefined ? customization.edgePartFontBold : settings.design.fontStyles.spine.bold,
+      italic: customization.edgePartFontItalic !== undefined ? customization.edgePartFontItalic : settings.design.fontStyles.spine.italic,
+      underline: customization.edgePartFontUnderline !== undefined ? customization.edgePartFontUnderline : settings.design.fontStyles.spine.underline,
     };
     
     return (
@@ -283,60 +283,60 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
   
   const renderBack = () => {
     // Track List
-    const fontSize = customization.trackListFontSize || settings.design.fontSizes?.trackList || 8;
-    const trackFont = customization.trackListFontFamily || 'Arial';
+    const fontSize = customization.trackListFontSize || settings.design.fontSizes?.trackList;
+    const trackFont = customization.trackListFontFamily || settings.design.fontFamilies.trackList;
     const trackStyle = {
-      bold: customization.trackListFontBold || false,
-      italic: customization.trackListFontItalic || false,
-      underline: customization.trackListFontUnderline || false,
+      bold: customization.trackListFontBold !== undefined ? customization.trackListFontBold : settings.design.fontStyles.trackList.bold,
+      italic: customization.trackListFontItalic !== undefined ? customization.trackListFontItalic : settings.design.fontStyles.trackList.italic,
+      underline: customization.trackListFontUnderline !== undefined ? customization.trackListFontUnderline : settings.design.fontStyles.trackList.underline,
     };
-    const lineHeight = customization.trackListLineHeight || 1.2;
-    const letterSpacing = customization.trackListLetterSpacing !== undefined ? customization.trackListLetterSpacing : 0;
-    const trackListStyle = customization.trackListStyle || 'numbers';
+    const lineHeight = customization.trackListLineHeight || settings.design.lineHeights.trackList;
+    const letterSpacing = customization.trackListLetterSpacing !== undefined ? customization.trackListLetterSpacing : (settings.design.letterSpacing.trackList || 0);
+    const trackListStyle = customization.trackListStyle || settings.design.trackListStyle;
     
     // Album Title
-    const titleSize = customization.titleFontSize || settings.design.fontSizes?.holderBackTitle || 14;
-    const titleFont = customization.titleFontFamily || 'Arial';
+    const titleSize = customization.titleFontSize || settings.design.fontSizes?.holderBackTitle;
+    const titleFont = customization.titleFontFamily || settings.design.fontFamilies.holderBackTitle;
     const titleStyle = {
-      bold: customization.titleFontBold || false,
-      italic: customization.titleFontItalic || false,
-      underline: customization.titleFontUnderline || false,
+      bold: customization.titleFontBold !== undefined ? customization.titleFontBold : settings.design.fontStyles.holderBackTitle.bold,
+      italic: customization.titleFontItalic !== undefined ? customization.titleFontItalic : settings.design.fontStyles.holderBackTitle.italic,
+      underline: customization.titleFontUnderline !== undefined ? customization.titleFontUnderline : settings.design.fontStyles.holderBackTitle.underline,
     };
-    const titleLineHeight = customization.titleLineHeight || 1.2;
-    const titleLetterSpacing = customization.titleLetterSpacing !== undefined ? customization.titleLetterSpacing : 0;
+    const titleLineHeight = customization.titleLineHeight || settings.design.lineHeights.holderBackTitle;
+    const titleLetterSpacing = customization.titleLetterSpacing !== undefined ? customization.titleLetterSpacing : (settings.design.letterSpacing.holderBackTitle || 0);
     
     // Artist Name
-    const artistSize = customization.artistFontSize || settings.design.fontSizes?.holderBackArtist || 10;
-    const artistFont = customization.artistFontFamily || 'Arial';
+    const artistSize = customization.artistFontSize || settings.design.fontSizes?.holderBackArtist;
+    const artistFont = customization.artistFontFamily || settings.design.fontFamilies.holderBackArtist;
     const artistStyle = {
-      bold: customization.artistFontBold || false,
-      italic: customization.artistFontItalic || false,
-      underline: customization.artistFontUnderline || false,
+      bold: customization.artistFontBold !== undefined ? customization.artistFontBold : settings.design.fontStyles.holderBackArtist.bold,
+      italic: customization.artistFontItalic !== undefined ? customization.artistFontItalic : settings.design.fontStyles.holderBackArtist.italic,
+      underline: customization.artistFontUnderline !== undefined ? customization.artistFontUnderline : settings.design.fontStyles.holderBackArtist.underline,
     };
-    const artistLineHeight = customization.artistLineHeight || 1.2;
-    const artistLetterSpacing = customization.artistLetterSpacing !== undefined ? customization.artistLetterSpacing : 0;
+    const artistLineHeight = customization.artistLineHeight || settings.design.lineHeights.holderBackArtist;
+    const artistLetterSpacing = customization.artistLetterSpacing !== undefined ? customization.artistLetterSpacing : (settings.design.letterSpacing.holderBackArtist || 0);
     
     // Year of Production
-    const yearSize = customization.yearFontSize || settings.design.fontSizes?.holderBackYear || 9;
-    const yearFont = customization.yearFontFamily || 'Arial';
+    const yearSize = customization.yearFontSize || settings.design.fontSizes?.holderBackYear;
+    const yearFont = customization.yearFontFamily || settings.design.fontFamilies.holderBackYear;
     const yearStyle = {
-      bold: customization.yearFontBold || false,
-      italic: customization.yearFontItalic || false,
-      underline: customization.yearFontUnderline || false,
+      bold: customization.yearFontBold !== undefined ? customization.yearFontBold : settings.design.fontStyles.holderBackYear.bold,
+      italic: customization.yearFontItalic !== undefined ? customization.yearFontItalic : settings.design.fontStyles.holderBackYear.italic,
+      underline: customization.yearFontUnderline !== undefined ? customization.yearFontUnderline : settings.design.fontStyles.holderBackYear.underline,
     };
-    const yearLineHeight = customization.yearLineHeight || 1.2;
-    const yearLetterSpacing = customization.yearLetterSpacing !== undefined ? customization.yearLetterSpacing : 0;
+    const yearLineHeight = customization.yearLineHeight || settings.design.lineHeights.holderBackYear;
+    const yearLetterSpacing = customization.yearLetterSpacing !== undefined ? customization.yearLetterSpacing : (settings.design.letterSpacing.holderBackYear || 0);
     
     // Track Duration
-    const durationSize = customization.trackDurationFontSize || settings.design.fontSizes?.trackDuration || 4.5;
-    const durationFont = customization.trackDurationFontFamily || 'Arial';
+    const durationSize = customization.trackDurationFontSize || settings.design.fontSizes?.trackDuration;
+    const durationFont = customization.trackDurationFontFamily || settings.design.fontFamilies.trackDuration;
     const durationStyle = {
-      bold: customization.trackDurationFontBold || false,
-      italic: customization.trackDurationFontItalic || false,
-      underline: customization.trackDurationFontUnderline || false,
+      bold: customization.trackDurationFontBold !== undefined ? customization.trackDurationFontBold : settings.design.fontStyles.trackDuration.bold,
+      italic: customization.trackDurationFontItalic !== undefined ? customization.trackDurationFontItalic : settings.design.fontStyles.trackDuration.italic,
+      underline: customization.trackDurationFontUnderline !== undefined ? customization.trackDurationFontUnderline : settings.design.fontStyles.trackDuration.underline,
     };
-    const durationLineHeight = customization.trackDurationLineHeight || 1.2;
-    const durationLetterSpacing = customization.trackDurationLetterSpacing !== undefined ? customization.trackDurationLetterSpacing : 0;
+    const durationLineHeight = customization.trackDurationLineHeight || settings.design.lineHeights.trackDuration;
+    const durationLetterSpacing = customization.trackDurationLetterSpacing !== undefined ? customization.trackDurationLetterSpacing : (settings.design.letterSpacing.trackDuration || 0);
     
     const getFontStyleCSS = (style) => ({
       fontWeight: style.bold ? 'bold' : 'normal',

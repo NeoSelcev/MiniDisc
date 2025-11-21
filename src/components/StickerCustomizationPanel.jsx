@@ -17,7 +17,7 @@ import {
 } from './TypographyControls';
 
 const StickerCustomizationPanel = ({ album, stickerType, onClose, position: initialPosition, onPanelHover }) => {
-  const { getStickerCustomization, updateStickerCustomization, getTypographyDefaults } = useAppStore();
+  const { getStickerCustomization, updateStickerCustomization, getTypographyDefaults, settings } = useAppStore();
   
   // Get initial values (album-specific or defaults)
   const initialCustomization = getStickerCustomization(album, stickerType);
@@ -110,8 +110,8 @@ const StickerCustomizationPanel = ({ album, stickerType, onClose, position: init
   
   // Reset track prefix style to default
   const handleResetTrackPrefix = () => {
-    // Ensure the trackListStyle is explicitly set to 'numbers' in the state
-    const updated = { ...customization, trackListStyle: 'numbers' };
+    // Get the current default trackListStyle from settings
+    const updated = { ...customization, trackListStyle: settings.design.trackListStyle };
     setCustomization(updated);
     updateStickerCustomization(album.id, stickerType, updated);
   };
