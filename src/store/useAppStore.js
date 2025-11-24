@@ -306,34 +306,70 @@ const useAppStore = create(
 
       // NEW: Update sticker customization for specific album and sticker type
       updateStickerCustomization: (albumId, stickerType, customization) => {
-        set((state) => ({
-          albums: state.albums.map((album) => {
-            if (album.id === albumId) {
-              // If customization is null, we want to remove it (reset to defaults)
-              if (customization === null) {
-                const newStickerCustomization = { ...album.stickerCustomization };
-                delete newStickerCustomization[stickerType];
+        set((state) => {
+          const state_get = get();
+          
+          return {
+            albums: state.albums.map((album) => {
+              if (album.id === albumId) {
+                // If customization is null, we want to remove it (reset to defaults)
+                if (customization === null) {
+                  const newStickerCustomization = { ...album.stickerCustomization };
+                  delete newStickerCustomization[stickerType];
+                  return {
+                    ...album,
+                    stickerCustomization: newStickerCustomization,
+                  };
+                }
+                
+                // Get current defaults to compare
+                const defaults = state_get.getStickerCustomization({ id: album.id, stickerCustomization: null }, stickerType);
+                
+                // Check if customization differs from defaults
+                const hasDifferences = Object.keys(customization).some(key => {
+                  const customValue = customization[key];
+                  const defaultValue = defaults[key];
+                  
+                  // Handle boolean values explicitly
+                  if (typeof customValue === 'boolean' || typeof defaultValue === 'boolean') {
+                    return customValue !== defaultValue;
+                  }
+                  
+                  // Handle numeric values
+                  if (typeof customValue === 'number' || typeof defaultValue === 'number') {
+                    return customValue !== defaultValue;
+                  }
+                  
+                  // Handle string values
+                  return customValue !== defaultValue;
+                });
+                
+                // If no differences, remove customization (keep in default state)
+                if (!hasDifferences) {
+                  const newStickerCustomization = { ...album.stickerCustomization };
+                  delete newStickerCustomization[stickerType];
+                  return {
+                    ...album,
+                    stickerCustomization: newStickerCustomization,
+                  };
+                }
+                
+                // Otherwise, merge the new customization
                 return {
                   ...album,
-                  stickerCustomization: newStickerCustomization,
+                  stickerCustomization: {
+                    ...album.stickerCustomization,
+                    [stickerType]: {
+                      ...(album.stickerCustomization?.[stickerType] || {}),
+                      ...customization,
+                    },
+                  },
                 };
               }
-              
-              // Otherwise, merge the new customization
-              return {
-                ...album,
-                stickerCustomization: {
-                  ...album.stickerCustomization,
-                  [stickerType]: {
-                    ...(album.stickerCustomization?.[stickerType] || {}),
-                    ...customization,
-                  },
-                },
-              };
-            }
-            return album;
-          }),
-        }));
+              return album;
+            }),
+          };
+        });
       },
 
       // NEW: Get effective customization (album-specific or global defaults)

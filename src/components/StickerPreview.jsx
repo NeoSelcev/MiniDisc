@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import useAppStore from '../store/useAppStore';
@@ -17,6 +17,8 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
   
   // Subscribe to albums array to trigger re-render when customization changes
   const albums = useAppStore((state) => state.albums);
+  // Subscribe to settings to trigger re-render when global defaults change
+  const globalSettings = useAppStore((state) => state.settings);
   const getStickerCustomization = useAppStore((state) => state.getStickerCustomization);
   
   // Get current album with latest customization
@@ -36,7 +38,18 @@ function StickerPreview({ dimensions, position, sticker, showLabels = false, sca
   }, [isThisPanelOpen]);
   
   // Get customization for this specific album and sticker type
-  const customization = getStickerCustomization(currentAlbum, stickerType);
+  // Use useMemo to recalculate when albums, globalSettings, or sticker changes
+  // Include specific settings values that affect this sticker type to ensure reactivity
+  const customization = useMemo(() => {
+    return getStickerCustomization(currentAlbum, stickerType);
+  }, [
+    getStickerCustomization, 
+    currentAlbum, 
+    currentAlbum?.stickerCustomization?.[stickerType],
+    stickerType, 
+    globalSettings.design,
+    albums.length
+  ]);
   
   const pixelX = x * scale;
   const pixelY = y * scale;
